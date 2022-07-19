@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { HrModule } from './hr/hr.module';
 
 @Module({
    imports: [
@@ -13,9 +14,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
          password: '',
          database: 'mysql-head-hunter-db',
          entities: ['dist/**/**.entity{.ts,.js}'],
-         // logging: true,
+         logging: true,
          synchronize: true,
       }),
+      HrModule,
    ],
    controllers: [AppController],
    providers: [AppService],
