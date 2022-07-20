@@ -35,7 +35,7 @@ export class Student extends BaseEntity {
       type: 'tinyint',
       default: 0,
    })
-   active: number;
+   active: boolean;
 
    @Column({
       type: 'tinyint',
