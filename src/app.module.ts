@@ -3,23 +3,27 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HrModule } from './hr/hr.module';
+
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { StudentService } from './student/student.service';
 import { StudentController } from './student/student.controller';
 
+import dbConfiguration from './config/db.config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
+
 @Module({
    imports: [
-      TypeOrmModule.forRoot({
-         type: 'mysql',
-         host: 'localhost',
-         port: 3306,
-         username: 'root',
-         password: '',
-         database: 'mysql-head-hunter-db',
-         entities: ['dist/**/**.entity{.ts,.js}'],
-         logging: true,
-         synchronize: true,
+      ConfigModule.forRoot({
+         isGlobal: true,
+         load: [dbConfiguration],
+      }),
+      TypeOrmModule.forRootAsync({
+         inject: [ConfigService],
+         useFactory: async (configService: ConfigService) => ({
+            ...configService.get('database'),
+         }),
       }),
       HrModule,
    ],
