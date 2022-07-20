@@ -3,6 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HrModule } from './hr/hr.module';
+import { AuthController } from './auth/auth.controller';
+import { AuthService } from './auth/auth.service';
+import { StudentService } from './student/student.service';
+import { StudentController } from './student/student.controller';
 
 @Module({
    imports: [
@@ -19,7 +23,7 @@ import { HrModule } from './hr/hr.module';
       }),
       HrModule,
    ],
-   controllers: [AppController],
-   providers: [AppService],
+   controllers: [AppController, AuthController, StudentController],
+   providers: [AppService, AuthService, StudentService],
 })
 export class AppModule {}
