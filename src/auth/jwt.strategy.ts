@@ -13,7 +13,7 @@ function cookieExtractor(req: any): null | string {
    return req && req.cookies ? req.cookies?.jwt ?? null : null;
 }
 
-const jwtKey =
+export const jwtKey =
    'nhoiasdhfoidsh9873289rfw7dsgfe023@RAWESFdsddR32qwrfEDggraDer32h 88 h98qwye79t3 rewr sdfsdf 3 232reF#@4 23r$#@4';
 
 @Injectable()
@@ -30,7 +30,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
          return done(new UnauthorizedException(), false);
       }
 
-      // sprawdzanie typu uzytkownika, dodatkowy parametr w metodzie?
+      // sprawdzanie typu uzytkownika, dodatkowy parametr w metodzie i endpoincie np. login/student, login/hr?
       // Poki co dla student
       const user = await Student.findOneBy({
          currentSessionTokenId: payload.id,
