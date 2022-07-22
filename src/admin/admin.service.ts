@@ -3,9 +3,13 @@ import { ImportUserDto } from './dto/import-user.dto';
 import { ImportUserResponse } from '../interfaces/user';
 import { User } from '../user/user.entity';
 import { Student } from '../student/student.entity';
-import { UploadFileDto } from './dto/upload-file.dto';
+// import { UploadFileDto } from './dto/upload-file.dto';
 import { UploadFileResponseInterface } from '../interfaces/upload';
 import { MulterDiskUploadedFiles } from '../interfaces/files';
+import { storageDir } from '../utils/storage';
+import * as path from 'path';
+import { readFileSync } from 'fs';
+import { parse } from 'papaparse';
 
 @Injectable()
 export class AdminService {
@@ -43,12 +47,28 @@ export class AdminService {
    }
 
    async uploadFile(
-      req: UploadFileDto,
       files: MulterDiskUploadedFiles,
    ): Promise<UploadFileResponseInterface> {
       const uploadFile = files?.usersImport?.[0] ?? null;
-      console.log('serwis is working');
-      console.log({ uploadFile });
+
+      const pathh = path.join(
+         storageDir(),
+         'students-file',
+         'users-import-temp.csv',
+      );
+
+      const csvFile = readFileSync(pathh);
+      const csvData = csvFile.toString();
+
+      const parsedCsv = await parse(csvData, {
+         header: true,
+         skipEmptyLines: true,
+         transformHeader: (header) =>
+            header.toLowerCase().replace('#', '').trim(),
+         complete: (results) => results.data,
+      });
+
+      console.log('PARSED DATA!!!!!!', parsedCsv.data);
 
       return { files: 'ok' };
    }
