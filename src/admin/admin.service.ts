@@ -3,13 +3,20 @@ import { ImportUserDto } from './dto/import-user.dto';
 import { ImportUserResponse } from '../interfaces/user';
 import { User } from '../user/user.entity';
 import { Student } from '../student/student.entity';
+import { UploadFileDto } from './dto/upload-file.dto';
+import { UploadFileResponseInterface } from '../interfaces/upload';
+import { MulterDiskUploadedFiles } from '../interfaces/files';
 
 @Injectable()
 export class AdminService {
    async importUsersCsv(
       newImportUsers: ImportUserDto,
+      files: MulterDiskUploadedFiles,
    ): Promise<ImportUserResponse> {
       console.log('servis IMPORT');
+
+      //------ forEach to add to map through array -------
+      // newImportUsers.forEach(newImportUser => {}
 
       //------ User Table insert-------
       const user = new User();
@@ -33,5 +40,16 @@ export class AdminService {
       //------ student Table insert END-------
 
       return { importSuccess: 'OK' };
+   }
+
+   async uploadFile(
+      req: UploadFileDto,
+      files: MulterDiskUploadedFiles,
+   ): Promise<UploadFileResponseInterface> {
+      const uploadFile = files?.usersImport?.[0] ?? null;
+      console.log('serwis is working');
+      console.log({ uploadFile });
+
+      return { files: 'ok' };
    }
 }
