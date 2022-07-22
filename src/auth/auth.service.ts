@@ -44,6 +44,8 @@ export class AuthService {
             pwdHash: hashPwd(req.pwd),
          });
 
+         console.log('user', user);
+
          if (!user) {
             return res.json({ error: 'Invalid login data!' });
          }
