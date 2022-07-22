@@ -2,131 +2,85 @@ import {
    BaseEntity,
    Column,
    Entity,
-   Generated,
+   JoinColumn,
+   OneToOne,
    PrimaryGeneratedColumn,
 } from 'typeorm';
-import { IsNumber, IsString } from 'class-validator';
+import { User } from '../user/user.entity';
 
 @Entity()
 export class Student extends BaseEntity {
    @PrimaryGeneratedColumn('uuid')
    id: string;
 
-   @IsString()
    @Column({
       length: 255,
    })
    email: string;
 
-   @IsString()
    @Column({
-      nullable: true,
-      default: null,
+      length: 255,
+      default: 'available',
    })
-   pwdHash: string;
+   studentStatus: string;
 
-   @IsString()
-   @Column({
-      nullable: true,
-   })
-   @Generated('uuid')
-   registerTokenId: string | null;
-
-   @IsString()
-   @Column({
-      nullable: true,
-      default: null,
-   })
-   currentSessionTokenId: string | null;
-
-   @IsNumber()
-   @Column({
-      type: 'tinyint',
-      default: 0,
-   })
-   active: boolean;
-
-   @IsNumber()
-   @Column({
-      type: 'tinyint',
-      default: 0,
-   })
-   studentStatus: number;
-
-   @IsNumber()
    @Column({
       type: 'tinyint',
    })
    courseCompletion: number;
-
-   @IsNumber()
+   //
    @Column({
       type: 'tinyint',
    })
    courseEngagement: number;
 
-   @IsNumber()
    @Column({
       type: 'tinyint',
    })
    projectDegree: number;
 
-   @IsNumber()
    @Column({
       type: 'tinyint',
    })
    teamProjectDegree: number;
-
-   // tabela one to many z kursami kazdego ze studentow?
-   @IsString()
+   //
+   // // tabela one to many z kursami kazdego ze studentow?
    @Column()
    bonusProjectUrls: string;
+   //
+   // tel: string;
+   //
+   // firstName: string;
+   //
+   // lastName: string;
+   //
+   // githubUserName: string;
+   //
+   // portfolioUrls: string;
+   //
+   // projectUrls: string;
+   //
+   // bio: string;
+   //
+   // expectedTypeOfWork: string;
+   //
+   // targetWorkCity: string;
+   //
+   // expectedContractType: string;
+   //
+   // expectedSalary: string;
+   //
+   // canTakeApprenticeship: string;
+   //
+   // monthsOfCommercialExp: string;
+   //
+   // education: string;
+   //
+   // workExperience: string;
+   //
+   // courses: string;
 
-   @IsString()
-   tel: string;
-
-   @IsString()
-   firstName: string;
-
-   @IsString()
-   lastName: string;
-
-   @IsString()
-   githubUserName: string;
-
-   @IsString()
-   portfolioUrls: string;
-
-   @IsString()
-   projectUrls: string;
-
-   @IsString()
-   bio: string;
-
-   @IsString()
-   expectedTypeOfWork: string;
-
-   @IsString()
-   targetWorkCity: string;
-
-   @IsString()
-   expectedContractType: string;
-
-   @IsString()
-   expectedSalary: string;
-
-   @IsString()
-   canTakeApprenticeship: string;
-
-   @IsString()
-   monthsOfCommercialExp: string;
-
-   @IsString()
-   education: string;
-
-   @IsString()
-   workExperience: string;
-
-   @IsString()
-   courses: string;
+   @OneToOne(() => User, (user) => user.email)
+   @JoinColumn()
+   user: User;
 }

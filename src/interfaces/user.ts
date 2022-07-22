@@ -1,11 +1,9 @@
 export interface ImportUserResponse {
-   email: string;
-   role: string;
+   // email: string;
+   // role: string;
    // registerTokenId: string | null;
-   // active: boolean;
-   // courseCompletion: number;
-   // courseEngagement: number;
-   // projectDegree: number;
-   // teamProjectDegree: number;
-   // bonusProjectUrl: number;
+   // // active: boolean;
+   // studentStatus: string;
+
+   importSuccess: string;
 }

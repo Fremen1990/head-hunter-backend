@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class ImportUserDto {
    @IsString()
@@ -6,4 +6,14 @@ export class ImportUserDto {
 
    @IsString()
    role: string;
+   @IsNumber()
+   courseCompletion: number;
+   @IsNumber()
+   courseEngagement: number;
+   @IsNumber()
+   projectDegree: number;
+   @IsNumber()
+   teamProjectDegree: number;
+   @IsString()
+   bonusProjectUrls: string;
 }
