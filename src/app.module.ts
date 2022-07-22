@@ -11,7 +11,10 @@ import { StudentController } from './student/student.controller';
 
 import dbConfiguration from './config/db.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-
+import { StudentModule } from './student/student.module';
+import { AuthModule } from './auth/auth.module';
+import { HrController } from './hr/hr.controller';
+import { HrService } from './hr/hr.service';
 
 @Module({
    imports: [
@@ -26,8 +29,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
          }),
       }),
       HrModule,
+      StudentModule,
+      AuthModule,
    ],
-   controllers: [AppController, AuthController, StudentController],
-   providers: [AppService, AuthService, StudentService],
+   controllers: [
+      AppController,
+      AuthController,
+      StudentController,
+      HrController,
+   ],
+   providers: [AppService, AuthService, StudentService, HrService],
 })
 export class AppModule {}
