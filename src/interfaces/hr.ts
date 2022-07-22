@@ -4,4 +4,6 @@ export interface HrResponse {
    fullName: string;
    company: string;
    maxReservedStudents: number;
+   countOfAddedStudents: number;
+   active: boolean;
 }
