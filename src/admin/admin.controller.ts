@@ -20,13 +20,13 @@ import { MulterDiskUploadedFiles } from '../interfaces/files';
 export class AdminController {
    constructor(@Inject(AdminService) private adminService: AdminService) {}
 
+   // ---------------IMPORT UPLOADED USERS DO DATABASE!!-------------------------
    @Post('/import-users')
    importUsers(
-      @Body() newImportUsers: ImportUserDto,
-      @UploadedFiles() files: MulterDiskUploadedFiles,
+      @Body() newImportUsers: ImportUserDto[], // import dto converted to lower-case due to csv parsing and translation
    ): Promise<ImportUserResponse> {
       console.log('CONTROLLER IMPORT');
-      return this.adminService.importUsersCsv(newImportUsers, files);
+      return this.adminService.importUsers(newImportUsers);
    }
 
    // ---------------UPLOAD FILES WITH INTERCEPTOR!!-------------------------

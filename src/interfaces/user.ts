@@ -6,4 +6,5 @@ export interface ImportUserResponse {
    // studentStatus: string;
 
    importSuccess: string;
+   newUsersCounter: number;
 }

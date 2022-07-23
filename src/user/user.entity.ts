@@ -1,9 +1,11 @@
 import {
    BaseEntity,
    Column,
+   CreateDateColumn,
    Entity,
    Generated,
    PrimaryGeneratedColumn,
+   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -42,4 +44,10 @@ export class User extends BaseEntity {
       default: 0,
    })
    active: boolean;
+
+   @CreateDateColumn()
+   created_at: Date;
+
+   @UpdateDateColumn()
+   updated_at: Date;
 }

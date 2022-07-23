@@ -1,10 +1,12 @@
 import {
    BaseEntity,
    Column,
+   CreateDateColumn,
    Entity,
    JoinColumn,
    OneToOne,
    PrimaryGeneratedColumn,
+   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../user/user.entity';
 
@@ -45,40 +47,45 @@ export class Student extends BaseEntity {
    teamProjectDegree: number;
    //
    // // tabela one to many z kursami kazdego ze studentow?
+   @Column('simple-array')
+   bonusProjectUrls: string[];
+   //// details to Columnt( here to be completed if needed  )
    @Column()
-   bonusProjectUrls: string;
-   //
-   // tel: string;
-   //
-   // firstName: string;
-   //
-   // lastName: string;
-   //
-   // githubUserName: string;
-   //
-   // portfolioUrls: string;
-   //
-   // projectUrls: string;
-   //
-   // bio: string;
-   //
-   // expectedTypeOfWork: string;
-   //
-   // targetWorkCity: string;
-   //
-   // expectedContractType: string;
-   //
-   // expectedSalary: string;
-   //
-   // canTakeApprenticeship: string;
-   //
-   // monthsOfCommercialExp: string;
-   //
-   // education: string;
-   //
-   // workExperience: string;
-   //
-   // courses: string;
+   tel: string;
+   @Column()
+   firstName: string;
+   @Column()
+   lastName: string;
+   @Column()
+   githubUserName: string;
+   @Column()
+   portfolioUrls: string;
+   @Column()
+   projectUrls: string;
+   @Column()
+   bio: string;
+   @Column()
+   expectedTypeOfWork: string;
+   @Column()
+   targetWorkCity: string;
+   @Column()
+   expectedContractType: string;
+   @Column()
+   expectedSalary: string;
+   @Column()
+   canTakeApprenticeship: string;
+   @Column()
+   monthsOfCommercialExp: string;
+   @Column()
+   education: string;
+   @Column()
+   workExperience: string;
+   @Column()
+   courses: string;
+   @CreateDateColumn()
+   created_at: Date;
+   @UpdateDateColumn()
+   updated_at: Date;
 
    @OneToOne(() => User, (user) => user.email)
    @JoinColumn()

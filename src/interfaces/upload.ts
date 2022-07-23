@@ -1,3 +1,9 @@
 export interface UploadFileResponseInterface {
-   files: string;
+   email: string;
+   role: string;
+   courseCompletion: number;
+   courseEngagement: number;
+   projectDegree: number;
+   teamProjectDegree: number;
+   bonusProjectUrls: string[];
 }
