@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { HrEntity } from './hr.entity';
+import { Hr } from './hr.entity';
 
 @Injectable()
 export class HrService {
-   async getHr(): Promise<HrEntity[]> {
-      return HrEntity.find();
+   async getHr(): Promise<Hr[]> {
+      return Hr.find();
    }
 }

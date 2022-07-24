@@ -9,7 +9,7 @@ import {
 import { User } from '../user/user.entity';
 
 @Entity()
-export class HrEntity extends BaseEntity {
+export class Hr extends BaseEntity {
    @PrimaryGeneratedColumn('uuid')
    id: string;
 
