@@ -3,6 +3,7 @@ import { StudentService } from './student.service';
 import { RegisterDto } from './dto/register.dto';
 import { RegisterStudentResponse } from 'src/interfaces/student';
 import { Student } from './student.entity';
+import { User } from '../user/user.entity';
 
 @Controller('student')
 export class StudentController {
@@ -16,7 +17,7 @@ export class StudentController {
    }
 
    @Get('/:id')
-   getStudent(@Param('studentId') studentId: string): Promise<Student> {
+   getStudent(@Param('studentId') studentId: string): Promise<User> {
       return this.studentService.getOneStudent(studentId);
    }
 

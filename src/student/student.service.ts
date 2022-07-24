@@ -3,10 +3,11 @@ import { RegisterDto } from './dto/register.dto';
 import { Student } from './student.entity';
 import { RegisterStudentResponse } from '../interfaces/student';
 import { hashPwd } from '../utils/hash-pwd';
+import { User } from '../user/user.entity';
 
 @Injectable()
 export class StudentService {
-   filter(student: Student): RegisterStudentResponse {
+   filter(student: User): RegisterStudentResponse {
       const { id, registerTokenId, active } = student;
       return { id, registerTokenId, active };
    }
@@ -36,8 +37,8 @@ export class StudentService {
       return this.filter(student);
    }
 
-   async getOneStudent(id: string): Promise<Student> {
-      return await Student.findOneBy({ id });
+   async getOneStudent(id: string): Promise<User> {
+      return await User.findOneBy({ id });
    }
 
    async getAllStudents(): Promise<Student[]> {

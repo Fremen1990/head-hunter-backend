@@ -1,10 +1,14 @@
 import {
    BaseEntity,
    Column,
+   CreateDateColumn,
    Entity,
-   Generated,
+   JoinColumn,
+   OneToOne,
    PrimaryGeneratedColumn,
+   UpdateDateColumn,
 } from 'typeorm';
+import { User } from '../user/user.entity';
 
 @Entity()
 export class Student extends BaseEntity {
@@ -16,38 +20,17 @@ export class Student extends BaseEntity {
    })
    email: string;
 
-   @Column()
-   pwdHash: string;
-
    @Column({
-      nullable: true,
+      length: 255,
+      default: 'available',
    })
-   @Generated('uuid')
-   registerTokenId: string | null;
-
-   @Column({
-      nullable: true,
-      default: null,
-   })
-   currentSessionTokenId: string | null;
-
-   @Column({
-      type: 'tinyint',
-      default: 0,
-   })
-   active: boolean;
-
-   @Column({
-      type: 'tinyint',
-      default: 0,
-   })
-   studentStatus: number;
+   studentStatus: string;
 
    @Column({
       type: 'tinyint',
    })
    courseCompletion: number;
-
+   //
    @Column({
       type: 'tinyint',
    })
@@ -62,8 +45,49 @@ export class Student extends BaseEntity {
       type: 'tinyint',
    })
    teamProjectDegree: number;
-
-   // tabela one to many z kursami kazdego ze studentow?
+   //
+   // // tabela one to many z kursami kazdego ze studentow?
+   @Column('simple-array')
+   bonusProjectUrls: string[];
+   //// details to Columnt( here to be completed if needed  )
    @Column()
-   bonusProjectUrls: string;
+   tel: string;
+   @Column()
+   firstName: string;
+   @Column()
+   lastName: string;
+   @Column()
+   githubUserName: string;
+   @Column()
+   portfolioUrls: string;
+   @Column()
+   projectUrls: string;
+   @Column()
+   bio: string;
+   @Column()
+   expectedTypeOfWork: string;
+   @Column()
+   targetWorkCity: string;
+   @Column()
+   expectedContractType: string;
+   @Column()
+   expectedSalary: string;
+   @Column()
+   canTakeApprenticeship: string;
+   @Column()
+   monthsOfCommercialExp: string;
+   @Column()
+   education: string;
+   @Column()
+   workExperience: string;
+   @Column()
+   courses: string;
+   @CreateDateColumn()
+   created_at: Date;
+   @UpdateDateColumn()
+   updated_at: Date;
+
+   @OneToOne(() => User, (user) => user.email)
+   @JoinColumn()
+   user: User;
 }
