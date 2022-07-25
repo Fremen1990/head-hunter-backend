@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import { Student } from './student.entity';
-import { RegisterStudentResponse } from '../interfaces/student';
+import {
+   DeleteStudentResponse,
+   RegisterStudentResponse,
+} from '../interfaces/student';
 import { hashPwd } from '../utils/hash-pwd';
 import { User } from '../user/user.entity';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
 export class StudentService {
@@ -22,7 +26,7 @@ export class StudentService {
          pwd: '1234',
       };
 
-      const student = await this.getOneStudent(userId);
+      const student = await this.getOneUser(userId);
 
       if (student.registerTokenId === registerTokenId) {
          student.registerTokenId = null;
@@ -37,11 +41,55 @@ export class StudentService {
       return this.filter(student);
    }
 
-   async getOneStudent(id: string): Promise<User> {
+   async getOneUser(id: string): Promise<User> {
       return await User.findOneBy({ id });
    }
 
-   async getAllStudents(): Promise<Student[]> {
-      return await Student.find();
+   async getOneStudent(studentEmail: string): Promise<Student> {
+      return await Student.findOneBy({ email: studentEmail });
+   }
+
+   async updateStudentDetails(
+      studentEmail: string,
+      studentDetails: UpdateProfileDto,
+   ) {
+      const student = await this.getOneStudent(studentEmail);
+
+      if (student) {
+         student.studentStatus = studentDetails.studentStatus;
+         student.tel = studentDetails.tel;
+         student.firstName = studentDetails.firstName;
+         student.lastName = studentDetails.lastName;
+         student.githubUserName = studentDetails.githubUserName;
+         student.portfolioUrls = studentDetails.portfolioUrls;
+         student.projectUrls = studentDetails.projectUrls;
+         student.bio = studentDetails.bio;
+         student.expectedTypeOfWork = studentDetails.expectedTypeOfWork;
+         student.targetWorkCity = studentDetails.targetWorkCity;
+         student.expectedContractType = studentDetails.expectedContractType;
+         student.expectedSalary = studentDetails.expectedSalary;
+         student.canTakeApprenticeship = studentDetails.canTakeApprenticeship;
+         student.monthsOfCommercialExp = studentDetails.monthsOfCommercialExp;
+         student.education = studentDetails.education;
+         student.workExperience = studentDetails.workExperience;
+         student.courses = studentDetails.courses;
+         await student.save();
+      }
+
+      if (!student) {
+         return { UpdateStudentStatus: 'Student not found' };
+      }
+
+      return { UpdateStudentStatus: 'Student details updated' };
+   }
+
+   async deleteStudent(studentEmail: string): Promise<DeleteStudentResponse> {
+      const student = await this.getOneStudent(studentEmail);
+      if (!student) {
+         return { DeleteStudentStatus: 'Student not found' };
+      }
+      await student.remove();
+
+      return { DeleteStudentStatus: 'Student deleted' };
    }
 }

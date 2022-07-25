@@ -1,8 +1,6 @@
 import { IsNumber, IsString } from 'class-validator';
 
 export class ImportUserDto {
-   // warning!  file csv for upload converted to lower-case!!!!!!
-
    @IsString()
    email: string;
    @IsString()

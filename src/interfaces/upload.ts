@@ -7,3 +7,8 @@ export interface UploadFileResponseInterface {
    teamProjectDegree: number;
    bonusProjectUrls: string[];
 }
+
+export interface UploadFileFailedInterface {
+   UploadStatus: string;
+   Error: string;
+}
