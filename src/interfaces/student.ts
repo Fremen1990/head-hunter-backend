@@ -5,3 +5,11 @@ export interface RegisterStudentResponse {
    registerTokenId: string | null;
    active: boolean;
 }
+
+export interface UpdateStudentResponse {
+   UpdateStudentStatus: string;
+}
+
+export interface DeleteStudentResponse {
+   DeleteStudentStatus: string;
+}
