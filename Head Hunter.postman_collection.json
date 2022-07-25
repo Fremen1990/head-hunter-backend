@@ -232,6 +232,83 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "student",
+			"item": [
+				{
+					"name": "getOneStudent",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}/student/tcomas.dev@gmail.com",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"student",
+								"tcomas.dev@gmail.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateStudentDetails",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"studentStatus\": \"available\",\r\n    \"tel\": \"666-666-666\",\r\n    \"firstName\": \"tOMASZEK\",\r\n    \"lastName\": \"\",\r\n    \"githubUserName\": \"\",\r\n    \"portfolioUrls\": \"\",\r\n    \"projectUrls\": \"\",\r\n    \"bio\": \"My bio is aweeeesomeeeeeeeeee\",\r\n    \"expectedTypeOfWork\": \"\",\r\n    \"targetWorkCity\": \"\",\r\n    \"expectedContractType\": \"\",\r\n    \"expectedSalary\": \"\",\r\n    \"canTakeApprenticeship\": \"\",\r\n    \"monthsOfCommercialExp\": \"\",\r\n    \"education\": \"\",\r\n    \"workExperience\": \"\",\r\n    \"courses\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/student/tcomas.dev@gmail.com",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"student",
+								"tcomas.dev@gmail.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteStudent",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"studentStatus\": \"available\",\r\n    \"tel\": \"666-666-666\",\r\n    \"firstName\": \"tOMASZEK\",\r\n    \"lastName\": \"\",\r\n    \"githubUserName\": \"\",\r\n    \"portfolioUrls\": \"\",\r\n    \"projectUrls\": \"\",\r\n    \"bio\": \"My bio is aweeeesomeeeeeeeeee\",\r\n    \"expectedTypeOfWork\": \"\",\r\n    \"targetWorkCity\": \"\",\r\n    \"expectedContractType\": \"\",\r\n    \"expectedSalary\": \"\",\r\n    \"canTakeApprenticeship\": \"\",\r\n    \"monthsOfCommercialExp\": \"\",\r\n    \"education\": \"\",\r\n    \"workExperience\": \"\",\r\n    \"courses\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/student/tcomas.dev@gmail.com",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"student",
+								"tcomas.dev@gmail.com"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -257,7 +334,7 @@
 	"variable": [
 		{
 			"key": "endpoint",
-			"value": "http://localhost:3000",
+			"value": "http://localhost:8000",
 			"type": "string"
 		}
 	]
