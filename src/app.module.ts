@@ -15,6 +15,9 @@ import { StudentModule } from './student/student.module';
 import { AuthModule } from './auth/auth.module';
 import { HrController } from './hr/hr.controller';
 import { HrService } from './hr/hr.service';
+import { UserModule } from './user/user.module';
+import { AdminController } from './admin/admin.controller';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
    imports: [
@@ -31,12 +34,15 @@ import { HrService } from './hr/hr.service';
       HrModule,
       StudentModule,
       AuthModule,
+      UserModule,
+      AdminModule,
    ],
    controllers: [
       AppController,
       AuthController,
       StudentController,
       HrController,
+      AdminController,
    ],
    providers: [AppService, AuthService, StudentService, HrService],
 })

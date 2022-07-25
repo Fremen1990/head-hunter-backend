@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
    const app = await NestFactory.create(AppModule);
@@ -16,9 +17,24 @@ async function bootstrap() {
    const document = SwaggerModule.createDocument(app, config);
    SwaggerModule.setup('api', app, document);
 
-   app.use(cookieParser());
+   app.useGlobalPipes(
+      new ValidationPipe({
+         disableErrorMessages: true,
 
-   await app.listen(3000);
+         whitelist: true,
+         forbidNonWhitelisted: true,
+
+         transform: true,
+         transformOptions: {
+            enableImplicitConversion: true,
+         },
+      }),
+   );
+
+   app.use(cookieParser());
+   app.enableCors();
+
+   await app.listen(8000);
 }
 
 bootstrap();

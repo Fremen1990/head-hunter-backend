@@ -1,47 +1,24 @@
 import {
    BaseEntity,
    Column,
+   CreateDateColumn,
    Entity,
-   Generated,
+   JoinColumn,
+   ManyToOne,
+   OneToOne,
    PrimaryGeneratedColumn,
+   UpdateDateColumn,
 } from 'typeorm';
+import { User } from '../user/user.entity';
+import { StudentStatus } from '../enums/student-status.enum';
+import { WorkType } from '../enums/work-type.enum';
+import { ContactType } from '../enums/contract-type.enum';
+import { Apprenticeship } from '../enums/apprenticeship.enum';
 
 @Entity()
 export class Student extends BaseEntity {
    @PrimaryGeneratedColumn('uuid')
    id: string;
-
-   @Column({
-      length: 255,
-   })
-   email: string;
-
-   @Column()
-   pwdHash: string;
-
-   @Column({
-      nullable: true,
-   })
-   @Generated('uuid')
-   registerTokenId: string | null;
-
-   @Column({
-      nullable: true,
-      default: null,
-   })
-   currentSessionTokenId: string | null;
-
-   @Column({
-      type: 'tinyint',
-      default: 0,
-   })
-   active: boolean;
-
-   @Column({
-      type: 'tinyint',
-      default: 0,
-   })
-   studentStatus: number;
 
    @Column({
       type: 'tinyint',
@@ -63,7 +40,81 @@ export class Student extends BaseEntity {
    })
    teamProjectDegree: number;
 
-   // tabela one to many z kursami kazdego ze studentow?
+   @Column('simple-array')
+   bonusProjectUrls: string[];
+
+   @Column({
+      length: 20,
+      default: StudentStatus.available,
+      nullable: false,
+   })
+   studentStatus: string;
+
+   //// details to Columnt( here to be completed if needed  )
+   @Column({ length: 15 })
+   tel: string;
+
+   @Column({ length: 18, nullable: false })
+   firstName: string;
+
+   @Column({ length: 30, nullable: false })
+   lastName: string;
+
+   @Column({
+      length: 60,
+      // tymczasowo wyrzucam, bo dziala i wywala na p[liku csv
+      // unique: true,
+      nullable: false,
+   })
+   githubUserName: string;
+
+   @Column({
+      nullable: true,
+   })
+   portfolioUrls: string;
+
    @Column()
-   bonusProjectUrls: string;
+   projectUrls: string;
+
+   @Column({ length: 255 })
+   bio: string;
+
+   @Column({ default: WorkType.any, length: 20 })
+   expectedTypeOfWork: string;
+
+   @Column({ length: 30 })
+   targetWorkCity: string;
+
+   @Column({ default: ContactType.any, length: 20 })
+   expectedContractType: string;
+
+   @Column({ length: 5 })
+   expectedSalary: string;
+
+   @Column({ default: Apprenticeship.no, length: 3 })
+   canTakeApprenticeship: string;
+
+   @Column()
+   monthsOfCommercialExp: string;
+   @Column()
+   education: string;
+
+   @Column()
+   workExperience: number;
+
+   @Column()
+   courses: string;
+
+   @CreateDateColumn()
+   created_at: Date;
+
+   @UpdateDateColumn()
+   updated_at: Date;
+
+   @ManyToOne((type) => User, (user) => user.id)
+   student: Student;
+
+   // @OneToOne(() => User, (user) => user.email)
+   // @JoinColumn()
+   // user: User;
 }

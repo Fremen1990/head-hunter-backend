@@ -3,9 +3,9 @@ import { Response } from 'express';
 import { v4 as uuid } from 'uuid';
 import { sign } from 'jsonwebtoken';
 import { jwtKey, JwtPayload } from './jwt.strategy';
-import { Student } from '../student/student.entity';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { hashPwd } from '../utils/hash-pwd';
+import { User } from '../user/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -22,16 +22,16 @@ export class AuthService {
       };
    }
 
-   private async generateToken(user: Student): Promise<string> {
+   private async generateToken(user: User): Promise<string> {
       let token;
       let userWithThisToken = null;
       do {
          token = uuid();
-         userWithThisToken = await Student.findOneBy({
-            currentSessionTokenId: token,
+         userWithThisToken = await User.findOneBy({
+            currentSessionToken: token,
          });
       } while (!!userWithThisToken);
-      user.currentSessionTokenId = token;
+      user.currentSessionToken = token;
       await user.save();
 
       return token;
@@ -39,7 +39,7 @@ export class AuthService {
 
    async login(req: AuthLoginDto, res: Response): Promise<any> {
       try {
-         const user = await Student.findOneBy({
+         const user = await User.findOneBy({
             email: req.email,
             pwdHash: hashPwd(req.pwd),
          });
@@ -59,15 +59,15 @@ export class AuthService {
                //FE nie widzi ciastka
                httpOnly: true,
             })
-            .json({ ok: true });
+            .json({ ok: true, token: token.accessToken });
       } catch (e) {
          return res.json({ error: e.message });
       }
    }
 
-   async logout(user: Student, res: Response) {
+   async logout(user: User, res: Response) {
       try {
-         user.currentSessionTokenId = null;
+         user.currentSessionToken = null;
          await user.save();
          res.clearCookie('jwt', {
             secure: false,
