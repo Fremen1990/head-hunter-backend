@@ -1,7 +1,6 @@
 import { Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { Student } from '../student/student.entity';
 import { User } from '../user/user.entity';
 
 // co bedziemy przechowywać, token zalogowania
@@ -34,7 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       // sprawdzanie typu uzytkownika, dodatkowy parametr w metodzie i endpoincie np. login/student, login/hr?
       // Poki co dla student
       const user = await User.findOneBy({
-         currentSessionTokenId: payload.id,
+         currentSessionToken: payload.id,
       });
       if (!user) {
          return done(new UnauthorizedException(), false);

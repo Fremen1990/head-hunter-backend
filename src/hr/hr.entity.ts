@@ -2,8 +2,7 @@ import {
    BaseEntity,
    Column,
    Entity,
-   JoinColumn,
-   OneToOne,
+   ManyToOne,
    PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../user/user.entity';
@@ -14,9 +13,6 @@ export class Hr extends BaseEntity {
    id: string;
 
    @Column()
-   email: string;
-
-   @Column()
    fullName: string;
 
    @Column({})
@@ -25,7 +21,6 @@ export class Hr extends BaseEntity {
    @Column()
    maxReservedStudents: number;
 
-   @OneToOne(() => User, (user) => user.email)
-   @JoinColumn()
-   user: User;
+   @ManyToOne((type) => User, (user) => user.id)
+   hr: Hr;
 }

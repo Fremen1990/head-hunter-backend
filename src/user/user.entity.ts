@@ -1,47 +1,44 @@
+import { Hr } from 'src/hr/hr.entity';
 import {
    BaseEntity,
    Column,
    CreateDateColumn,
    Entity,
    Generated,
+   JoinColumn,
+   OneToMany,
    PrimaryGeneratedColumn,
+   Unique,
    UpdateDateColumn,
 } from 'typeorm';
+import { Role } from '../enums/role.unum';
+import { Student } from '../student/student.entity';
 
 @Entity()
 export class User extends BaseEntity {
    @PrimaryGeneratedColumn('uuid')
    id: string;
 
-   @Column({
-      length: 255,
-   })
+   @Column({ length: 255 })
    email: string;
 
-   @Column()
+   @Column({ length: 128 })
    pwdHash: string;
 
-   @Column()
-   role: string;
+   @Column({ nullable: false, length: 15 })
+   role: Role;
 
-   @Column({
-      nullable: true,
-   })
-   @Generated('uuid')
-   registerTokenId: string | null;
+   @Column({ nullable: true })
+   registrationToken: string | null;
 
    @Column({ nullable: true, default: null })
-   resetPwdTokenId: string | null;
+   resetPasswordToken: string | null;
+
+   @Column({ nullable: true, default: null })
+   currentSessionToken: string | null;
 
    @Column({
-      nullable: true,
-      default: null,
-   })
-   currentSessionTokenId: string | null;
-
-   @Column({
-      type: 'tinyint',
-      default: 0,
+      default: false,
    })
    active: boolean;
 
@@ -50,4 +47,12 @@ export class User extends BaseEntity {
 
    @UpdateDateColumn()
    updated_at: Date;
+
+   @OneToMany((type) => Student, (student) => student.id)
+   @JoinColumn()
+   userStudent: Student;
+
+   @OneToMany((type) => Hr, (hr) => hr.id)
+   @JoinColumn()
+   userHr: Hr;
 }

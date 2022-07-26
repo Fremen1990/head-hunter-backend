@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { v4 as uuid } from 'uuid';
 import { ImportUserDto } from './dto/import-user.dto';
 import { ImportUserResponse } from '../interfaces/user';
 import { User } from '../user/user.entity';
@@ -13,13 +14,14 @@ import { MulterDiskUploadedFiles } from '../interfaces/files';
 // utils imports
 import { storageDir } from '../utils/storage';
 import { parse } from 'papaparse';
+import * as fs from 'fs';
 import { readFileSync } from 'fs';
 import * as path from 'path';
-import * as fs from 'fs';
-import nanoToken from '../utils/nanoToken';
+import nanoToken from '../utils/nano-token';
 // import { v4 as uuid } from 'uuid';
 import { ImportHrDto } from './dto/import-hr.dto';
 import { Hr } from '../hr/hr.entity';
+import { Role } from '../enums/role.unum';
 
 @Injectable()
 export class AdminService {
@@ -36,16 +38,18 @@ export class AdminService {
          const user = await User.findOneBy({ email: userItem.email });
          if (!user) {
             //---------------- User Table insert------------------
-            const user = new User();
+            const user = await new User();
+
             user.email = userItem.email;
-            user.role = userItem.role;
-            user.registerTokenId = nanoToken();
+            user.role = Role.Student;
+            user.registrationToken = nanoToken();
             await user.save();
             //----------------- User Table insert END------------------
 
             //------------------- student Table insert START-------------------
             const student = new Student();
-            student.email = userItem.email;
+            student.id = user.id;
+            // student.email = userItem.email;
             student.courseCompletion = userItem.courseCompletion;
             student.courseEngagement = userItem.courseEngagement;
             student.projectDegree = userItem.projectDegree;
@@ -78,6 +82,8 @@ export class AdminService {
          'upload-file',
          'users-import-temp.csv',
       );
+
+      console.log(path_to_import);
 
       // check if the file is not empty, not too big, and has the right extension
 
@@ -120,15 +126,14 @@ export class AdminService {
             //---------------- User Table insert------------------
             const user = new User();
             user.email = userItem.email;
-            user.role = 'hr';
-            user.registerTokenId = nanoToken();
+            user.role = Role.Hr;
+            user.registrationToken = nanoToken();
             await user.save();
             //----------------- User Table insert END------------------
 
             //------------------- hr Table insert START-------------------
             const hr = new Hr();
-            // hr.id = newId;
-            hr.email = userItem.email;
+            hr.id = user.id;
             hr.fullName = userItem.fullName;
             hr.company = userItem.company;
             hr.maxReservedStudents = userItem.maxReservedStudents;
@@ -158,3 +163,4 @@ export class AdminService {
       return await Hr.find();
    }
 }
+

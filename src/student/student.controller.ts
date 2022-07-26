@@ -9,14 +9,11 @@ import {
    Put,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
-import { RegisterDto } from './dto/register.dto';
 import {
    DeleteStudentResponse,
-   RegisterStudentResponse,
    UpdateStudentResponse,
 } from 'src/interfaces/student';
 import { Student } from './student.entity';
-import { User } from '../user/user.entity';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Controller('student')
@@ -25,38 +22,24 @@ export class StudentController {
       @Inject(StudentService) private studentService: StudentService,
    ) {}
 
-   // To chyba powinno tu zostać, bo to endpoint dla studenta i on powinien sie rejestrowac
-   @Post('/register-student/:userId/:registerTokenId')
-   register(
-      @Body() userPwd: RegisterDto,
-      @Param('userId') userId: string,
-      @Param('registerTokenId') registerTokenId: string,
-   ): Promise<RegisterStudentResponse> {
-      return this.studentService.register(userPwd, userId, registerTokenId);
+   @Get('/:id')
+   getStudent(@Param('id') id: string): Promise<Student> {
+      return this.studentService.getOneStudent(id);
    }
 
-   @Get('/:email')
-   getStudent(@Param('email') studentEmail: string): Promise<Student> {
-      return this.studentService.getOneStudent(studentEmail);
-   }
-
-   @Put('/:email')
+   @Put('/:id')
    updateStudent(
-      @Param('email') studentEmail: string,
+      @Param('id') id: string,
       @Body() studentDetails: UpdateProfileDto,
    ): Promise<UpdateStudentResponse> {
       console.log('CONTROLER UPDATE WORKDS');
 
-      return this.studentService.updateStudentDetails(
-         studentEmail,
-         studentDetails,
-      );
+      return this.studentService.updateStudentDetails(id, studentDetails);
    }
 
-   @Delete('/:email')
-   deleteStudent(
-      @Param('email') studentEmail: string,
-   ): Promise<DeleteStudentResponse> {
-      return this.studentService.deleteStudent(studentEmail);
+   @Delete('/:id')
+   deleteStudent(@Param('id') id: string): Promise<DeleteStudentResponse> {
+      return this.studentService.deleteStudent(id);
    }
 }
+

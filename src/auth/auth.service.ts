@@ -3,7 +3,6 @@ import { Response } from 'express';
 import { v4 as uuid } from 'uuid';
 import { sign } from 'jsonwebtoken';
 import { jwtKey, JwtPayload } from './jwt.strategy';
-import { Student } from '../student/student.entity';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { hashPwd } from '../utils/hash-pwd';
 import { User } from '../user/user.entity';
@@ -29,10 +28,10 @@ export class AuthService {
       do {
          token = uuid();
          userWithThisToken = await User.findOneBy({
-            currentSessionTokenId: token,
+            currentSessionToken: token,
          });
       } while (!!userWithThisToken);
-      user.currentSessionTokenId = token;
+      user.currentSessionToken = token;
       await user.save();
 
       return token;
@@ -62,7 +61,7 @@ export class AuthService {
                //FE nie widzi ciastka
                httpOnly: true,
             })
-            .json({ ok: true });
+            .json({ ok: true, token: token.accessToken });
       } catch (e) {
          return res.json({ error: e.message });
       }
@@ -70,7 +69,7 @@ export class AuthService {
 
    async logout(user: User, res: Response) {
       try {
-         user.currentSessionTokenId = null;
+         user.currentSessionToken = null;
          await user.save();
          res.clearCookie('jwt', {
             secure: false,

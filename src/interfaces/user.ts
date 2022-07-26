@@ -1,3 +1,9 @@
+export interface RegisterUserResponse {
+   id: string;
+   registrationToken: string | null;
+   active: boolean;
+}
+
 export interface ImportUserResponse {
    // email: string;
    // role: string;
