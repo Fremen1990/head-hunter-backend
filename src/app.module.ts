@@ -19,6 +19,7 @@ import { UserModule } from './user/user.module';
 import { AdminController } from './admin/admin.controller';
 import { AdminModule } from './admin/admin.module';
 
+
 @Module({
    imports: [
       ConfigModule.forRoot({
@@ -36,6 +37,7 @@ import { AdminModule } from './admin/admin.module';
       AuthModule,
       UserModule,
       AdminModule,
+
    ],
    controllers: [
       AppController,
