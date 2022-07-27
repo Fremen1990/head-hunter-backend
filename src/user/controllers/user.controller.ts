@@ -9,20 +9,6 @@ import { RegisterUserResponse } from '../../interfaces/user';
 export class UserController {
    constructor(@Inject(UserService) private userService: UserService) {}
 
-   @Get('/')
-   getAll(): Promise<User[]> {
-      return this.userService.getAllUsers();
-   }
-
-   @Get('/:id')
-   getStudent(@Param('id') id: string): Promise<User> {
-      return this.userService.getOneUser(id);
-   }
-
-   //JSON Body
-   // {
-   // 	"pwd": 1234
-   // }
    @Post('/register/:userId/:registrationToken')
    register(
       @Body() userPwd: RegisterUserDto,

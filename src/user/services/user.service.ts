@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { hashPwd } from '../../utils/hash-pwd';
 import { User } from '../entities/user.entity';
 import { RegisterUserResponse } from '../../interfaces/user';
@@ -54,7 +54,15 @@ export class UserService {
    }
 
    async getOneUser(id: string): Promise<User> {
-      return await User.findOneBy({ id });
+      const user = await User.findOneById(id);
+      if (!user) {
+         throw new HttpException(
+            `Cannot find user ID:${id}`,
+            HttpStatus.NOT_FOUND,
+         );
+      } else {
+         return user;
+      }
    }
 
    async getAllUsers(): Promise<User[]> {

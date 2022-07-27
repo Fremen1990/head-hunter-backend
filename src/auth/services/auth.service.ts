@@ -39,6 +39,11 @@ export class AuthService {
 
    async login(req: AuthLoginDto, res: Response): Promise<any> {
       try {
+         const emailExists = await User.findOneBy({ email: req.email });
+
+         if (!emailExists) {
+            return res.json({ error: 'Email not found' });
+         }
          const user = await User.findOne({
             where: {
                email: req.email,
@@ -46,7 +51,7 @@ export class AuthService {
             },
          });
          if (!user) {
-            return res.json({ error: 'Invalid login data!' });
+            return res.status(400).json({ error: 'Incorrect password!' });
          }
 
          const token = await this.createToken(await this.generateToken(user));
@@ -62,6 +67,7 @@ export class AuthService {
             })
             .json({
                ok: true,
+               token: token.accessToken,
                user: {
                   id: user.id,
                   email: user.email,
@@ -71,7 +77,7 @@ export class AuthService {
                },
             });
       } catch (e) {
-         return res.json({ error: e.message });
+         return res.status(400).json({ error: e.message });
       }
    }
 

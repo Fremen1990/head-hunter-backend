@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Student } from '../entities/student.entity';
 import { DeleteStudentResponse } from '../../interfaces/student';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
@@ -10,7 +10,13 @@ import { validateApprenticeship } from '../../enums/apprenticeship.enum';
 @Injectable()
 export class StudentService {
    async getOneStudent(id: string): Promise<Student> {
-      return await Student.findOneBy({ id });
+      const student = await Student.findOneBy({ id });
+
+      if (!student) {
+         throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
+      }
+
+      return student;
    }
 
    async updateStudentDetails(id: string, studentDetails: UpdateProfileDto) {
@@ -46,7 +52,7 @@ export class StudentService {
       }
 
       if (!student) {
-         return { UpdateStudentStatus: 'Student not found' };
+         throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
       }
 
       return { UpdateStudentStatus: 'Student details updated' };
@@ -55,7 +61,7 @@ export class StudentService {
    async deleteStudent(id: string): Promise<DeleteStudentResponse> {
       const student = await this.getOneStudent(id);
       if (!student) {
-         return { DeleteStudentStatus: 'Student not found' };
+         throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
       }
       await student.remove();
 

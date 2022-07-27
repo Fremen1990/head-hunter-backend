@@ -8,7 +8,11 @@ export interface RegisterUserResponse {
 
 export interface ImportUserResponse {
    importSuccess: string;
+   createdUsers?: string[];
    newUsersCounter?: number;
+   duplicatedUsers?: string[];
+   duplicatedUsersCounter?: number;
+   message?: string;
 }
 
 export interface createOneUserResponse {

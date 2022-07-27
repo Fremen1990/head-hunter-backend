@@ -1,11 +1,13 @@
 import { IsNumber, IsString } from 'class-validator';
 
-export class registerNewHrDto {
+export class HrDto {
    @IsString()
-   email: string;
+   email?: string;
+   @IsString()
+   pwd?: string;
    @IsString()
    fullName: string;
-   @IsNumber()
+   @IsString()
    company: string;
    @IsNumber()
    maxReservedStudents: number;

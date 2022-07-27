@@ -6,6 +6,9 @@ export class Hr extends BaseEntity {
    id: string;
 
    @Column()
+   email: string;
+
+   @Column()
    fullName: string;
 
    @Column({})

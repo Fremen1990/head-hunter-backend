@@ -19,6 +19,9 @@ export class Student extends BaseEntity {
    @PrimaryGeneratedColumn('uuid')
    id: string;
 
+   @Column()
+   email: string;
+
    @Column({
       type: 'tinyint',
    })
