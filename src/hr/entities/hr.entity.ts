@@ -1,4 +1,11 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+   BaseEntity,
+   Column,
+   Entity,
+   OneToOne,
+   PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Interview } from './interview.entity';
 
 @Entity()
 export class Hr extends BaseEntity {
@@ -16,4 +23,7 @@ export class Hr extends BaseEntity {
 
    @Column()
    maxReservedStudents: number;
+
+   @OneToOne(() => Interview, (interview) => interview.interviewer)
+   hrInterview: Interview;
 }

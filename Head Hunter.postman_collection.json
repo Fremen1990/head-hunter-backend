@@ -194,7 +194,7 @@
 			"name": "hr",
 			"item": [
 				{
-					"name": "interview list",
+					"name": "Get Candidates List",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -219,6 +219,65 @@
 								"hr",
 								"candidate",
 								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One Candidate",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":\"dac7983d-b1e6-4a4e-a3de-dryj\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/hr/candidate/0ece141f-4f89-4b5a-ab5f-985fbc2b9125",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"hr",
+								"candidate",
+								"0ece141f-4f89-4b5a-ab5f-985fbc2b9125"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Candidate To List",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":\"dac7983d-b1e6-4a4e-a3de-dryj\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/hr/candidate/{{studentId}}",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"hr",
+								"candidate",
+								"{{studentId}}"
 							]
 						}
 					},

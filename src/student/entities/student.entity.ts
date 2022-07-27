@@ -13,6 +13,7 @@ import { StudentStatus } from '../../enums/student-status.enum';
 import { WorkType } from '../../enums/work-type.enum';
 import { ContactType } from '../../enums/contract-type.enum';
 import { Apprenticeship } from '../../enums/apprenticeship.enum';
+import { Interview } from '../../hr/entities/interview.entity';
 
 @Entity()
 export class Student extends BaseEntity {
@@ -112,6 +113,9 @@ export class Student extends BaseEntity {
 
    @UpdateDateColumn()
    updated_at: Date;
+
+   @OneToOne(() => Interview, (interview) => interview.student)
+   interview: Interview;
 
    @OneToOne(() => User, (user) => user.student)
    @JoinColumn()

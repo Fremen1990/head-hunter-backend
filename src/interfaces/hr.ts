@@ -24,3 +24,18 @@ export interface HrCandidateListResponse {
    workExperience: number;
    courses: string;
 }
+
+export interface HrCandidateAddResponse {
+   id: string;
+   email: string;
+   firstName: string;
+   lastName: string;
+   portfolioUrls: string;
+}
+
+export interface HrCandidateRemoveResponse {
+   id: string;
+   email: string;
+   firstName: string;
+   lastName: string;
+}
