@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid';
 import { sign } from 'jsonwebtoken';
 import { jwtKey, JwtPayload } from './jwt.strategy';
 import { AuthLoginDto } from './dto/auth-login.dto';
-import { hashPwd } from '../utils/hash-pwd';
+import { decrypt, encrypt, hashPwd } from '../utils/pwd-tools';
 import { User } from '../user/user.entity';
 
 @Injectable()
@@ -41,13 +41,22 @@ export class AuthService {
       try {
          const user = await User.findOneBy({
             email: req.email,
-            pwdHash: hashPwd(req.pwd),
          });
-
-         console.log('user', user);
 
          if (!user) {
             return res.json({ error: 'Invalid login data!' });
+         }
+
+         if (!user.active) {
+            return res.json({ error: 'This user is not registered.' });
+         }
+
+         if (user) {
+            const decryptedPwd = decrypt(user.encryptedPwd);
+
+            if (decryptedPwd !== req.pwd) {
+               return res.json({ error: 'Wrong password!' });
+            }
          }
 
          const token = await this.createToken(await this.generateToken(user));

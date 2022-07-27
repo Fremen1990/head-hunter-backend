@@ -22,8 +22,8 @@ export class User extends BaseEntity {
    @Column({ length: 255 })
    email: string;
 
-   @Column({ length: 128 })
-   pwdHash: string;
+   @Column({ length: 100 })
+   encryptedPwd: string;
 
    @Column({ nullable: false, length: 15 })
    role: Role;

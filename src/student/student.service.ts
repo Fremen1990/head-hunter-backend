@@ -13,7 +13,7 @@ import {
    DeleteStudentResponse,
    UpdateStudentResponse,
 } from '../interfaces/student';
-import { hashPwd } from '../utils/hash-pwd';
+import { hashPwd } from '../utils/pwd-tools';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { validateStudentStatus } from '../enums/student-status.enum';
 import { validateWorkType } from '../enums/work-type.enum';
@@ -51,9 +51,11 @@ export class StudentService {
          student.canTakeApprenticeship = validateApprenticeship(
             studentDetails.canTakeApprenticeship,
          );
-         student.monthsOfCommercialExp = studentDetails.monthsOfCommercialExp;
+         student.monthsOfCommercialExp = Number(
+            studentDetails.monthsOfCommercialExp,
+         );
          student.education = studentDetails.education;
-         student.workExperience = Number(studentDetails.workExperience);
+         student.workExperience = studentDetails.workExperience;
          student.courses = studentDetails.courses;
          await student.save();
       }
@@ -75,4 +77,3 @@ export class StudentService {
       return { DeleteStudentStatus: 'Student deleted' };
    }
 }
-

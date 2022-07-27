@@ -68,4 +68,9 @@ export class AdminController {
    async getAllHr(): Promise<Hr[]> {
       return this.adminService.getAllHr();
    }
+
+   @Post('/students/send-registration-email')
+   async sendRegistrationEmailToStudents(): Promise<any> {
+      return this.adminService.mailUsers();
+   }
 }
