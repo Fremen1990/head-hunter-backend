@@ -1,11 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { Response } from 'express';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import e, { Response } from 'express';
 import { v4 as uuid } from 'uuid';
 import { sign } from 'jsonwebtoken';
 import { jwtKey, JwtPayload } from '../jwt.strategy';
 import { AuthLoginDto } from '../dto/auth-login.dto';
 import { hashPwd } from '../../utils/hash-pwd';
 import { User } from '../../user/entities/user.entity';
+import { ResetPasswordDto } from '../dto/reset-password.dto';
+import nanoToken from '../../utils/nanoToken';
 
 @Injectable()
 export class AuthService {
@@ -94,5 +96,47 @@ export class AuthService {
       } catch (e) {
          return res.json({ error: e.message });
       }
+   }
+
+   //---------------- SEND RESET PASSWORD TOKEN AND ADD TO DATABASE ----------------
+   async sendResetPasswordLink({ email }) {
+      const user = await User.findOneBy({ email });
+
+      if (!user) {
+         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+
+      const code = nanoToken();
+      console.log('RESET PASSWORD CODE ', code);
+
+      user.resetPasswordToken = code;
+      await user.save();
+
+      console.log('added code ', user.resetPasswordToken);
+
+      throw new HttpException(
+         `${code}`, // THIS HAS TO BE DELETED!!! ONLY FOR POSTMAN TESTING PURPOSES --!!!!!!!!!!!!
+         // 'Reset password link sent'
+         HttpStatus.OK,
+      );
+   }
+   //---------------- CHANGE PASSWORD BASED ON RESET PASSWORD TOKEN ----------------
+   async changePassword(user: User, req: ResetPasswordDto, res: e.Response) {
+      if (req.resetPasswordToken !== user.resetPasswordToken) {
+         throw new HttpException(
+            `Your reset password token is not correct`,
+            HttpStatus.CONFLICT,
+         );
+      }
+
+      if (req.newPwd !== req.newPwdConfirm) {
+         throw new HttpException("Passwords don't match", HttpStatus.CONFLICT);
+      }
+
+      user.pwdHash = hashPwd(req.newPwd);
+      user.resetPasswordToken = null;
+      await user.save();
+
+      return res.status(200).json({ message: 'Password changed successfully' });
    }
 }
