@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { AuthService } from '../services/auth.service';
 import { Response } from 'express';
-import { AuthLoginDto } from './dto/auth-login.dto';
+import { AuthLoginDto } from '../dto/auth-login.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { UserObj } from '../decorators/portal-users.decorator';
-import { User } from '../user/user.entity';
+import { UserObj } from '../../decorators/portal-users.decorator';
+import { User } from '../../user/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -18,6 +18,7 @@ export class AuthController {
    @Get('/logout')
    @UseGuards(AuthGuard('jwt'))
    async logout(@UserObj() user: User, @Res() res: Response) {
+      console.log({ user });
       return this.authService.logout(user, res);
    }
 }

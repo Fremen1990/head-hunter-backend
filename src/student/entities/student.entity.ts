@@ -4,16 +4,15 @@ import {
    CreateDateColumn,
    Entity,
    JoinColumn,
-   ManyToOne,
    OneToOne,
    PrimaryGeneratedColumn,
    UpdateDateColumn,
 } from 'typeorm';
-import { User } from '../user/user.entity';
-import { StudentStatus } from '../enums/student-status.enum';
-import { WorkType } from '../enums/work-type.enum';
-import { ContactType } from '../enums/contract-type.enum';
-import { Apprenticeship } from '../enums/apprenticeship.enum';
+import { User } from '../../user/entities/user.entity';
+import { StudentStatus } from '../../enums/student-status.enum';
+import { WorkType } from '../../enums/work-type.enum';
+import { ContactType } from '../../enums/contract-type.enum';
+import { Apprenticeship } from '../../enums/apprenticeship.enum';
 
 @Entity()
 export class Student extends BaseEntity {
@@ -111,10 +110,7 @@ export class Student extends BaseEntity {
    @UpdateDateColumn()
    updated_at: Date;
 
-   @ManyToOne((type) => User, (user) => user.id)
-   student: Student;
-
-   // @OneToOne(() => User, (user) => user.email)
-   // @JoinColumn()
-   // user: User;
+   @OneToOne(() => User, (user) => user.student)
+   @JoinColumn()
+   user: User;
 }

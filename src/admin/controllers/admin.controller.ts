@@ -7,21 +7,23 @@ import {
    UploadedFiles,
    UseInterceptors,
 } from '@nestjs/common';
-import { AdminService } from './admin.service';
-import { ImportUserResponse } from '../interfaces/user';
-import { ImportUserDto } from './dto/import-user.dto';
+import { AdminService } from '../services/admin.service';
+import {
+   createOneUserResponse,
+   ImportUserResponse,
+} from '../../interfaces/user';
 import {
    UploadFileFailedInterface,
    UploadFileResponseInterface,
-} from '../interfaces/upload';
-// import { UploadFileDto } from './dto/upload-file.dto';
+} from '../../interfaces/upload';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import * as path from 'path';
-import { multerStorage, storageDir } from '../utils/storage';
-import { MulterDiskUploadedFiles } from '../interfaces/files';
-import { ImportHrDto } from './dto/import-hr.dto';
-import { Student } from '../student/student.entity';
-import { Hr } from '../hr/hr.entity';
+import { multerStorage, storageDir } from '../../utils/storage';
+import { MulterDiskUploadedFiles } from '../../interfaces/files';
+import { ImportHrDto } from '../dto/import-hr.dto';
+import { Student } from '../../student/entities/student.entity';
+import { Hr } from '../../hr/entities/hr.entity';
+import { StudentDto } from '../dto/student.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -44,10 +46,18 @@ export class AdminController {
    // ---------------IMPORT UPLOADED USERS TO DATABASE!!-------------------------
    @Post('/import-students')
    async importStudents(
-      @Body() newImportUsers: ImportUserDto[], // import dto converted to lower-case due to csv parsing and translation
+      @Body() newImportUsers: StudentDto[], // import dto converted to lower-case due to csv parsing and translation
    ): Promise<ImportUserResponse> {
       console.log('CONTROLLER IMPORT');
       return this.adminService.importStudents(newImportUsers);
+   }
+
+   @Post('/add-student')
+   async addStudent(
+      @Body() newStudent: StudentDto, // import dto converted to lower-case due to csv parsing and translation
+   ): Promise<createOneUserResponse> {
+      console.log('CONTROLLER IMPORT');
+      return this.adminService.createOneStudent(newStudent);
    }
 
    // ---------------IMPORT UPLOADED HR TO DATABASE!!-------------------------

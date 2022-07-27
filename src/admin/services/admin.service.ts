@@ -1,36 +1,35 @@
 import { Injectable } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
-import { ImportUserDto } from './dto/import-user.dto';
-import { ImportUserResponse } from '../interfaces/user';
-import { User } from '../user/user.entity';
-import { Student } from '../student/student.entity';
-// import { UploadFileDto } from './dto/upload-file.dto';
+import {
+   createOneUserResponse,
+   ImportUserResponse,
+} from '../../interfaces/user';
+import { User } from '../../user/entities/user.entity';
+import { Student } from '../../student/entities/student.entity';
 import {
    UploadFileFailedInterface,
    UploadFileResponseInterface,
-} from '../interfaces/upload';
-import { MulterDiskUploadedFiles } from '../interfaces/files';
+} from '../../interfaces/upload';
+import { MulterDiskUploadedFiles } from '../../interfaces/files';
 
 // utils imports
-import { storageDir } from '../utils/storage';
+import { storageDir } from '../../utils/storage';
 import { parse } from 'papaparse';
 import * as fs from 'fs';
 import { readFileSync } from 'fs';
 import * as path from 'path';
-import nanoToken from '../utils/nano-token';
-// import { v4 as uuid } from 'uuid';
-import { ImportHrDto } from './dto/import-hr.dto';
-import { Hr } from '../hr/hr.entity';
-import { Role } from '../enums/role.unum';
+import nanoToken from '../../utils/nano-token';
+import { ImportHrDto } from '../dto/import-hr.dto';
+import { Hr } from '../../hr/entities/hr.entity';
+import { Role } from '../../enums/role.enum';
+import { StudentDto } from '../dto/student.dto';
+import { hashPwd } from '../../utils/hash-pwd';
 
 @Injectable()
 export class AdminService {
    //----------------- Import STUDENTS from request to database ------------------
    async importStudents(
-      newImportUsers: ImportUserDto[],
+      newImportUsers: StudentDto[],
    ): Promise<ImportUserResponse> {
-      console.log('users from front-end', newImportUsers);
-
       //------ forOf to add to map through array -------
       let newUsersCounter = 0;
       for (const userItem of newImportUsers) {
@@ -41,6 +40,7 @@ export class AdminService {
             const user = await new User();
 
             user.email = userItem.email;
+            user.pwdHash = hashPwd(nanoToken());
             user.role = Role.Student;
             user.registrationToken = nanoToken();
             await user.save();
@@ -162,5 +162,50 @@ export class AdminService {
    async getAllHr(): Promise<Hr[]> {
       return await Hr.find();
    }
-}
 
+   //----------------- Create One Student ------------------
+
+   async createOneStudent(
+      newStudent: StudentDto,
+   ): Promise<createOneUserResponse> {
+      //------ create new user -------
+      const user = await User.findOneBy({ email: newStudent.email });
+      let newUser;
+      if (!user) {
+         //---------------- PWD generator START ------------------
+         // const pwd = nanoToken();
+         //---------------- PWD generator END ------------------
+         //---------------- User Table insert------------------
+         const user = await new User();
+
+         user.email = newStudent.email;
+         user.pwdHash = hashPwd(newStudent.pwd);
+         user.role = Role.Student;
+         user.registrationToken = nanoToken();
+         await user.save();
+         //----------------- User Table insert END------------------
+
+         //------------------- student Table insert START-------------------
+         const student = new Student();
+         student.id = user.id;
+         // student.email = userItem.email;
+         student.courseCompletion = newStudent.courseCompletion;
+         student.courseEngagement = newStudent.courseEngagement;
+         student.projectDegree = newStudent.projectDegree;
+         student.teamProjectDegree = newStudent.teamProjectDegree;
+         student.bonusProjectUrls = newStudent.bonusProjectUrls;
+         await student.save();
+         newUser = user;
+         //---------------- student Table insert END-----------------------
+      }
+
+      if (user) {
+         console.log('user already exists', user);
+      }
+
+      return {
+         createUserStatus: 'OK',
+         createdUser: newUser,
+      };
+   }
+}

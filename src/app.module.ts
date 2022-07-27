@@ -4,21 +4,20 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HrModule } from './hr/hr.module';
 
-import { AuthController } from './auth/auth.controller';
-import { AuthService } from './auth/auth.service';
-import { StudentService } from './student/student.service';
-import { StudentController } from './student/student.controller';
+import { AuthController } from './auth/controllers/auth.controller';
+import { AuthService } from './auth/services/auth.service';
+import { StudentService } from './student/services/student.service';
+import { StudentController } from './student/controllers/student.controller';
 
 import dbConfiguration from './config/db.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { StudentModule } from './student/student.module';
 import { AuthModule } from './auth/auth.module';
-import { HrController } from './hr/hr.controller';
-import { HrService } from './hr/hr.service';
+import { HrController } from './hr/controllers/hr.controller';
+import { HrService } from './hr/services/hr.service';
 import { UserModule } from './user/user.module';
-import { AdminController } from './admin/admin.controller';
+import { AdminController } from './admin/controllers/admin.controller';
 import { AdminModule } from './admin/admin.module';
-
 
 @Module({
    imports: [
@@ -37,7 +36,6 @@ import { AdminModule } from './admin/admin.module';
       AuthModule,
       UserModule,
       AdminModule,
-
    ],
    controllers: [
       AppController,

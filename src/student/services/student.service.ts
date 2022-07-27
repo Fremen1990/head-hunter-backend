@@ -1,24 +1,11 @@
-import {
-   Body,
-   Delete,
-   Get,
-   Inject,
-   Injectable,
-   Param,
-   Put,
-} from '@nestjs/common';
-import { RegisterDto } from './dto/register.dto';
-import { Student } from './student.entity';
-import {
-   DeleteStudentResponse,
-   UpdateStudentResponse,
-} from '../interfaces/student';
-import { hashPwd } from '../utils/hash-pwd';
-import { UpdateProfileDto } from './dto/update-profile.dto';
-import { validateStudentStatus } from '../enums/student-status.enum';
-import { validateWorkType } from '../enums/work-type.enum';
-import { validateContractType } from '../enums/contract-type.enum';
-import { validateApprenticeship } from '../enums/apprenticeship.enum';
+import { Injectable } from '@nestjs/common';
+import { Student } from '../entities/student.entity';
+import { DeleteStudentResponse } from '../../interfaces/student';
+import { UpdateProfileDto } from '../dto/update-profile.dto';
+import { validateStudentStatus } from '../../enums/student-status.enum';
+import { validateWorkType } from '../../enums/work-type.enum';
+import { validateContractType } from '../../enums/contract-type.enum';
+import { validateApprenticeship } from '../../enums/apprenticeship.enum';
 
 @Injectable()
 export class StudentService {
@@ -75,4 +62,3 @@ export class StudentService {
       return { DeleteStudentStatus: 'Student deleted' };
    }
 }
-

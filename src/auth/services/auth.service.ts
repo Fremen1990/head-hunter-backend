@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
 import { v4 as uuid } from 'uuid';
 import { sign } from 'jsonwebtoken';
-import { jwtKey, JwtPayload } from './jwt.strategy';
-import { AuthLoginDto } from './dto/auth-login.dto';
-import { hashPwd } from '../utils/hash-pwd';
-import { User } from '../user/user.entity';
+import { jwtKey, JwtPayload } from '../jwt.strategy';
+import { AuthLoginDto } from '../dto/auth-login.dto';
+import { hashPwd } from '../../utils/hash-pwd';
+import { User } from '../../user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -39,13 +39,12 @@ export class AuthService {
 
    async login(req: AuthLoginDto, res: Response): Promise<any> {
       try {
-         const user = await User.findOneBy({
-            email: req.email,
-            pwdHash: hashPwd(req.pwd),
+         const user = await User.findOne({
+            where: {
+               email: req.email,
+               pwdHash: hashPwd(req.pwd),
+            },
          });
-
-         console.log('user', user);
-
          if (!user) {
             return res.json({ error: 'Invalid login data!' });
          }
@@ -61,7 +60,16 @@ export class AuthService {
                //FE nie widzi ciastka
                httpOnly: true,
             })
-            .json({ ok: true, token: token.accessToken });
+            .json({
+               ok: true,
+               user: {
+                  id: user.id,
+                  email: user.email,
+                  role: user.role,
+                  active: user.active,
+                  token: token.accessToken,
+               },
+            });
       } catch (e) {
          return res.json({ error: e.message });
       }

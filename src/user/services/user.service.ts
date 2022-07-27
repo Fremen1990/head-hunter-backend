@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { hashPwd } from '../utils/hash-pwd';
-import { User } from './user.entity';
-import { RegisterUserResponse } from '../interfaces/user';
-import { RegisterUserDto } from './dto/register-user.dto';
+import { hashPwd } from '../../utils/hash-pwd';
+import { User } from '../entities/user.entity';
+import { RegisterUserResponse } from '../../interfaces/user';
+import { RegisterUserDto } from '../dto/register-user.dto';
 
 @Injectable()
 export class UserService {

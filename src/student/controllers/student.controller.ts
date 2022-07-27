@@ -5,16 +5,15 @@ import {
    Get,
    Inject,
    Param,
-   Post,
    Put,
 } from '@nestjs/common';
-import { StudentService } from './student.service';
+import { StudentService } from '../services/student.service';
 import {
    DeleteStudentResponse,
    UpdateStudentResponse,
 } from 'src/interfaces/student';
-import { Student } from './student.entity';
-import { UpdateProfileDto } from './dto/update-profile.dto';
+import { Student } from '../entities/student.entity';
+import { UpdateProfileDto } from '../dto/update-profile.dto';
 
 @Controller('student')
 export class StudentController {
@@ -42,4 +41,3 @@ export class StudentController {
       return this.studentService.deleteStudent(id);
    }
 }
-

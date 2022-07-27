@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
-import { User } from './user.entity';
+import { User } from '../entities/user.entity';
 
-import { UserService } from './user.service';
-import { RegisterUserDto } from './dto/register-user.dto';
-import { RegisterUserResponse } from '../interfaces/user';
+import { UserService } from '../services/user.service';
+import { RegisterUserDto } from '../dto/register-user.dto';
+import { RegisterUserResponse } from '../../interfaces/user';
 
 @Controller('user')
 export class UserController {

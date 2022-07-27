@@ -1,7 +1,7 @@
 import { Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { User } from '../user/user.entity';
+import { User } from '../user/entities/user.entity';
 
 // co bedziemy przechowywać, token zalogowania
 export interface JwtPayload {

@@ -1,11 +1,4 @@
-import {
-   BaseEntity,
-   Column,
-   Entity,
-   ManyToOne,
-   PrimaryGeneratedColumn,
-} from 'typeorm';
-import { User } from '../user/user.entity';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Hr extends BaseEntity {
@@ -20,7 +13,4 @@ export class Hr extends BaseEntity {
 
    @Column()
    maxReservedStudents: number;
-
-   @ManyToOne((type) => User, (user) => user.id)
-   hr: Hr;
 }
