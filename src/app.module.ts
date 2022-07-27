@@ -18,7 +18,7 @@ import { HrService } from './hr/hr.service';
 import { UserModule } from './user/user.module';
 import { AdminController } from './admin/admin.controller';
 import { AdminModule } from './admin/admin.module';
-
+import { MailModule } from './mail/mail.module';
 
 @Module({
    imports: [
@@ -37,7 +37,7 @@ import { AdminModule } from './admin/admin.module';
       AuthModule,
       UserModule,
       AdminModule,
-
+      MailModule,
    ],
    controllers: [
       AppController,

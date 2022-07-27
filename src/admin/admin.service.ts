@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import { ImportUserDto } from './dto/import-user.dto';
 import { ImportUserResponse } from '../interfaces/user';
@@ -22,9 +22,17 @@ import nanoToken from '../utils/nano-token';
 import { ImportHrDto } from './dto/import-hr.dto';
 import { Hr } from '../hr/hr.entity';
 import { Role } from '../enums/role.unum';
+import { MailService } from '../mail/mail.service';
+import { UserService } from '../user/user.service';
+import { decrypt, encrypt } from '../utils/pwd-tools';
 
 @Injectable()
 export class AdminService {
+   constructor(
+      @Inject(MailService) private mailService: MailService,
+      @Inject(UserService) private userService: UserService,
+   ) {}
+
    //----------------- Import STUDENTS from request to database ------------------
    async importStudents(
       newImportUsers: ImportUserDto[],
@@ -41,6 +49,7 @@ export class AdminService {
             const user = await new User();
 
             user.email = userItem.email;
+            user.encryptedPwd = encrypt(nanoToken());
             user.role = Role.Student;
             user.registrationToken = nanoToken();
             await user.save();
@@ -49,7 +58,6 @@ export class AdminService {
             //------------------- student Table insert START-------------------
             const student = new Student();
             student.id = user.id;
-            // student.email = userItem.email;
             student.courseCompletion = userItem.courseCompletion;
             student.courseEngagement = userItem.courseEngagement;
             student.projectDegree = userItem.projectDegree;
@@ -58,6 +66,7 @@ export class AdminService {
             await student.save();
             //---------------- student Table insert END-----------------------
             newUsersCounter++;
+            await this.mailService.sendRegistrationLink(user);
          }
 
          if (user) {
@@ -126,9 +135,11 @@ export class AdminService {
             //---------------- User Table insert------------------
             const user = new User();
             user.email = userItem.email;
+            user.encryptedPwd = encrypt(nanoToken());
             user.role = Role.Hr;
             user.registrationToken = nanoToken();
             await user.save();
+
             //----------------- User Table insert END------------------
 
             //------------------- hr Table insert START-------------------
@@ -140,6 +151,7 @@ export class AdminService {
             await hr.save();
             //---------------- hr Table insert END-----------------------
             newUsersCounter++;
+            await this.mailService.sendRegistrationLink(user);
          }
 
          if (user) {
@@ -162,5 +174,26 @@ export class AdminService {
    async getAllHr(): Promise<Hr[]> {
       return await Hr.find();
    }
-}
 
+   //---Send email with registration link to all users available in DB that are not regitered yest ---
+   async mailUsers(): Promise<any> {
+      const users = await this.userService.getAllUsers();
+      let counter = 0;
+      for (const user of users) {
+         if (!user.active) {
+            await this.mailService.sendRegistrationLink(user); // nowy template, ze jeszcze sie nie zarejstowali renewRegistrationLink(user)
+            counter++;
+         }
+      }
+
+      return {
+         'Ilość ponownie wysłanych maili': counter,
+      };
+
+      // return {
+      //    text: 'Poszło przez serwis',
+      //    user,
+      //    pwd: decrypt(user.encryptedPwd),
+      // };
+   }
+}

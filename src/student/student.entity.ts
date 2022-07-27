@@ -21,22 +21,34 @@ export class Student extends BaseEntity {
    id: string;
 
    @Column({
-      type: 'tinyint',
+      type: 'decimal',
+      precision: 3,
+      scale: 2,
+      default: 0,
    })
    courseCompletion: number;
 
    @Column({
-      type: 'tinyint',
+      type: 'decimal',
+      precision: 3,
+      scale: 2,
+      default: 0,
    })
    courseEngagement: number;
 
    @Column({
-      type: 'tinyint',
+      type: 'decimal',
+      precision: 3,
+      scale: 2,
+      default: 0,
    })
    projectDegree: number;
 
    @Column({
-      type: 'tinyint',
+      type: 'decimal',
+      precision: 3,
+      scale: 2,
+      default: 0,
    })
    teamProjectDegree: number;
 
@@ -95,12 +107,13 @@ export class Student extends BaseEntity {
    canTakeApprenticeship: string;
 
    @Column()
-   monthsOfCommercialExp: string;
+   monthsOfCommercialExp: number;
+
    @Column()
    education: string;
 
    @Column()
-   workExperience: number;
+   workExperience: string;
 
    @Column()
    courses: string;

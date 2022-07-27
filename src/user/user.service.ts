@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { hashPwd } from '../utils/hash-pwd';
+import { decrypt, encrypt, hashPwd } from '../utils/pwd-tools';
 import { User } from './user.entity';
 import { RegisterUserResponse } from '../interfaces/user';
 import { RegisterUserDto } from './dto/register-user.dto';
@@ -45,7 +45,7 @@ export class UserService {
       } else {
          throw new Error('Ooops! Still something is wrong');
       }
-      user.pwdHash = hashPwd(userPwd.pwd);
+      user.encryptedPwd = encrypt(userPwd.pwd);
       user.active = true;
 
       await user.save();
