@@ -46,7 +46,7 @@ export class AdminService {
       newUser.id = sharedId;
       newUser.email = newStudent.email;
       newUser.pwdHash = hashPwd(newStudent.pwd);
-      newUser.role = Role.Student;
+      newUser.role = Role.STUDENT;
       newUser.registrationToken = nanoToken();
       await newUser.save();
       //----------------- User Table insert END------------------
@@ -89,7 +89,7 @@ export class AdminService {
       const newUser = new User();
       newUser.id = sharedId;
       newUser.email = newHr.email;
-      newUser.role = Role.Hr;
+      newUser.role = Role.HR;
       newUser.registrationToken = nanoToken();
       await newUser.save();
       //----------------- User Table insert END------------------
@@ -133,7 +133,7 @@ export class AdminService {
             user.id = sharedId;
             user.email = userItem.email;
             user.pwdHash = hashPwd(nanoToken());
-            user.role = Role.Student;
+            user.role = Role.STUDENT;
             user.registrationToken = nanoToken();
             await user.save();
             //----------------- User Table insert END------------------
@@ -180,7 +180,7 @@ export class AdminService {
             const user = new User();
             user.id = sharedId;
             user.email = userItem.email;
-            user.role = Role.Hr;
+            user.role = Role.HR;
             user.registrationToken = nanoToken();
             await user.save();
             //----------------- User Table insert END------------------

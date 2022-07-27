@@ -18,6 +18,8 @@ import { HrService } from './hr/services/hr.service';
 import { UserModule } from './user/user.module';
 import { AdminController } from './admin/controllers/admin.controller';
 import { AdminModule } from './admin/admin.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './guards/roles.guard';
 
 @Module({
    imports: [
@@ -44,6 +46,15 @@ import { AdminModule } from './admin/admin.module';
       HrController,
       AdminController,
    ],
-   providers: [AppService, AuthService, StudentService, HrService],
+   providers: [
+      AppService,
+      AuthService,
+      StudentService,
+      HrService,
+      {
+         provide: APP_GUARD,
+         useClass: RolesGuard,
+      },
+   ],
 })
 export class AppModule {}

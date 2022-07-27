@@ -37,6 +37,7 @@ export class AdminController {
 
    // ---------------ADD-ONE-STUDENT-------------------------
    @Post('/add-student')
+   // @Roles(Role.ADMIN)
    async addStudent(
       @Body() newStudent: StudentDto,
    ): Promise<createOneUserResponse> {
@@ -56,6 +57,8 @@ export class AdminController {
       return this.adminService.getAllStudents();
    }
    // ---------------GET ALL HR FROM  DATABASE!!-------------------------
+   // @Roles(Role.STUDENT)
+   // @UseGuards(RolesGuard)
    @Get('/hr/all')
    async getAllHr(): Promise<Hr[]> {
       return this.adminService.getAllHr();
