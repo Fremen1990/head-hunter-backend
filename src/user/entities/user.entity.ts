@@ -1,18 +1,15 @@
-import { Hr } from 'src/hr/hr.entity';
 import {
    BaseEntity,
    Column,
    CreateDateColumn,
    Entity,
-   Generated,
    JoinColumn,
-   OneToMany,
+   OneToOne,
    PrimaryGeneratedColumn,
-   Unique,
    UpdateDateColumn,
 } from 'typeorm';
-import { Role } from '../enums/role.unum';
-import { Student } from '../student/student.entity';
+import { Role } from '../../enums/role.enum';
+import { Student } from '../../student/entities/student.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -48,11 +45,17 @@ export class User extends BaseEntity {
    @UpdateDateColumn()
    updated_at: Date;
 
-   @OneToMany((type) => Student, (student) => student.id)
+   /* Radek   
+     @OneToMany((type) => Student, (student) => student.id)
    @JoinColumn()
    userStudent: Student;
 
    @OneToMany((type) => Hr, (hr) => hr.id)
    @JoinColumn()
    userHr: Hr;
+    */
+
+   @OneToOne(() => Student, (student) => student.user)
+   @JoinColumn()
+   student: Student;
 }

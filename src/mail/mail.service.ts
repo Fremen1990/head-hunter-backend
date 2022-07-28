@@ -1,7 +1,7 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { decrypt } from 'src/utils/pwd-tools';
-import { User } from '../user/user.entity';
+import { User } from '../user/entities/user.entity';
 import { join } from 'path';
 
 @Injectable()
@@ -9,7 +9,6 @@ export class MailService {
    constructor(private mailerService: MailerService) {}
 
    async sendRegistrationLink(user: User) {
-      // const api = 'http:localhost:8000';
       const id = String(user.id);
       const token = String(user.registrationToken);
 

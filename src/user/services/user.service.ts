@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { decrypt, encrypt, hashPwd } from '../utils/pwd-tools';
-import { User } from './user.entity';
-import { RegisterUserResponse } from '../interfaces/user';
-import { RegisterUserDto } from './dto/register-user.dto';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { User } from '../entities/user.entity';
+import { RegisterUserResponse } from '../../interfaces/user';
+import { RegisterUserDto } from '../dto/register-user.dto';
+import { decrypt, encrypt, hashPwd } from '../../utils/pwd-tools';
 
 @Injectable()
 export class UserService {
@@ -54,7 +54,15 @@ export class UserService {
    }
 
    async getOneUser(id: string): Promise<User> {
-      return await User.findOneBy({ id });
+      const user = await User.findOneById(id);
+      if (!user) {
+         throw new HttpException(
+            `Cannot find user ID:${id}`,
+            HttpStatus.NOT_FOUND,
+         );
+      } else {
+         return user;
+      }
    }
 
    async getAllUsers(): Promise<User[]> {

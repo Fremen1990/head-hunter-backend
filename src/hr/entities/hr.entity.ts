@@ -2,15 +2,18 @@ import {
    BaseEntity,
    Column,
    Entity,
-   ManyToOne,
+   OneToOne,
    PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from '../user/user.entity';
+import { Interview } from './interview.entity';
 
 @Entity()
 export class Hr extends BaseEntity {
    @PrimaryGeneratedColumn('uuid')
    id: string;
+
+   @Column()
+   email: string;
 
    @Column()
    fullName: string;
@@ -21,6 +24,12 @@ export class Hr extends BaseEntity {
    @Column()
    maxReservedStudents: number;
 
+   /* Radek
    @ManyToOne((type) => User, (user) => user.id)
-   hr: Hr;
+   hr: Hr;  
+   
+    */
+
+   @OneToOne(() => Interview, (interview) => interview.interviewer)
+   hrInterview: Interview;
 }

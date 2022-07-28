@@ -1,3 +1,5 @@
+import { User } from '../user/entities/user.entity';
+
 export interface RegisterUserResponse {
    id: string;
    registrationToken: string | null;
@@ -5,12 +7,15 @@ export interface RegisterUserResponse {
 }
 
 export interface ImportUserResponse {
-   // email: string;
-   // role: string;
-   // registerTokenId: string | null;
-   // // active: boolean;
-   // studentStatus: string;
-
    importSuccess: string;
-   newUsersCounter: number;
+   createdUsers?: string[];
+   newUsersCounter?: number;
+   duplicatedUsers?: string[];
+   duplicatedUsersCounter?: number;
+   message?: string;
+}
+
+export interface createOneUserResponse {
+   createUserStatus: string;
+   createdUser: User;
 }

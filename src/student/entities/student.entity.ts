@@ -4,21 +4,24 @@ import {
    CreateDateColumn,
    Entity,
    JoinColumn,
-   ManyToOne,
    OneToOne,
    PrimaryGeneratedColumn,
    UpdateDateColumn,
 } from 'typeorm';
-import { User } from '../user/user.entity';
-import { StudentStatus } from '../enums/student-status.enum';
-import { WorkType } from '../enums/work-type.enum';
-import { ContactType } from '../enums/contract-type.enum';
-import { Apprenticeship } from '../enums/apprenticeship.enum';
+import { User } from '../../user/entities/user.entity';
+import { StudentStatus } from '../../enums/student-status.enum';
+import { WorkType } from '../../enums/work-type.enum';
+import { ContactType } from '../../enums/contract-type.enum';
+import { Apprenticeship } from '../../enums/apprenticeship.enum';
+import { Interview } from '../../hr/entities/interview.entity';
 
 @Entity()
 export class Student extends BaseEntity {
    @PrimaryGeneratedColumn('uuid')
    id: string;
+
+   @Column()
+   email: string;
 
    @Column({
       type: 'decimal',
@@ -74,7 +77,7 @@ export class Student extends BaseEntity {
 
    @Column({
       length: 60,
-      // tymczasowo wyrzucam, bo dziala i wywala na p[liku csv
+      // tymczasowo wyrzucam, bo dziala i wywala na pliku csv
       // unique: true,
       nullable: false,
    })
@@ -124,10 +127,15 @@ export class Student extends BaseEntity {
    @UpdateDateColumn()
    updated_at: Date;
 
-   @ManyToOne((type) => User, (user) => user.id)
-   student: Student;
+   /* Radek
+    @ManyToOne((type) => User, (user) => user.id)
+    student: Student;
+    */
 
-   // @OneToOne(() => User, (user) => user.email)
-   // @JoinColumn()
-   // user: User;
+   @OneToOne(() => Interview, (interview) => interview.student)
+   interview: Interview;
+
+   @OneToOne(() => User, (user) => user.student)
+   @JoinColumn()
+   user: User;
 }

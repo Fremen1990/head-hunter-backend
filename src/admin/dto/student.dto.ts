@@ -1,8 +1,10 @@
 import { IsNumber, IsString } from 'class-validator';
 
-export class ImportUserDto {
+export class StudentDto {
    @IsString()
    email: string;
+   @IsString()
+   pwd?: string;
    @IsString()
    role: string;
    @IsNumber()

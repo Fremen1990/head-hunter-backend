@@ -41,3 +41,4 @@ ormconfig.json
 #.env
 # config
 config/environment-variables.ts
+yarn.lock
