@@ -175,13 +175,13 @@ export class AdminService {
       return await Hr.find();
    }
 
-   //---Send email with registration link to all users available in DB that are not regitered yest ---
+   //---Send email with registration link to all users available in DB that are not registered yest ---
    async mailUsers(): Promise<any> {
       const users = await this.userService.getAllUsers();
       let counter = 0;
       for (const user of users) {
          if (!user.active) {
-            await this.mailService.sendRegistrationLink(user); // nowy template, ze jeszcze sie nie zarejstowali renewRegistrationLink(user)
+            await this.mailService.sendRegistrationLink(user);
             counter++;
          }
       }
