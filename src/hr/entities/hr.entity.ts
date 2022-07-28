@@ -24,6 +24,12 @@ export class Hr extends BaseEntity {
    @Column()
    maxReservedStudents: number;
 
+   /* Radek
+   @ManyToOne((type) => User, (user) => user.id)
+   hr: Hr;  
+   
+    */
+
    @OneToOne(() => Interview, (interview) => interview.interviewer)
    hrInterview: Interview;
 }

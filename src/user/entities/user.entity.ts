@@ -19,8 +19,8 @@ export class User extends BaseEntity {
    @Column({ length: 255 })
    email: string;
 
-   @Column({ length: 128 })
-   pwdHash: string;
+   @Column({ length: 100 })
+   encryptedPwd: string;
 
    @Column({ nullable: false, length: 15 })
    role: Role;
@@ -44,6 +44,16 @@ export class User extends BaseEntity {
 
    @UpdateDateColumn()
    updated_at: Date;
+
+   /* Radek   
+     @OneToMany((type) => Student, (student) => student.id)
+   @JoinColumn()
+   userStudent: Student;
+
+   @OneToMany((type) => Hr, (hr) => hr.id)
+   @JoinColumn()
+   userHr: Hr;
+    */
 
    @OneToOne(() => Student, (student) => student.user)
    @JoinColumn()

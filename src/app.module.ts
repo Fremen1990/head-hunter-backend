@@ -18,6 +18,7 @@ import { HrService } from './hr/services/hr.service';
 import { UserModule } from './user/user.module';
 import { AdminController } from './admin/controllers/admin.controller';
 import { AdminModule } from './admin/admin.module';
+import { MailModule } from './mail/mail.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './guards/roles.guard';
 
@@ -38,6 +39,7 @@ import { RolesGuard } from './guards/roles.guard';
       AuthModule,
       UserModule,
       AdminModule,
+      MailModule,
    ],
    controllers: [
       AppController,

@@ -16,6 +16,7 @@ import {
 import { ExcludedIdsDto } from '../dto/excluded-ids.dto';
 import { UserObj } from '../../decorators/portal-users.decorator';
 import { User } from '../../user/entities/user.entity';
+import { Student } from '../../student/entities/student.entity';
 
 @Controller('hr')
 export class HrController {
@@ -24,7 +25,7 @@ export class HrController {
    @Get('/candidate/list')
    candidateList(
       @Body() excludedIds: ExcludedIdsDto,
-   ): Promise<HrCandidateListResponse[]> {
+   ): Promise<HrCandidateListResponse[] | Student[]> {
       return this.hrService.getCandidatesList(excludedIds);
    }
 
@@ -32,7 +33,7 @@ export class HrController {
    @Get('/candidate/:studentId')
    getOneCandidate(
       @Param('studentId') studentId: string,
-   ): Promise<HrCandidateListResponse> {
+   ): Promise<HrCandidateListResponse | Student> {
       return this.hrService.getOneCandidate(studentId);
    }
 

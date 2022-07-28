@@ -24,22 +24,34 @@ export class Student extends BaseEntity {
    email: string;
 
    @Column({
-      type: 'tinyint',
+      type: 'decimal',
+      precision: 3,
+      scale: 2,
+      default: 0,
    })
    courseCompletion: number;
 
    @Column({
-      type: 'tinyint',
+      type: 'decimal',
+      precision: 3,
+      scale: 2,
+      default: 0,
    })
    courseEngagement: number;
 
    @Column({
-      type: 'tinyint',
+      type: 'decimal',
+      precision: 3,
+      scale: 2,
+      default: 0,
    })
    projectDegree: number;
 
    @Column({
-      type: 'tinyint',
+      type: 'decimal',
+      precision: 3,
+      scale: 2,
+      default: 0,
    })
    teamProjectDegree: number;
 
@@ -65,7 +77,7 @@ export class Student extends BaseEntity {
 
    @Column({
       length: 60,
-      // tymczasowo wyrzucam, bo dziala i wywala na p[liku csv
+      // tymczasowo wyrzucam, bo dziala i wywala na pliku csv
       // unique: true,
       nullable: false,
    })
@@ -98,12 +110,13 @@ export class Student extends BaseEntity {
    canTakeApprenticeship: string;
 
    @Column()
-   monthsOfCommercialExp: string;
+   monthsOfCommercialExp: number;
+
    @Column()
    education: string;
 
    @Column()
-   workExperience: number;
+   workExperience: string;
 
    @Column()
    courses: string;
@@ -113,6 +126,11 @@ export class Student extends BaseEntity {
 
    @UpdateDateColumn()
    updated_at: Date;
+
+   /* Radek
+    @ManyToOne((type) => User, (user) => user.id)
+    student: Student;
+    */
 
    @OneToOne(() => Interview, (interview) => interview.student)
    interview: Interview;

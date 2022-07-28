@@ -10,7 +10,14 @@ import { Hr } from '../entities/hr.entity';
 
 @Injectable()
 export class HrService {
-   async getCandidatesList(excludedIds): Promise<HrCandidateListResponse[]> {
+   async getCandidatesList(
+      excludedIds,
+   ): Promise<HrCandidateListResponse[] | Student[]> {
+      /*
+       
+       Radek -> dodałem or Student[] aby nie krzyczał
+       */
+
       // const candidates = User.find({ relations: ['student'] });
       const candidates = await Student.find({
          relations: ['user'],
@@ -31,7 +38,14 @@ export class HrService {
       //    .getMany();
    }
 
-   async getOneCandidate(studentId): Promise<HrCandidateListResponse> {
+   async getOneCandidate(
+      studentId,
+   ): Promise<HrCandidateListResponse | Student> {
+      /*
+
+       Radek -> dodałem or Student aby nie krzyczał
+
+       */
       const candidate = await Student.findOneBy({ id: studentId });
 
       if (!candidate) {

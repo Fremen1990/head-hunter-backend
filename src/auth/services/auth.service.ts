@@ -4,10 +4,10 @@ import { v4 as uuid } from 'uuid';
 import { sign } from 'jsonwebtoken';
 import { jwtKey, JwtPayload } from '../jwt.strategy';
 import { AuthLoginDto } from '../dto/auth-login.dto';
-import { hashPwd } from '../../utils/hash-pwd';
+import { hashPwd, decrypt, encrypt } from '../../utils/pwd-tools';
 import { User } from '../../user/entities/user.entity';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
-import nanoToken from '../../utils/nanoToken';
+import nanoToken from '../../utils/nano-token';
 
 @Injectable()
 export class AuthService {
@@ -41,20 +41,26 @@ export class AuthService {
 
    async login(req: AuthLoginDto, res: Response): Promise<any> {
       try {
-         const emailExists = await User.findOneBy({ email: req.email });
+         const user = await User.findOneBy({
+            email: req.email,
+         });
 
-         if (!emailExists) {
+         if (!user) {
             return res.json({ error: 'Email not found' });
          }
-         const user = await User.findOne({
-            where: {
-               email: req.email,
-               pwdHash: hashPwd(req.pwd),
-            },
-         });
-         if (!user) {
-            return res.status(400).json({ error: 'Incorrect password!' });
+
+         if (!user.active) {
+            return res.json({ error: 'This user is not registered.' });
          }
+
+         if (user) {
+            const decryptedPwd = decrypt(user.encryptedPwd);
+
+            if (decryptedPwd !== req.pwd) {
+               return res.status(400).json({ error: 'Incorrect password!' });
+            }
+         }
+         //
 
          const token = await this.createToken(await this.generateToken(user));
 
@@ -107,12 +113,9 @@ export class AuthService {
       }
 
       const code = nanoToken();
-      console.log('RESET PASSWORD CODE ', code);
 
       user.resetPasswordToken = code;
       await user.save();
-
-      console.log('added code ', user.resetPasswordToken);
 
       throw new HttpException(
          `${code}`, // THIS HAS TO BE DELETED!!! ONLY FOR POSTMAN TESTING PURPOSES --!!!!!!!!!!!!
@@ -122,6 +125,8 @@ export class AuthService {
    }
    //---------------- CHANGE PASSWORD BASED ON RESET PASSWORD TOKEN ----------------
    async changePassword(user: User, req: ResetPasswordDto, res: e.Response) {
+      console.log('user ->', user);
+
       if (req.resetPasswordToken !== user.resetPasswordToken) {
          throw new HttpException(
             `Your reset password token is not correct`,
@@ -133,7 +138,8 @@ export class AuthService {
          throw new HttpException("Passwords don't match", HttpStatus.CONFLICT);
       }
 
-      user.pwdHash = hashPwd(req.newPwd);
+      // user.pwdHash = hashPwd(req.newPwd);
+      user.encryptedPwd = encrypt(req.newPwd);
       user.resetPasswordToken = null;
       await user.save();
 

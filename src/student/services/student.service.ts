@@ -1,11 +1,22 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+   HttpException,
+   HttpStatus,
+   Body,
+   Delete,
+   Get,
+   Inject,
+   Injectable,
+   Param,
+   Put,
+} from '@nestjs/common';
+
 import { Student } from '../entities/student.entity';
 import { DeleteStudentResponse } from '../../interfaces/student';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
 import { validateStudentStatus } from '../../enums/student-status.enum';
-import { validateWorkType } from '../../enums/work-type.enum';
-import { validateContractType } from '../../enums/contract-type.enum';
-import { validateApprenticeship } from '../../enums/apprenticeship.enum';
+import { validateWorkType } from '../../enums//work-type.enum';
+import { validateContractType } from '../../enums//contract-type.enum';
+import { validateApprenticeship } from '../../enums//apprenticeship.enum';
 
 @Injectable()
 export class StudentService {
@@ -44,9 +55,11 @@ export class StudentService {
          student.canTakeApprenticeship = validateApprenticeship(
             studentDetails.canTakeApprenticeship,
          );
-         student.monthsOfCommercialExp = studentDetails.monthsOfCommercialExp;
+         student.monthsOfCommercialExp = Number(
+            studentDetails.monthsOfCommercialExp,
+         );
          student.education = studentDetails.education;
-         student.workExperience = Number(studentDetails.workExperience);
+         student.workExperience = studentDetails.workExperience;
          student.courses = studentDetails.courses;
          await student.save();
       }

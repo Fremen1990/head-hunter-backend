@@ -1,3 +1,4 @@
+// do modyfikacji co jest potrzebne dla Hr-owca
 export interface HrCandidateListResponse {
    id: string;
    email: string;

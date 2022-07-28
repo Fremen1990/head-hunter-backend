@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import {
    createOneUserResponse,
    ImportUserResponse,
@@ -23,10 +23,17 @@ import { HrDto } from '../dto/hr.dto';
 import { Hr } from '../../hr/entities/hr.entity';
 import { Role } from '../../enums/role.enum';
 import { StudentDto } from '../dto/student.dto';
-import { hashPwd } from '../../utils/hash-pwd';
+import { encrypt, hashPwd } from '../../utils/pwd-tools';
+import { MailService } from '../../mail/mail.service';
+import { UserService } from 'src/user/services/user.service';
 
 @Injectable()
 export class AdminService {
+   constructor(
+      @Inject(MailService) private mailService: MailService,
+      @Inject(UserService) private userService: UserService,
+   ) {}
+
    // ---------------ADD-ONE-STUDENT START-------------------------
    async createOneStudent(
       newStudent: StudentDto,
@@ -45,7 +52,15 @@ export class AdminService {
       const newUser = await new User();
       newUser.id = sharedId;
       newUser.email = newStudent.email;
-      newUser.pwdHash = hashPwd(newStudent.pwd);
+
+      // newUser.pwdHash = hashPwd(newStudent.pwd);
+      newUser.encryptedPwd = encrypt(newStudent.pwd);
+
+      /*
+        Radek - haslo genrujemy z nanoToken, czy user bedzie podawal??
+        user.encryptedPwd = encrypt(nanoToken());
+       */
+
       newUser.role = Role.STUDENT;
       newUser.registrationToken = nanoToken();
       await newUser.save();
@@ -132,7 +147,10 @@ export class AdminService {
             const user = await new User();
             user.id = sharedId;
             user.email = userItem.email;
-            user.pwdHash = hashPwd(nanoToken());
+
+            // user.pwdHash = hashPwd(nanoToken());
+            user.encryptedPwd = encrypt(nanoToken());
+
             user.role = Role.STUDENT;
             user.registrationToken = nanoToken();
             await user.save();
@@ -150,6 +168,34 @@ export class AdminService {
             await student.save();
             //---------------- student Table insert END-----------------------
             createdUsersList.push(user.email);
+            /* Radek - commit z mail
+            //---------------- User Table insert------------------
+            const user = await new User(); //tworzy uuid
+
+            user.email = userItem.email;
+            user.encryptedPwd = encrypt(nanoToken());
+            user.role = Role.Student;
+            user.registrationToken = nanoToken();
+            await user.save();
+            //----------------- User Table insert END------------------
+
+            //------------------- student Table insert START-------------------
+            const student = new Student();
+            student.id = user.id;  // przypisz te samo uuid
+            student.courseCompletion = userItem.courseCompletion;
+            student.courseEngagement = userItem.courseEngagement;
+            student.projectDegree = userItem.projectDegree;
+            student.teamProjectDegree = userItem.teamProjectDegree;
+            student.bonusProjectUrls = userItem.bonusProjectUrls;
+            await student.save();
+            //---------------- student Table insert END-----------------------
+            newUsersCounter++;
+            await this.mailService.sendRegistrationLink(user);
+
+
+
+
+             */
          }
          if (user) {
             duplicatedUsersList.push(user.email);
@@ -194,6 +240,31 @@ export class AdminService {
             await hr.save();
             //---------------- hr Table insert END-----------------------
             createdUsersList.push(user.email);
+
+            /* Radek - commit z mail
+            //---------------- Create new id ------------------
+            // const newId = uuid();
+            //---------------- User Table insert------------------
+            const user = new User();
+            user.email = userItem.email;
+            user.encryptedPwd = encrypt(nanoToken());
+            user.role = Role.Hr;
+            user.registrationToken = nanoToken();
+            await user.save();
+
+            //----------------- User Table insert END------------------
+
+            //------------------- hr Table insert START-------------------
+            const hr = new Hr();
+            hr.id = user.id;
+            hr.fullName = userItem.fullName;
+            hr.company = userItem.company;
+            hr.maxReservedStudents = userItem.maxReservedStudents;
+            await hr.save();
+            //---------------- hr Table insert END-----------------------
+            newUsersCounter++;
+            await this.mailService.sendRegistrationLink(user);
+             */
          }
 
          if (user) {
@@ -264,5 +335,27 @@ export class AdminService {
          }
          return data;
       }
+   }
+
+   //---Send email with registration link to all users available in DB that are not registered yest ---
+   async mailUsers(): Promise<any> {
+      const users = await this.userService.getAllUsers();
+      let counter = 0;
+      for (const user of users) {
+         if (!user.active) {
+            await this.mailService.sendRegistrationLink(user);
+            counter++;
+         }
+      }
+
+      return {
+         'Ilość ponownie wysłanych maili': counter,
+      };
+
+      // return {
+      //    text: 'Poszło przez serwis',
+      //    user,
+      //    pwd: decrypt(user.encryptedPwd),
+      // };
    }
 }

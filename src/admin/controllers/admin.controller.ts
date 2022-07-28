@@ -102,4 +102,9 @@ export class AdminController {
    importHr(@Body() newImportHr: HrDto[]): Promise<ImportUserResponse> {
       return this.adminService.importHr(newImportHr);
    }
+
+   @Post('/students/send-registration-email')
+   async sendRegistrationEmailToStudents(): Promise<any> {
+      return this.adminService.mailUsers();
+   }
 }
