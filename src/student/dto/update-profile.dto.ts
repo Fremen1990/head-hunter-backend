@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsArray, IsString } from 'class-validator';
 
 export class UpdateProfileDto {
    @IsString()
@@ -16,11 +16,13 @@ export class UpdateProfileDto {
    @IsString()
    githubUserName: string;
 
-   @IsString()
-   portfolioUrls: string;
+   @IsArray()
+   // portfolioUrls: string;
+   portfolioUrls: string[];
 
-   @IsString()
-   projectUrls: string;
+   @IsArray()
+   // projectUrls: string;
+   projectUrls: string[];
 
    @IsString()
    bio: string;

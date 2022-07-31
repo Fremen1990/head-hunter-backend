@@ -14,6 +14,7 @@ import {
 } from 'src/interfaces/student';
 import { Student } from '../entities/student.entity';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
+import { User } from '../../user/entities/user.entity';
 
 @Controller('student')
 export class StudentController {
@@ -24,6 +25,11 @@ export class StudentController {
    @Get('/:id')
    getStudent(@Param('id') id: string): Promise<Student> {
       return this.studentService.getOneStudent(id);
+   }
+
+   @Get('/')
+   getAll(): Promise<any> {
+      return this.studentService.getAllStudents();
    }
 
    @Put('/:id')

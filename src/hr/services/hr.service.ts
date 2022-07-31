@@ -46,7 +46,7 @@ export class HrService {
        Radek -> dodałem or Student aby nie krzyczał
 
        */
-      const candidate = await Student.findOneBy({ id: studentId });
+      const candidate = await Student.findOneBy({ studentId: studentId });
 
       if (!candidate) {
          throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
@@ -62,11 +62,11 @@ export class HrService {
       // console.log('stuendtID: ', studentId);
       // console.log('user HR', hrUser);
 
-      const candidate = await Student.findOneBy({ id: studentId });
-      const hr = await Hr.findOneBy({ id: hrUser.id });
+      const candidate = await Student.findOneBy({ studentId: studentId });
+      const hr = await Hr.findOneBy({ hrId: hrUser.id });
       // console.log('HR USER', hr);
 
-      console.log(candidate.id);
+      console.log(candidate.studentId);
 
       if (!candidate) {
          throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
@@ -86,8 +86,8 @@ export class HrService {
       // });
 
       return {
-         id: candidate.id,
-         email: candidate.email,
+         id: candidate.studentId,
+         // email: candidate.email,
          firstName: candidate.firstName,
          lastName: candidate.lastName,
          portfolioUrls: candidate.portfolioUrls,
@@ -99,15 +99,15 @@ export class HrService {
       hrUser: User,
       studentId: string,
    ): Promise<HrCandidateRemoveResponse> {
-      const candidate = await Student.findOneBy({ id: studentId });
+      const candidate = await Student.findOneBy({ studentId: studentId });
 
       if (!candidate) {
          throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
       }
 
       return {
-         id: candidate.id,
-         email: candidate.email,
+         id: candidate.studentId,
+         // email: candidate.email,
          firstName: candidate.firstName,
          lastName: candidate.lastName,
       };
