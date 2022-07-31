@@ -17,11 +17,23 @@ import { validateStudentStatus } from '../../enums/student-status.enum';
 import { validateWorkType } from '../../enums//work-type.enum';
 import { validateContractType } from '../../enums//contract-type.enum';
 import { validateApprenticeship } from '../../enums//apprenticeship.enum';
+import { UserService } from 'src/user/services/user.service';
+import { User } from '../../user/entities/user.entity';
+import { Role } from '../../enums/role.enum';
 
 @Injectable()
 export class StudentService {
-   async getOneStudent(id: string): Promise<Student> {
-      const student = await Student.findOneBy({ id });
+   constructor(@Inject(UserService) private userService: UserService) {}
+
+   // do napisania interfejsy do zwrotu
+   async getOneStudent(id: string): Promise<Student | any> {
+      const student = await User.findOne({
+         where: {
+            id,
+            role: Role.STUDENT,
+         },
+         relations: ['student'],
+      });
 
       if (!student) {
          throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
@@ -30,6 +42,19 @@ export class StudentService {
       return student;
    }
 
+   // do napisania interfejsy do zwrotu
+   async getAllStudents(): Promise<any> {
+      const students = await User.find({
+         where: {
+            role: Role.STUDENT,
+         },
+         relations: ['student'],
+      });
+
+      return students;
+   }
+
+   //do refactor
    async updateStudentDetails(id: string, studentDetails: UpdateProfileDto) {
       const student = await this.getOneStudent(id);
 

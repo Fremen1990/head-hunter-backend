@@ -10,32 +10,54 @@ import {
 } from 'typeorm';
 import { Role } from '../../enums/role.enum';
 import { Student } from '../../student/entities/student.entity';
+import { Hr } from '../../hr/entities/hr.entity';
 
-@Entity()
+@Entity('user')
 export class User extends BaseEntity {
+   // uuid generujemy i przypisujemy w zależności od typu użytkownika do Student lub HR
+   // klucz główny
    @PrimaryGeneratedColumn('uuid')
    id: string;
 
-   @Column({ length: 255 })
+   // unikalny
+   @Column({
+      length: 255,
+      unique: true,
+   })
    email: string;
 
-   @Column({ length: 100 })
+   // hasło, not null
+   @Column({
+      length: 96,
+      nullable: false,
+   })
    encryptedPwd: string;
 
-   @Column({ nullable: false, length: 15 })
-   role: Role;
+   // rola użytkonika - enum
+   @Column({
+      nullable: false,
+      type: 'enum',
+      enum: Role,
+   })
+   role: string;
 
-   @Column({ nullable: true })
-   registrationToken: string | null;
-
-   @Column({ nullable: true, default: null })
-   resetPasswordToken: string | null;
-
+   // token sesji, nullable bo będzie generowany tylko kiedy użytkonik będzie zalogowany
    @Column({ nullable: true, default: null })
    currentSessionToken: string | null;
 
+   // token do rejestracji, nullable bo będzie kasowany po rejestracji
+   @Column({ nullable: true })
+   registrationToken: string | null;
+
+   // token do zmiany hasła, nullable bo będzie tylko generwowany jeżeli użytkonik będzie chciał zmienić hasło
+   @Column({ nullable: true, default: null })
+   resetPasswordToken: string | null;
+
+   // boolean - sprawdzanie czy użytkownik jest aktywny, domyślnie nie jest ( czyli zablokowany ),
+   // po rejestracji status ulega zmianie na true
    @Column({
       default: false,
+      type: 'boolean',
    })
    active: boolean;
 
@@ -45,17 +67,21 @@ export class User extends BaseEntity {
    @UpdateDateColumn()
    updated_at: Date;
 
-   /* Radek   
-     @OneToMany((type) => Student, (student) => student.id)
-   @JoinColumn()
-   userStudent: Student;
+   // Relacje
 
-   @OneToMany((type) => Hr, (hr) => hr.id)
-   @JoinColumn()
-   userHr: Hr;
-    */
-
-   @OneToOne(() => Student, (student) => student.user)
-   @JoinColumn()
+   // relacja one to one user <-> student, user moze byc tylko jednym studentem i odwrotnie
+   // co zwraca, co chcemy dostać
+   @OneToOne(() => Student, (student) => student.user, { onDelete: 'CASCADE' })
+   // foreign key zawsze tam gdzie jest join coulumn
+   @JoinColumn({
+      //nazwa primary key
+      name: 'studentId',
+   })
    student: Student;
+
+   @OneToOne(() => Hr, (hr) => hr.user, { onDelete: 'CASCADE' })
+   @JoinColumn({
+      name: 'hrId',
+   })
+   hr: Hr;
 }

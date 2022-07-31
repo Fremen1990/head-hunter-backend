@@ -2,34 +2,68 @@ import {
    BaseEntity,
    Column,
    Entity,
+   OneToMany,
    OneToOne,
+   PrimaryColumn,
    PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Interview } from './interview.entity';
+// import { Interview } from './interview.entity';
+import { Max, Min } from 'class-validator';
+import { User } from '../../user/entities/user.entity';
+import { Student } from 'src/student/entities/student.entity';
+import { Candidates } from './interview.entity';
 
-@Entity()
+// @Entity()
+// export class Hr extends BaseEntity {
+//    @PrimaryGeneratedColumn('uuid')
+//    id: string;
+//
+//    @Column()
+//    email: string;
+//
+//    @Column()
+//    fullName: string;
+//
+//    @Column({})
+//    company: string;
+//
+//    @Column()
+//    maxReservedStudents: number;
+//
+//    /* Radek
+//    @ManyToOne((type) => User, (user) => user.id)
+//    hr: Hr;
+//
+//     */
+//
+//    @OneToOne(() => Interview, (interview) => interview.interviewer)
+//    hrInterview: Interview;
+// }
+
+@Entity('hr')
 export class Hr extends BaseEntity {
-   @PrimaryGeneratedColumn('uuid')
-   id: string;
+   //nie generujemy, bedzie kopiowany z user przy tworzeniu studenta
+   @PrimaryColumn()
+   hrId: string;
 
-   @Column()
-   email: string;
-
-   @Column()
+   // nazwa, not null
+   @Column({ length: 50, nullable: false })
    fullName: string;
 
-   @Column({})
+   // firma, not null
+   @Column({ length: 50, nullable: false })
    company: string;
 
-   @Column()
+   // max. ilość studentów zarezerowanych do romozwy jednocześnie
+   @Column({ type: 'smallint' })
+   @Min(1)
+   @Max(999)
    maxReservedStudents: number;
 
-   /* Radek
-   @ManyToOne((type) => User, (user) => user.id)
-   hr: Hr;  
-   
-    */
+   @OneToOne(() => User, (user) => user.hr, { onDelete: 'CASCADE' })
+   user: User;
 
-   @OneToOne(() => Interview, (interview) => interview.interviewer)
-   hrInterview: Interview;
+   // test
+   @OneToMany(() => Candidates, (interview) => interview.student)
+   interview: Candidates;
 }

@@ -28,15 +28,16 @@ export interface HrCandidateListResponse {
 
 export interface HrCandidateAddResponse {
    id: string;
-   email: string;
+   // email: string;
    firstName: string;
    lastName: string;
-   portfolioUrls: string;
+   // portfolioUrls: string;
+   portfolioUrls: string[];
 }
 
 export interface HrCandidateRemoveResponse {
    id: string;
-   email: string;
+   // email: string;
    firstName: string;
    lastName: string;
 }

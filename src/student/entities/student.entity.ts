@@ -4,7 +4,9 @@ import {
    CreateDateColumn,
    Entity,
    JoinColumn,
+   OneToMany,
    OneToOne,
+   PrimaryColumn,
    PrimaryGeneratedColumn,
    UpdateDateColumn,
 } from 'typeorm';
@@ -13,15 +15,14 @@ import { StudentStatus } from '../../enums/student-status.enum';
 import { WorkType } from '../../enums/work-type.enum';
 import { ContactType } from '../../enums/contract-type.enum';
 import { Apprenticeship } from '../../enums/apprenticeship.enum';
-import { Interview } from '../../hr/entities/interview.entity';
+import { Min } from 'class-validator';
+import { Candidates } from '../../hr/entities/interview.entity';
 
-@Entity()
+@Entity('student')
 export class Student extends BaseEntity {
-   @PrimaryGeneratedColumn('uuid')
-   id: string;
-
-   @Column()
-   email: string;
+   //nie generujemy, bedzie kopiowany z user przy tworzeniu studenta
+   @PrimaryColumn()
+   studentId: string;
 
    @Column({
       type: 'decimal',
@@ -55,26 +56,32 @@ export class Student extends BaseEntity {
    })
    teamProjectDegree: number;
 
+   // tablica url do gh - projekty z etapu bonusowego
    @Column('simple-array')
    bonusProjectUrls: string[];
 
+   // not null
    @Column({
-      length: 20,
-      default: StudentStatus.available,
       nullable: false,
+      type: 'enum',
+      enum: StudentStatus,
+      default: StudentStatus.available,
    })
    studentStatus: string;
 
-   //// details to Columnt( here to be completed if needed  )
-   @Column({ length: 15 })
+   // not null
+   @Column({ length: 15, nullable: false })
    tel: string;
 
+   // not null
    @Column({ length: 18, nullable: false })
    firstName: string;
 
+   // not null
    @Column({ length: 30, nullable: false })
    lastName: string;
 
+   // not null, unikalny
    @Column({
       length: 60,
       // tymczasowo wyrzucam, bo dziala i wywala na pliku csv
@@ -83,42 +90,65 @@ export class Student extends BaseEntity {
    })
    githubUserName: string;
 
-   @Column({
-      nullable: true,
-   })
-   portfolioUrls: string;
+   // tablica url do gh - do porfolio
+   @Column('simple-array')
+   portfolioUrls: string[];
 
-   @Column()
-   projectUrls: string;
+   // tablica url do gh - do projektu zaliczeniowego
+   @Column('simple-array')
+   projectUrls: string[];
 
-   @Column({ length: 255 })
+   // tekst o sobie
+   @Column({ type: 'text' })
    bio: string;
 
-   @Column({ default: WorkType.any, length: 20 })
+   // enum do typu pracy, domyslnie any
+   @Column({
+      type: 'enum',
+      enum: WorkType,
+      default: WorkType.any,
+   })
    expectedTypeOfWork: string;
 
    @Column({ length: 30 })
    targetWorkCity: string;
 
-   @Column({ default: ContactType.any, length: 20 })
+   // enum do oczekiwanego rodzaju umowy, domyslnie any
+   @Column({
+      type: 'enum',
+      enum: ContactType,
+      default: ContactType.any,
+   })
    expectedContractType: string;
 
    @Column({ length: 5 })
    expectedSalary: string;
 
-   @Column({ default: Apprenticeship.no, length: 3 })
+   // enum do zgody na staż przed zatrudnieniem, domyslnie no
+   @Column({
+      type: 'enum',
+      enum: Apprenticeship,
+      default: Apprenticeship.no,
+   })
    canTakeApprenticeship: string;
 
-   @Column()
+   // int >=0
+   @Column({
+      type: 'integer',
+   })
+   @Min(0)
    monthsOfCommercialExp: number;
 
-   @Column()
+   // long text, spaces must be kept
+   @Column({ type: 'longtext' })
    education: string;
 
-   @Column()
+   // long text, spaces must be kept
+   @Column({ type: 'longtext' })
    workExperience: string;
 
-   @Column()
+   // long text, spaces must be kept
+   @Column({ type: 'longtext' })
    courses: string;
 
    @CreateDateColumn()
@@ -127,15 +157,10 @@ export class Student extends BaseEntity {
    @UpdateDateColumn()
    updated_at: Date;
 
-   /* Radek
-    @ManyToOne((type) => User, (user) => user.id)
-    student: Student;
-    */
-
-   @OneToOne(() => Interview, (interview) => interview.student)
-   interview: Interview;
-
-   @OneToOne(() => User, (user) => user.student)
-   @JoinColumn()
+   @OneToOne(() => User, (user) => user.student, { onDelete: 'CASCADE' })
    user: User;
+
+   // test
+   @OneToMany(() => Candidates, (interview) => interview.student)
+   interview: Candidates;
 }
