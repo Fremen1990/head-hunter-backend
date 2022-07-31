@@ -6,6 +6,7 @@ import {
    Param,
    Post,
    UploadedFiles,
+   UseGuards,
    UseInterceptors,
 } from '@nestjs/common';
 import { AdminService } from '../services/admin.service';
@@ -27,7 +28,9 @@ import { Hr } from '../../hr/entities/hr.entity';
 import { StudentDto } from '../dto/student.dto';
 import { User } from '../../user/entities/user.entity';
 import { UserService } from '../../user/services/user.service';
+import { AuthGuard } from '@nestjs/passport';
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('admin')
 export class AdminController {
    constructor(
@@ -37,7 +40,6 @@ export class AdminController {
 
    // ---------------ADD-ONE-STUDENT-------------------------
    @Post('/add-student')
-   // @Roles(Role.ADMIN)
    async addStudent(
       @Body() newStudent: StudentDto,
    ): Promise<createOneUserResponse> {
@@ -57,8 +59,6 @@ export class AdminController {
       return this.adminService.getAllStudents();
    }
    // ---------------GET ALL HR FROM  DATABASE!!-------------------------
-   // @Roles(Role.STUDENT)
-   // @UseGuards(RolesGuard)
    @Get('/hr/all')
    async getAllHr(): Promise<Hr[]> {
       return this.adminService.getAllHr();

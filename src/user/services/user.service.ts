@@ -1,8 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from '../entities/user.entity';
-import { RegisterUserResponse } from '../../interfaces/user';
+import {
+   getUserProfileResponse,
+   RegisterUserResponse,
+   userProfile,
+} from '../../interfaces/user';
 import { RegisterUserDto } from '../dto/register-user.dto';
 import { decrypt, encrypt, hashPwd } from '../../utils/pwd-tools';
+import { Student } from '../../student/entities/student.entity';
+import { Hr } from '../../hr/entities/hr.entity';
 
 @Injectable()
 export class UserService {
@@ -11,22 +17,33 @@ export class UserService {
       return { id, registrationToken, active };
    }
 
+   filterProfile(user: User): userProfile {
+      const {
+         id,
+         email,
+         role,
+         currentSessionToken,
+         active,
+         created_at,
+         updated_at,
+      } = user;
+      return {
+         id,
+         email,
+         role,
+         currentSessionToken,
+         active,
+         created_at,
+         updated_at,
+      };
+   }
+
    async register(
       userPwd: RegisterUserDto,
       id: string,
       registrationToken: string,
    ): Promise<RegisterUserResponse> {
-      // nie wiem jak w insomnii wyrzucic dane z params i body jednoczesnie, ponizej obiekt data do sprawdzenia funcjonalnosci
-
-      // const data = {
-      //    pwd: '1234',
-      // };
-
-      console.log('serwis', id, registrationToken);
-
       const user = await this.getOneUser(id);
-
-      console.log('student', user);
 
       if (!user) {
          throw new Error('No user in database with such ID');
@@ -67,5 +84,18 @@ export class UserService {
 
    async getAllUsers(): Promise<User[]> {
       return await User.find();
+   }
+
+   async getCurrentUserProfile(user): Promise<getUserProfileResponse> {
+      const userProfile = this.filterProfile(user);
+      let userDetails;
+
+      if (user.role === 'student') {
+         userDetails = await Student.findBy({ studentId: user.id });
+      } else if (user.role === 'hr') {
+         userDetails = await Hr.findBy({ hrId: user.id });
+      }
+
+      return { userInfo: userProfile, userDetails: userDetails };
    }
 }
