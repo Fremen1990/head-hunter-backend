@@ -6,6 +6,7 @@ import {
    Inject,
    Param,
    Put,
+   UseGuards,
 } from '@nestjs/common';
 import { StudentService } from '../services/student.service';
 import {
@@ -14,8 +15,9 @@ import {
 } from 'src/interfaces/student';
 import { Student } from '../entities/student.entity';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
-import { User } from '../../user/entities/user.entity';
+import { AuthGuard } from '@nestjs/passport';
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('student')
 export class StudentController {
    constructor(

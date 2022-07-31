@@ -5,7 +5,7 @@ import {
    Inject,
    Param,
    Patch,
-   Post,
+   UseGuards,
 } from '@nestjs/common';
 import { HrService } from '../services/hr.service';
 import {
@@ -17,7 +17,9 @@ import { ExcludedIdsDto } from '../dto/excluded-ids.dto';
 import { UserObj } from '../../decorators/portal-users.decorator';
 import { User } from '../../user/entities/user.entity';
 import { Student } from '../../student/entities/student.entity';
+import { AuthGuard } from '@nestjs/passport';
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('hr')
 export class HrController {
    constructor(@Inject(HrService) private hrService: HrService) {}
@@ -29,7 +31,6 @@ export class HrController {
       return this.hrService.getCandidatesList(excludedIds);
    }
 
-   // @UseGuards(AuthGuard('jwt'))
    @Get('/candidate/:studentId')
    getOneCandidate(
       @Param('studentId') studentId: string,
@@ -37,7 +38,6 @@ export class HrController {
       return this.hrService.getOneCandidate(studentId);
    }
 
-   // @UseGuards(AuthGuard('jwt'))
    @Patch('/candidate/:studentId')
    addToList(
       @UserObj() hrUser: User,
@@ -46,7 +46,6 @@ export class HrController {
       return this.hrService.addOneCandidateToList(hrUser, studentId);
    }
 
-   // @UseGuards(AuthGuard('jwt'))
    @Patch('/candidate/:studentId/hire')
    removeFromList(
       @UserObj() hrUser: User,

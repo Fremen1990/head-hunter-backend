@@ -1,4 +1,6 @@
 import { User } from '../user/entities/user.entity';
+import { Student } from '../student/entities/student.entity';
+import { Hr } from '../hr/entities/hr.entity';
 
 export interface RegisterUserResponse {
    id: string;
@@ -18,4 +20,19 @@ export interface ImportUserResponse {
 export interface createOneUserResponse {
    createUserStatus: string;
    createdUser: User;
+}
+
+export interface userProfile {
+   id: string;
+   email: string;
+   role: string;
+   currentSessionToken: string | null;
+   active: boolean;
+   created_at: Date;
+   updated_at: Date;
+}
+
+export interface getUserProfileResponse {
+   userInfo: userProfile;
+   userDetails?: User | Student | Hr;
 }
