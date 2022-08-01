@@ -31,7 +31,7 @@ import { UserService } from '../../user/services/user.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ImportRandomStudentsResponse } from '../../interfaces/student';
 
-@UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('jwt'))
 @Controller('admin')
 export class AdminController {
    constructor(

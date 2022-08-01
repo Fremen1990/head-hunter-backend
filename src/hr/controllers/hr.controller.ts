@@ -19,22 +19,32 @@ import { User } from '../../user/entities/user.entity';
 import { Student } from '../../student/entities/student.entity';
 import { AuthGuard } from '@nestjs/passport';
 
-@UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('jwt'))
 @Controller('hr')
 export class HrController {
    constructor(@Inject(HrService) private hrService: HrService) {}
 
+   // @Get('/candidate/list')
+   // candidateList(
+   //    @Body() excludedIds: ExcludedIdsDto,
+   // ): Promise<HrCandidateListResponse[] | Student[]> {
+   //    return this.hrService.getCandidatesList(excludedIds);
+   // }
+
    @Get('/candidate/list')
-   candidateList(
-      @Body() excludedIds: ExcludedIdsDto,
-   ): Promise<HrCandidateListResponse[] | Student[]> {
-      return this.hrService.getCandidatesList(excludedIds);
+   candidateList(): Promise<any> {
+      return this.hrService.getCandidatesList();
    }
 
+   // @Get('/candidate/:studentId')
+   // getOneCandidate(
+   //    @Param('studentId') studentId: string,
+   // ): Promise<HrCandidateListResponse | Student> {
+   //    return this.hrService.getOneCandidate(studentId);
+   // }
+
    @Get('/candidate/:studentId')
-   getOneCandidate(
-      @Param('studentId') studentId: string,
-   ): Promise<HrCandidateListResponse | Student> {
+   getOneCandidate(@Param('studentId') studentId: string): Promise<any> {
       return this.hrService.getOneCandidate(studentId);
    }
 

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Student } from '../../student/entities/student.entity';
 import {
    HrCandidateAddResponse,
@@ -7,52 +7,55 @@ import {
 } from '../../interfaces/hr';
 import { User } from '../../user/entities/user.entity';
 import { Hr } from '../entities/hr.entity';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class HrService {
-   async getCandidatesList(
-      excludedIds,
-   ): Promise<HrCandidateListResponse[] | Student[]> {
-      /*
-       
-       Radek -> dodałem or Student[] aby nie krzyczał
-       */
+   constructor(@Inject(DataSource) private dataSource: DataSource) {}
 
-      // const candidates = User.find({ relations: ['student'] });
-      const candidates = await Student.find({
-         relations: ['user'],
-      });
-      // TODO QUERY BUILDER WHERE FIND CANDIDATES WITHOUT IDS FROM BODY
-      return candidates;
+   // async getCandidatesList(
+   //    excludedIds,
+   // ): Promise<HrCandidateListResponse[] | Student[]> {
+   //    /*
+   //
+   //     Radek -> dodałem or Student[] aby nie krzyczał
+   //     */
+   //
+   //    // const candidates = User.find({ relations: ['student'] });
+   //    const candidates = await Student.find({
+   //       relations: ['user'],
+   //    });
+   //    // TO DO QUERY BUILDER WHERE FIND CANDIDATES WITHOUT IDS FROM BODY
+   //    return candidates;
+   //
+   //    //    return User.createQueryBuilder('user')
+   //    //       .leftJoinAndSelect('user.student', 'student')
+   //    //       .leftJoinAndSelect('user.hr', 'hr')
+   //    //       .where('user.id NOT IN hr.candidates')
+   //    //       .getMany();
+   //    // }
+   //
+   //    // return User.createQueryBuilder('user')
+   //    //    .leftJoinAndSelect('user.student', 'student')
+   //    //    .leftJoinAndSelect('user.hr', 'hr')
+   //    //    .getMany();
+   // }
 
-      //    return User.createQueryBuilder('user')
-      //       .leftJoinAndSelect('user.student', 'student')
-      //       .leftJoinAndSelect('user.hr', 'hr')
-      //       .where('user.id NOT IN hr.candidates')
-      //       .getMany();
-      // }
-
-      // return User.createQueryBuilder('user')
-      //    .leftJoinAndSelect('user.student', 'student')
-      //    .leftJoinAndSelect('user.hr', 'hr')
-      //    .getMany();
-   }
-
-   async getOneCandidate(
-      studentId,
-   ): Promise<HrCandidateListResponse | Student> {
-      /*
-
-       Radek -> dodałem or Student aby nie krzyczał
-
-       */
-      const candidate = await Student.findOneBy({ studentId: studentId });
-
-      if (!candidate) {
-         throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
-      }
-      return candidate;
-   }
+   // async getOneCandidate(
+   //    studentId,
+   // ): Promise<HrCandidateListResponse | Student> {
+   //    /*
+   //
+   //     Radek -> dodałem or Student aby nie krzyczał
+   //
+   //     */
+   //    const candidate = await Student.findOneBy({ studentId: studentId });
+   //
+   //    if (!candidate) {
+   //       throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
+   //    }
+   //    return candidate;
+   // }
 
    async addOneCandidateToList(
       // TODO TO BE COMPLETED LATER WHEN RELATIONS BETWEEN STUDENTS VS INTERVIEW VS HR IS SET UP
@@ -111,5 +114,48 @@ export class HrService {
          firstName: candidate.firstName,
          lastName: candidate.lastName,
       };
+   }
+
+   // Nowe
+   async getCandidatesList(): Promise<any> {
+      return await this.dataSource
+         .getRepository(User)
+         .createQueryBuilder('user')
+         .leftJoinAndSelect('user.student', 'student')
+         .where('student.studentStatus = :studentStatus', {
+            studentStatus: 'available',
+         })
+         .andWhere('user.active = :active', { active: true })
+         .getMany();
+   }
+
+   async getOneCandidate(studentId): Promise<any> {
+      const user = await User.findOneBy({ id: studentId });
+
+      if (!user) {
+         throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
+      }
+
+      const newCandidate = await this.dataSource
+         .getRepository(User)
+         .createQueryBuilder('user')
+         .leftJoinAndSelect('user.student', 'student')
+         .where('student.studentId = :studentId', {
+            studentId: `${studentId}`,
+         })
+         .andWhere('student.studentStatus = :studentStatus', {
+            studentStatus: 'available',
+         })
+         .andWhere('user.active = :active', { active: true })
+         .getOne();
+
+      if (!newCandidate) {
+         throw new HttpException(
+            'Student is not active yet, other possibilities are that is being currently interviewed or employed',
+            HttpStatus.NOT_FOUND,
+         );
+      }
+
+      return newCandidate;
    }
 }

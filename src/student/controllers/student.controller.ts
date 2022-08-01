@@ -17,7 +17,7 @@ import { Student } from '../entities/student.entity';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
 import { AuthGuard } from '@nestjs/passport';
 
-@UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('jwt'))
 @Controller('student')
 export class StudentController {
    constructor(
