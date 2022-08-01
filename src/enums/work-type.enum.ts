@@ -1,17 +1,17 @@
 export enum WorkType {
    OFFICE = 'office',
-   READY_TO_MOVE = 'readyToMove',
+   READY_TO_MOVE = 'ready_to_move',
    REMOTE = 'remote',
    HYBRID = 'hybrid',
    ANY = 'any',
 }
 
 export const validateWorkType = (worktype: string): string => {
-   if (worktype.toLowerCase() === WorkType.OFFICE) {
+   if (worktype.toUpperCase() === WorkType.OFFICE) {
       return 'office';
    }
    if (worktype.toLowerCase() === WorkType.READY_TO_MOVE) {
-      return 'readyToMove';
+      return 'ready_to_move';
    }
    if (worktype.toLowerCase() === WorkType.REMOTE) {
       return 'remote';

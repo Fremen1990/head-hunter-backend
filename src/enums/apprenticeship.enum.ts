@@ -8,8 +8,8 @@ export const validateApprenticeship = (agreement: string): string => {
       return 'yes';
    }
    if (agreement.toLowerCase() === Apprenticeship.NO) {
-      return 'yes';
+      return 'no';
    }
 
-   return 'Select yes or no';
+   return `SELECT 'yes' or 'not'`;
 };

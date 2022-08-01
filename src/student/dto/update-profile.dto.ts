@@ -1,8 +1,11 @@
-import { IsArray, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsEnum, IsNumber, IsString } from 'class-validator';
+import { WorkType } from '../../enums/work-type.enum';
 import { StudentStatus } from '../../enums/student-status.enum';
+import { ContactType } from '../../enums/contract-type.enum';
+import { Apprenticeship } from '../../enums/apprenticeship.enum';
 
 export class UpdateProfileDto {
-   @IsString()
+   @IsEnum(StudentStatus)
    studentStatus: string;
 
    @IsString()
@@ -17,30 +20,29 @@ export class UpdateProfileDto {
    @IsString()
    githubUserName: string;
 
-   @IsArray()
-   // portfolioUrls: string;
-   portfolioUrls: string[] | null;
+   // nie możemy zwracać null, co najwyżej tablica może być pusta
+   @IsString({ each: true })
+   portfolioUrls: string[];
 
-   @IsArray()
-   // projectUrls: string;
-   projectUrls: string[] | null;
+   @IsString({ each: true })
+   projectUrls: string[];
 
    @IsString()
    bio: string;
 
-   @IsString()
+   @IsEnum(WorkType)
    expectedTypeOfWork: string;
 
    @IsString()
    targetWorkCity: string;
 
-   @IsString()
+   @IsEnum(ContactType)
    expectedContractType: string;
 
    @IsString()
    expectedSalary: string;
 
-   @IsString()
+   @IsEnum(Apprenticeship)
    canTakeApprenticeship: string;
 
    @IsNumber()

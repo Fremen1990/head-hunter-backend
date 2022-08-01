@@ -54,9 +54,30 @@ export class StudentService {
       return students;
    }
 
+   // JSON
+   // {
+   //    "studentStatus": "available",
+   //    "tel": "666-666-666",
+   //    "firstName": "tOMASZEK",
+   //    "lastName": "wer",
+   //    "githubUserName": "wer",
+   //    "portfolioUrls": ["raz", "dwa"],
+   //    "projectUrls": ["trzy", "cztery"],
+   //    "bio": "My bio is aweeeesomeeeeeeeeee",
+   //    "expectedTypeOfWork": "any",
+   //    "targetWorkCity": "we",
+   //    "expectedContractType": "any",
+   //    "expectedSalary": "123",
+   //    "canTakeApprenticeship": "no",
+   //    "monthsOfCommercialExp": 10,
+   //    "education": "asd",
+   //    "workExperience": "asd",
+   //    "courses": "sad"
+   // }
+
    //do refactor
    async updateStudentDetails(id: string, studentDetails: UpdateProfileDto) {
-      const student = await this.getOneStudent(id);
+      const student = await Student.findOneBy({ studentId: id });
 
       if (student) {
          //-----------------validation not working------------------
@@ -100,6 +121,7 @@ export class StudentService {
          student.workExperience = studentDetails.workExperience;
          student.courses = studentDetails.courses;
          await student.save();
+         console.log(student);
       }
 
       if (!student) {
