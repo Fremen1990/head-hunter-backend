@@ -1,4 +1,5 @@
-import { IsArray, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsString } from 'class-validator';
+import { StudentStatus } from '../../enums/student-status.enum';
 
 export class UpdateProfileDto {
    @IsString()
@@ -18,11 +19,11 @@ export class UpdateProfileDto {
 
    @IsArray()
    // portfolioUrls: string;
-   portfolioUrls: string[];
+   portfolioUrls: string[] | null;
 
    @IsArray()
    // projectUrls: string;
-   projectUrls: string[];
+   projectUrls: string[] | null;
 
    @IsString()
    bio: string;
@@ -42,8 +43,8 @@ export class UpdateProfileDto {
    @IsString()
    canTakeApprenticeship: string;
 
-   @IsString()
-   monthsOfCommercialExp: string;
+   @IsNumber()
+   monthsOfCommercialExp: number;
 
    @IsString()
    education: string;

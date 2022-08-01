@@ -1,26 +1,26 @@
 export enum WorkType {
-   office = 'OFFICE',
-   readyToMove = 'READY_TO_MOVE',
-   remote = 'REMOTE',
-   hybrid = 'HYBRID',
-   any = 'ANY',
+   OFFICE = 'office',
+   READY_TO_MOVE = 'readyToMove',
+   REMOTE = 'remote',
+   HYBRID = 'hybrid',
+   ANY = 'any',
 }
 
 export const validateWorkType = (worktype: string): string => {
-   if (worktype.toUpperCase() === WorkType.office) {
-      return 'OFFICE';
+   if (worktype.toLowerCase() === WorkType.OFFICE) {
+      return 'office';
    }
-   if (worktype.toUpperCase() === WorkType.readyToMove) {
-      return 'READY_TO_MOVE';
+   if (worktype.toLowerCase() === WorkType.READY_TO_MOVE) {
+      return 'readyToMove';
    }
-   if (worktype.toUpperCase() === WorkType.remote) {
-      return 'REMOTE';
+   if (worktype.toLowerCase() === WorkType.REMOTE) {
+      return 'remote';
    }
-   if (worktype.toUpperCase() === WorkType.hybrid) {
-      return 'HYBRID';
+   if (worktype.toLowerCase() === WorkType.HYBRID) {
+      return 'hybrid';
    }
-   if (worktype.toUpperCase() === WorkType.any) {
-      return 'ANY';
+   if (worktype.toLowerCase() === WorkType.ANY) {
+      return 'any';
    }
 
    return 'WRONG WROKTYPE -> USE: office | ready to move| remote | hybrid | any';

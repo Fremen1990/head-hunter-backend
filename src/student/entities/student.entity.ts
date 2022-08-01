@@ -65,7 +65,7 @@ export class Student extends BaseEntity {
       nullable: false,
       type: 'enum',
       enum: StudentStatus,
-      default: StudentStatus.available,
+      default: StudentStatus.AVAILABLE,
    })
    studentStatus: string;
 
@@ -106,7 +106,7 @@ export class Student extends BaseEntity {
    @Column({
       type: 'enum',
       enum: WorkType,
-      default: WorkType.any,
+      default: WorkType.ANY,
    })
    expectedTypeOfWork: string;
 
@@ -117,7 +117,7 @@ export class Student extends BaseEntity {
    @Column({
       type: 'enum',
       enum: ContactType,
-      default: ContactType.any,
+      default: ContactType.ANY,
    })
    expectedContractType: string;
 
@@ -128,7 +128,7 @@ export class Student extends BaseEntity {
    @Column({
       type: 'enum',
       enum: Apprenticeship,
-      default: Apprenticeship.no,
+      default: Apprenticeship.NO,
    })
    canTakeApprenticeship: string;
 

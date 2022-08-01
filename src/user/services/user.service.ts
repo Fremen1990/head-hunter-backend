@@ -87,7 +87,7 @@ export class UserService {
    }
 
    async getCurrentUserProfile(user): Promise<getUserProfileResponse> {
-      const userProfile = this.filterProfile(user);
+      const userInfo = this.filterProfile(user);
       let userDetails;
 
       if (user.role === 'student') {
@@ -96,6 +96,6 @@ export class UserService {
          userDetails = await Hr.findBy({ hrId: user.id });
       }
 
-      return { userInfo: userProfile, userDetails: userDetails };
+      return { userInfo, userDetails };
    }
 }
