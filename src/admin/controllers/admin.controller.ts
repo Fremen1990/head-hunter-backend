@@ -29,6 +29,7 @@ import { StudentDto } from '../dto/student.dto';
 import { User } from '../../user/entities/user.entity';
 import { UserService } from '../../user/services/user.service';
 import { AuthGuard } from '@nestjs/passport';
+import { ImportRandomStudentsResponse } from '../../interfaces/student';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('admin')
@@ -103,8 +104,14 @@ export class AdminController {
       return this.adminService.importHr(newImportHr);
    }
 
+   // ---------------SEND REGISTRATION EMAIL -------------------------
    @Post('/students/send-registration-email')
    async sendRegistrationEmailToStudents(): Promise<any> {
       return this.adminService.mailUsers();
+   }
+   // ---------------GENERATE RANDOM STUDENTS TO DB-------------------------
+   @Post('import-students/random100')
+   async importRandomStudents(): Promise<ImportRandomStudentsResponse> {
+      return this.adminService.importRandomFakeStudentsData();
    }
 }

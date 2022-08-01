@@ -20,6 +20,7 @@ export class UpdateProfileDto {
    @IsString()
    githubUserName: string;
 
+   // nie możemy zwracać null, co najwyżej tablica może być pusta
    @IsString({ each: true })
    portfolioUrls: string[];
 

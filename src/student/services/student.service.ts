@@ -80,9 +80,12 @@ export class StudentService {
       const student = await Student.findOneBy({ studentId: id });
 
       if (student) {
-         student.studentStatus = validateStudentStatus(
-            studentDetails.studentStatus,
-         );
+         //-----------------validation not working------------------
+         // student.studentStatus = validateStudentStatus(
+         //    studentDetails.studentStatus,
+         // );
+         student.studentStatus = studentDetails.studentStatus;
+         //-----------------------------------------------------------
          student.tel = studentDetails.tel;
          student.firstName = studentDetails.firstName;
          student.lastName = studentDetails.lastName;
@@ -90,17 +93,27 @@ export class StudentService {
          student.portfolioUrls = studentDetails.portfolioUrls;
          student.projectUrls = studentDetails.projectUrls;
          student.bio = studentDetails.bio;
-         student.expectedTypeOfWork = validateWorkType(
-            studentDetails.expectedTypeOfWork,
-         );
+         //-----------------validation not working------------------
+         // student.expectedTypeOfWork = validateWorkType(
+         //    studentDetails.expectedTypeOfWork,
+         // );
+         student.expectedTypeOfWork = studentDetails.expectedTypeOfWork;
+         //-----------------------------------------------------------
+
          student.targetWorkCity = studentDetails.targetWorkCity;
-         student.expectedContractType = validateContractType(
-            studentDetails.expectedContractType,
-         );
+         //--------------------validation not working --------------
+         // student.expectedContractType = validateContractType(
+         //    studentDetails.expectedContractType,
+         // );
+         student.expectedContractType = studentDetails.expectedContractType;
+         //------------------------------------------------------------------
          student.expectedSalary = studentDetails.expectedSalary;
-         student.canTakeApprenticeship = validateApprenticeship(
-            studentDetails.canTakeApprenticeship,
-         );
+         //--------------------validation not working --------------
+         // student.canTakeApprenticeship = validateApprenticeship(
+         //    studentDetails.canTakeApprenticeship,
+         // );
+         student.canTakeApprenticeship = studentDetails.canTakeApprenticeship;
+         //-----------------------------------------------------------------
          student.monthsOfCommercialExp = Number(
             studentDetails.monthsOfCommercialExp,
          );

@@ -11,6 +11,7 @@ import {
 } from '../../interfaces/upload';
 import { MulterDiskUploadedFiles } from '../../interfaces/files';
 import { v4 as uuid } from 'uuid';
+import { faker } from '@faker-js/faker';
 
 // utils imports
 import { storageDir } from '../../utils/storage';
@@ -23,9 +24,11 @@ import { HrDto } from '../dto/hr.dto';
 import { Hr } from '../../hr/entities/hr.entity';
 import { Role } from '../../enums/role.enum';
 import { StudentDto } from '../dto/student.dto';
-import { encrypt, hashPwd } from '../../utils/pwd-tools';
+import { encrypt } from '../../utils/pwd-tools';
 import { MailService } from '../../mail/mail.service';
 import { UserService } from '../..//user/services/user.service';
+import { getRandomArbitrary } from '../../utils/random-number';
+import { ImportRandomStudentsResponse } from '../../interfaces/student';
 
 @Injectable()
 export class AdminService {
@@ -295,5 +298,67 @@ export class AdminService {
       return {
          'Ilość ponownie wysłanych maili': counter,
       };
+   }
+
+   // IMPORT FAKE STUDENTS
+   async importRandomFakeStudentsData(): Promise<ImportRandomStudentsResponse> {
+      const createdUsersList = [];
+      const studentsNumberArray = Array.from({ length: 100 }, (v, i) => i);
+
+      for (const userItem of studentsNumberArray) {
+         //------ create new user -------
+         // // todo USE SERVICE FOR ADD ONE TO IMPORT ALL
+         // await this.createOneStudent(userItem);
+
+         const sharedId = uuid();
+
+         const user = await new User();
+         const student = new Student();
+
+         // STUDENT
+         student.studentId = sharedId;
+         student.courseCompletion = getRandomArbitrary(0, 6);
+         student.courseEngagement = getRandomArbitrary(0, 6);
+         student.projectDegree = getRandomArbitrary(0, 6);
+         student.teamProjectDegree = getRandomArbitrary(0, 6);
+         student.bonusProjectUrls = [
+            faker.internet.domainName(),
+            faker.internet.domainName(),
+         ];
+         student.tel = faker.phone.number();
+         student.firstName = faker.name.firstName();
+         student.lastName = faker.name.lastName();
+         student.githubUserName = faker.internet.userName();
+         student.portfolioUrls = [
+            faker.internet.domainName(),
+            faker.internet.domainName(),
+         ];
+         student.projectUrls = [
+            faker.internet.domainName(),
+            faker.internet.domainName(),
+         ];
+         student.bio = faker.name.jobDescriptor();
+         student.targetWorkCity = faker.address.cityName();
+         student.expectedSalary = faker.finance.amount(1000, 100000);
+         student.monthsOfCommercialExp = getRandomArbitrary(0, 24);
+         student.education = faker.animal.cat();
+         student.workExperience = faker.vehicle.vehicle();
+         student.courses = faker.git.commitMessage();
+
+         await student.save();
+
+         // USER
+         user.id = sharedId;
+         user.email = faker.internet.exampleEmail();
+         user.encryptedPwd = encrypt(nanoToken());
+         user.role = Role.STUDENT;
+         user.registrationToken = nanoToken();
+         user.student = student;
+         await user.save();
+
+         createdUsersList.push(user.email);
+      }
+
+      return { createdUsersList: createdUsersList };
    }
 }
