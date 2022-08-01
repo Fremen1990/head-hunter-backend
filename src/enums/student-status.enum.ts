@@ -1,18 +1,18 @@
 export enum StudentStatus {
-   available = 'AVAILABLE',
-   interview = 'INTERVIEW',
-   employed = 'EMPLOYED',
+   AVAILABLE = 'available',
+   INTERVIEW = 'interview',
+   EMPLOYED = 'employed',
 }
 
 export const validateStudentStatus = (status: string): string => {
-   if (status.toUpperCase() === StudentStatus.available) {
-      return 'AVAILABLE';
+   if (status.toLowerCase() === StudentStatus.AVAILABLE) {
+      return 'available';
    }
-   if (status.toUpperCase() === StudentStatus.interview) {
-      return 'INTERVIEW';
+   if (status.toLowerCase() === StudentStatus.INTERVIEW) {
+      return 'interview';
    }
-   if (status.toUpperCase() === StudentStatus.employed) {
-      return 'EMPLOYED';
+   if (status.toLowerCase() === StudentStatus.EMPLOYED) {
+      return 'employed';
    }
 
    return 'WRONG STATUS -> USE: available | interview | employed';

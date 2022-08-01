@@ -1,22 +1,22 @@
 export enum ContactType {
-   uop = 'UOP',
-   b2b = 'B2B',
-   uz_uod = 'UZ_UOD',
-   any = 'ANY',
+   UOP = 'uop',
+   B2B = 'b2b',
+   UZ_UOD = 'uz_uod',
+   ANY = 'any',
 }
 
 export const validateContractType = (contactType: string): string => {
-   if (contactType.toUpperCase() === ContactType.uop) {
-      return 'UOP';
+   if (contactType.toLowerCase() === ContactType.UOP) {
+      return 'uop';
    }
-   if (contactType.toUpperCase() === ContactType.b2b) {
-      return 'B2B';
+   if (contactType.toLowerCase() === ContactType.B2B) {
+      return 'b2b';
    }
-   if (contactType.toUpperCase() === ContactType.uz_uod) {
-      return 'UZ_UOD';
+   if (contactType.toLowerCase() === ContactType.UZ_UOD) {
+      return 'uz_uod';
    }
-   if (contactType.toUpperCase() === ContactType.any) {
-      return 'ANY';
+   if (contactType.toLowerCase() === ContactType.ANY) {
+      return 'any';
    }
-   return 'WRONG CONTRACT TYPE -> UoP | B2B | UZ/UoD | any';
+   return 'WRONG CONTRACT TYPE -> uop | b2b | uz_uod | any';
 };

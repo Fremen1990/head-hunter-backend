@@ -1,15 +1,15 @@
 export enum Apprenticeship {
-   yes = 'YES',
-   no = 'NO',
+   YES = 'yes',
+   NO = 'no',
 }
 
 export const validateApprenticeship = (agreement: string): string => {
-   if (agreement.toUpperCase() === Apprenticeship.yes) {
-      return 'YES';
+   if (agreement.toLowerCase() === Apprenticeship.YES) {
+      return 'yes';
    }
-   if (agreement.toUpperCase() === Apprenticeship.no) {
-      return 'NO';
+   if (agreement.toLowerCase() === Apprenticeship.NO) {
+      return 'no';
    }
 
-   return 'SELECT YES OR NO';
+   return `SELECT 'yes' or 'not'`;
 };
