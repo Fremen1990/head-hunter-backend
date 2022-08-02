@@ -989,6 +989,25 @@
 		},
 		{
 			"name": "API Status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\",  ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status to be OK\", ()=>{\r",
+							"pm.expect(response.status).to.be.equal(\"OK\")\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -1009,7 +1028,20 @@
 					"script": {
 						"exec": [
 							"const jsonData = JSON.parse(responseBody);\r",
-							"postman.setEnvironmentVariable(\"adminId\", jsonData.createdUser.id);"
+							"postman.setEnvironmentVariable(\"adminId\", jsonData.createdUser.id);\r",
+							"\r",
+							"pm.test(\"Status code is 201\",  ()=> {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Role to be admin\", ()=>{\r",
+							"pm.expect(response.createdUser.role).to.be.equal(\"admin\")\r",
+							"})\r",
+							"\r",
+							"postman.setNextRequest(\"Login Admin\")"
 						],
 						"type": "text/javascript"
 					}
