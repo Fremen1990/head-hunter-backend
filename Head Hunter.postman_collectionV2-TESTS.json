@@ -129,7 +129,7 @@
 									"pm.expect(response.createdUser.role).to.be.equal(\"admin\")\r",
 									"})\r",
 									"\r",
-									"postman.setNextRequest(\"Login Admin\")"
+									"// postman.setNextRequest(\"Login Admin\")"
 								],
 								"type": "text/javascript"
 							}
@@ -362,6 +362,24 @@
 							"mode": "formdata",
 							"formdata": [
 								{
+									"key": "filename",
+									"value": "asbas",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "cyferki",
+									"value": "4546",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "files",
+									"value": "upload",
+									"type": "text",
+									"disabled": true
+								},
+								{
 									"key": "usersImport",
 									"type": "file",
 									"src": "/C:/Programming/MEGAK - HEAD HUNTER/head-hunter-backend/students.csv"
@@ -414,7 +432,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{{uploadStudentsArray}}",
+							"raw": "[\r\n    {\r\n        \"email\": \"thomas.dev@gmail.com\",\r\n        \"role\": \"student\",\r\n        \"courseCompletion\": \"4\",\r\n        \"courseEngagement\": \"4\",\r\n        \"projectDegree\": \"4\",\r\n        \"teamProjectDegree\": \"5\",\r\n        \"bonusProjectUrls\": \"[https://github.com/Fremen1990/head-hunter-backend, https://github.com/Fremen1990/head-hunter-frontend ]\"\r\n    },\r\n    {\r\n        \"email\": \"taomas.dev@gmail.com\",\r\n        \"role\": \"student\",\r\n        \"courseCompletion\": \"4\",\r\n        \"courseEngagement\": \"4\",\r\n        \"projectDegree\": \"4\",\r\n        \"teamProjectDegree\": \"5\",\r\n        \"bonusProjectUrls\": \"[https://github.com/Fremen1990/head-hunter-backend, https://github.com/Fremen1990/head-hunter-frontend ]\"\r\n    },\r\n    {\r\n        \"email\": \"tdomas.dev@gmail.com\",\r\n        \"role\": \"student\",\r\n        \"courseCompletion\": \"4\",\r\n        \"courseEngagement\": \"4\",\r\n        \"projectDegree\": \"4\",\r\n        \"teamProjectDegree\": \"5\",\r\n        \"bonusProjectUrls\": \"[https://github.com/Fremen1990/head-hunter-backend, https://github.com/Fremen1990/head-hunter-frontend ]\"\r\n    },\r\n    {\r\n        \"email\": \"tfomas.dev@gmail.com\",\r\n        \"role\": \"student\",\r\n        \"courseCompletion\": \"4\",\r\n        \"courseEngagement\": \"4\",\r\n        \"projectDegree\": \"4\",\r\n        \"teamProjectDegree\": \"5\",\r\n        \"bonusProjectUrls\": \"[https://github.com/Fremen1990/head-hunter-backend, https://github.com/Fremen1990/head-hunter-frontend ]\"\r\n    },\r\n    {\r\n        \"email\": \"tgomas.dev@gmail.com\",\r\n        \"role\": \"student\",\r\n        \"courseCompletion\": \"4\",\r\n        \"courseEngagement\": \"4\",\r\n        \"projectDegree\": \"4\",\r\n        \"teamProjectDegree\": \"5\",\r\n        \"bonusProjectUrls\": \"[https://github.com/Fremen1990/head-hunter-backend, https://github.com/Fremen1990/head-hunter-frontend ]\"\r\n    },\r\n    {\r\n        \"email\": \"tkomas.dev@gmail.com\",\r\n        \"role\": \"student\",\r\n        \"courseCompletion\": \"4\",\r\n        \"courseEngagement\": \"4\",\r\n        \"projectDegree\": \"4\",\r\n        \"teamProjectDegree\": \"5\",\r\n        \"bonusProjectUrls\": \"[https://github.com/Fremen1990/head-hunter-backend, https://github.com/Fremen1990/head-hunter-frontend ]\"\r\n    },\r\n    {\r\n        \"email\": \"tjomas.dev@gmail.com\",\r\n        \"role\": \"student\",\r\n        \"courseCompletion\": \"4\",\r\n        \"courseEngagement\": \"4\",\r\n        \"projectDegree\": \"4\",\r\n        \"teamProjectDegree\": \"5\",\r\n        \"bonusProjectUrls\": \"[https://github.com/Fremen1990/head-hunter-backend, https://github.com/Fremen1990/head-hunter-frontend ]\"\r\n    },\r\n    {\r\n        \"email\": \"tzomas.dev@gmail.com\",\r\n        \"role\": \"student\",\r\n        \"courseCompletion\": \"4\",\r\n        \"courseEngagement\": \"4\",\r\n        \"projectDegree\": \"4\",\r\n        \"teamProjectDegree\": \"5\",\r\n        \"bonusProjectUrls\": \"[https://github.com/Fremen1990/head-hunter-backend, https://github.com/Fremen1990/head-hunter-frontend ]\"\r\n    },\r\n    {\r\n        \"email\": \"tcomas.dev@gmail.com\",\r\n        \"role\": \"student\",\r\n        \"courseCompletion\": \"4\",\r\n        \"courseEngagement\": \"4\",\r\n        \"projectDegree\": \"4\",\r\n        \"teamProjectDegree\": \"5\",\r\n        \"bonusProjectUrls\": \"[https://github.com/Fremen1990/head-hunter-backend, https://github.com/Fremen1990/head-hunter-frontend ]\"\r\n    },\r\n    {\r\n        \"email\": \"tnomas.dev@gmail.com\",\r\n        \"role\": \"student\",\r\n        \"courseCompletion\": \"4\",\r\n        \"courseEngagement\": \"4\",\r\n        \"projectDegree\": \"4\",\r\n        \"teamProjectDegree\": \"5\",\r\n        \"bonusProjectUrls\": \"[https://github.com/Fremen1990/head-hunter-backend, https://github.com/Fremen1990/head-hunter-frontend ]\"\r\n    }\r\n]",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -473,6 +491,24 @@
 							"mode": "formdata",
 							"formdata": [
 								{
+									"key": "filename",
+									"value": "asbas",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "cyferki",
+									"value": "4546",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "files",
+									"value": "upload",
+									"type": "text",
+									"disabled": true
+								},
+								{
 									"key": "usersImport",
 									"type": "file",
 									"src": "/C:/Programming/MEGAK - HEAD HUNTER/head-hunter-backend/hr.csv"
@@ -525,7 +561,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{{uploadHrArray}}",
+							"raw": "[\r\n    {\r\n        \"email\": \"jakubkrol@megak.pl\",\r\n        \"fullName\": \"Jakub Król\",\r\n        \"company\": \"IT Focus\"\r\n    },\r\n    {\r\n        \"email\": \"bartekb@samuraj.pl\",\r\n        \"fullName\": \"Batłomiej Borowczyk\",\r\n        \"company\": \"Samuraj Programowania\"\r\n    },\r\n    {\r\n        \"email\": \"comarch@sromarch.pl\",\r\n        \"fullName\": \"Gracjan Rododendron\",\r\n        \"company\": \"Comarch\"\r\n    },\r\n    {\r\n        \"email\": \"justjoinit@join.pl\",\r\n        \"fullName\": \"Katarzyna C++\",\r\n        \"company\": \"Just Join IT\"\r\n    },\r\n    {\r\n        \"email\": \"nofluff@nofluffjobs.com\",\r\n        \"fullName\": \"Mike Michaelson\",\r\n        \"company\": \"No FLuff Hobs\"\r\n    }\r\n]",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1370,6 +1406,26 @@
 				},
 				{
 					"name": "Get One Candidate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"\r",
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"ENDPOINT UNDER CONSTRUCTION!! \", ()=>{\r",
+									"pm.expect(response.statusCode).not.to.be.equal(404)\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -1401,6 +1457,26 @@
 				},
 				{
 					"name": "Add Candidate To List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"\r",
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"ENDPOINT UNDER CONSTRUCTION!! \", ()=>{\r",
+									"pm.expect(response.statusCode).not.to.be.equal(404)\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
