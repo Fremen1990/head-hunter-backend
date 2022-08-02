@@ -46,15 +46,24 @@ export class UserService {
       const user = await this.getOneUser(id);
 
       if (!user) {
-         throw new Error('No user in database with such ID');
+         throw new HttpException(
+            'No user in database with such ID',
+            HttpStatus.NOT_FOUND,
+         );
       }
 
       if (!user.registrationToken && Number(user.active) === 1) {
-         throw new Error('Student already registered!');
+         throw new HttpException(
+            'Student already registered',
+            HttpStatus.CONFLICT,
+         );
       }
 
       if (user.registrationToken !== registrationToken) {
-         throw new Error('Incorrect token in parameter!');
+         throw new HttpException(
+            'Incorrect token in parameter',
+            HttpStatus.CONFLICT,
+         );
       }
 
       if (user.registrationToken === registrationToken) {

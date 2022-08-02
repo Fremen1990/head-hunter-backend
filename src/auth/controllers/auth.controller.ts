@@ -30,7 +30,7 @@ export class AuthController {
    }
 
    @Post('/change-password')
-   // @UseGuards(AuthGuard('jwt'))
+   @UseGuards(AuthGuard('jwt'))
    async changePassword(
       @UserObj() user: User,
       @Body() req: ResetPasswordDto,

@@ -1,0 +1,1610 @@
+{
+	"info": {
+		"_postman_id": "b02cee33-92bb-44eb-b1ae-f330c649de6a",
+		"name": "Head Hunter",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15888743"
+	},
+	"item": [
+		{
+			"name": "API Status",
+			"item": [
+				{
+					"name": "API Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status to be OK\", ()=>{\r",
+									"pm.expect(response.status).to.be.equal(\"OK\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}",
+							"host": [
+								"{{endpoint}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "API Status",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{endpoint}}",
+									"host": [
+										"{{endpoint}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:3000"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "152"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"98-q/bT2qPUTHDH3zpt/J1QiHlkpFw\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 02 Aug 2022 14:18:07 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"apiName\": \"MegaK Head Hunter API\",\n    \"message\": \"Welcome to our api which is gathering students and HRs together to make them both happy :)\",\n    \"status\": \"OK\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Create Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"adminId\", jsonData.createdUser.id);\r",
+									"\r",
+									"pm.test(\"Status code is 201\",  ()=> {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Role to be admin\", ()=>{\r",
+									"pm.expect(response.createdUser.role).to.be.equal(\"admin\")\r",
+									"})\r",
+									"\r",
+									"postman.setNextRequest(\"Login Admin\")"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{adminEmail}}\",\r\n    \"pwd\": \"{{adminPwd}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/create-admin",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"create-admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"adminAccessToken\", jsonData.token);\r",
+									"\r",
+									"postman.setEnvironmentVariable(\"adminId\", jsonData.id);\r",
+									"\r",
+									"pm.test(\"Status code is 201\",  ()=> {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Role to be admin\", ()=>{\r",
+									"pm.expect(response.role).to.be.equal(\"admin\")\r",
+									"})\r",
+									"pm.test(\"Token to be generated\", ()=>{\r",
+									"pm.expect(response.token).not.to.be.undefined\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{adminEmail}}\",\r\n    \"pwd\": \"{{adminPwd}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/auth/login",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create One Student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"studentId\", jsonData.createdUser.id);\r",
+									"\r",
+									"postman.setEnvironmentVariable(\"studentRegistrationToken\", jsonData.createdUser.registrationToken);\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 201\",  ()=> {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Role to be student\", ()=>{\r",
+									"pm.expect(response.createdUser.role).to.be.equal(\"student\")\r",
+									"})\r",
+									"pm.test(\"Token to be generated\", ()=>{\r",
+									"pm.expect(response.createdUser.registrationToken).not.to.be.undefined\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{studentEmail}}\",\r\n    \"pwd\": \"{{studentPwd}}\",\r\n    \"role\": \"{{studentRole}}\",\r\n    \"courseCompletion\": 4,\r\n    \"courseEngagement\": 4,\r\n    \"projectDegree\": 3,\r\n    \"teamProjectDegree\": 1,\r\n    \"bonusProjectUrls\": \"{{studentBonusProjectUrls}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/admin/add-student",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"admin",
+								"add-student"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create One HR",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"hrId\", jsonData.createdUser.id);\r",
+									"\r",
+									"postman.setEnvironmentVariable(\"HrRegistrationToken\", jsonData.createdUser.registrationToken);\r",
+									"\r",
+									"pm.test(\"Status code is 201\",  ()=> {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Role to be HR\", ()=>{\r",
+									"pm.expect(response.createdUser.role).to.be.equal(\"hr\")\r",
+									"})\r",
+									"pm.test(\"Token to be generated\", ()=>{\r",
+									"pm.expect(response.createdUser.registrationToken).not.to.be.undefined})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{hrEmail}}\",\r\n    \"pwd\": \"{{hrPwd}}\",\r\n    \"fullName\": \"MEGAK TEAM\",\r\n    \"company\": \"Samuraje Polscy SA\",\r\n    \"maxReservedStudents\": 666\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/admin/add-hr",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"admin",
+								"add-hr"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Students step1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"postman.setEnvironmentVariable(\"uploadStudentsArray\", responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 201\",  ()=> {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "usersImport",
+									"type": "file",
+									"src": "/C:/Programming/MEGAK - HEAD HUNTER/head-hunter-backend/students.csv"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{endpoint}}/admin/upload",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"admin",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Import Students step2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\",  ()=> {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.test(\"ImportSuccess message to be OK\", ()=>{\r",
+									"pm.expect(response.importSuccess).to.be.equal(\"OK\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{uploadStudentsArray}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/admin/import-students",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"admin",
+								"import-students"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload HR step1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"postman.setEnvironmentVariable(\"uploadHrArray\", responseBody);\r",
+									"\r",
+									"pm.test(\"Status code is 201\",  ()=> {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "usersImport",
+									"type": "file",
+									"src": "/C:/Programming/MEGAK - HEAD HUNTER/head-hunter-backend/hr.csv"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{endpoint}}/admin/upload",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"admin",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Import HR step2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\",  ()=> {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.test(\"ImportSuccess message to be OK\", ()=>{\r",
+									"pm.expect(response.importSuccess).to.be.equal(\"OK\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{uploadHrArray}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/admin/import-hr",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"admin",
+								"import-hr"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Import Random Fake Students Data 100",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"\r",
+									"pm.test(\"Status code is 201\",  ()=> {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Array of new students have 100 items\", ()=>{\r",
+									"    pm.expect(response.createdUsersList.length).to.be.equal(100)\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/admin/import-students/random100",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"admin",
+								"import-students",
+								"random100"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Students",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"\r",
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Array of all students is an Array \", ()=>{\r",
+									"    pm.expect(response).to.be.an(\"array\");\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Array of all students is not emply\", ()=>{\r",
+									"    pm.expect(response.length).to.be.greaterThan(0)\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}/admin/students/all",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"admin",
+								"students",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All HR",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"\r",
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Array of all HR is an Array\", ()=>{\r",
+									"    pm.expect(response).to.be.an(\"array\");\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Array of all HR is not emply\", ()=>{\r",
+									"    pm.expect(response.length).to.be.greaterThan(0)\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}/admin/hr/all",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"admin",
+								"hr",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"\r",
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Array of all Users is an Array\", ()=>{\r",
+									"    pm.expect(response).to.be.an(\"array\");\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Array of all users is not emply\", ()=>{\r",
+									"    pm.expect(response.length).to.be.greaterThan(0)\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}/admin/user/all",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"admin",
+								"user",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"\r",
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response status is OK\", ()=>{\r",
+									"    pm.expect(response.ok).to.be.true;\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{endpoint}}/auth/logout",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Student",
+			"item": [
+				{
+					"name": "Register Student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"studentId\", jsonData.id);\r",
+									"\r",
+									"pm.test(\"Status code is 201\",  ()=> {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Id is defined\", ()=>{\r",
+									"pm.expect(response.id).not.to.be.undefined\r",
+									"})\r",
+									"\r",
+									"pm.test(\"registrationToken is null\", ()=>{\r",
+									"pm.expect(response.registrationToken).to.be.null})\r",
+									"\r",
+									"pm.test(\"Student active is true\", ()=>{\r",
+									"pm.expect(response.active).to.be.true\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pwd\": \"{{studentPwd}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/user/register/{{studentId}}/{{studentRegistrationToken}}",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"user",
+								"register",
+								"{{studentId}}",
+								"{{studentRegistrationToken}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"studentAccessToken\", jsonData.token);\r",
+									"\r",
+									"postman.setEnvironmentVariable(\"stidentId\", jsonData.id);\r",
+									"\r",
+									"pm.test(\"Status code is 201\",  ()=> {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Role to be student\", ()=>{\r",
+									"pm.expect(response.role).to.be.equal(\"student\")\r",
+									"})\r",
+									"pm.test(\"Token to be generated\", ()=>{\r",
+									"pm.expect(response.token).not.to.be.undefined\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{studentEmail}}\",\r\n    \"pwd\": \"{{studentPwd}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/auth/login",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send Reser Password Code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"resetPasswordToken\", jsonData.message);\r",
+									"\r",
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Token to be generated\", ()=>{\r",
+									"pm.expect(response.message).not.to.be.undefined\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"email\": \"{{studentEmail}}\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/auth/send-reset-password-link",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"auth",
+								"send-reset-password-link"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Token to be generated\", ()=>{\r",
+									"pm.expect(response.message).to.be.equal(\"Password changed successfully\")\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"resetPasswordToken\": \"{{resetPasswordToken}}\",\r\n    \"newPwd\": \"{{newPwd}}\",\r\n    \"newPwdConfirm\": \"{{newPwd}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/auth/change-password",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"auth",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"\r",
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User data is an Object \", ()=>{\r",
+									"    pm.expect(response).to.be.an(\"Object\");\r",
+									"})\r",
+									"\r",
+									"pm.test(\"User data object have id, email and role\", ()=>{\r",
+									"pm.expect(response).to.have.property(\"id\")\r",
+									"pm.expect(response).to.have.property(\"email\")\r",
+									"pm.expect(response).to.have.property(\"role\")\r",
+									"\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/user/current/profile",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"user",
+								"current",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One Student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"\r",
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User data is an Object \", ()=>{\r",
+									"    pm.expect(response).to.be.an(\"Object\");\r",
+									"})\r",
+									"\r",
+									"pm.test(\"User data object have id, email and role\", ()=>{\r",
+									"pm.expect(response).to.have.property(\"id\")\r",
+									"pm.expect(response).to.have.property(\"email\")\r",
+									"pm.expect(response).to.have.property(\"role\")\r",
+									"})\r",
+									"\r",
+									"pm.test(\"User data object have nested student details object under 'student' key\", ()=>{\r",
+									"pm.expect(response).to.have.property(\"student\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}/student/{{studentId}}",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"student",
+								"{{studentId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Student Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"\r",
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User data is an Object \", ()=>{\r",
+									"    pm.expect(response).to.be.an(\"Object\");\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response message 'Student details updated' to receive\", ()=>{\r",
+									"pm.expect(response.UpdateStudentStatus).to.be.equal(\"Student details updated\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"studentStatus\": \"available\",\r\n    \"tel\": \"{{$randomPhoneNumber}}\",\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\",\r\n    \"githubUserName\": \"fremen1990\",\r\n    \"portfolioUrls\": [\"rv\", \"rfev\"],\r\n    \"projectUrls\":[\"rv\", \"rfev\"],\r\n    \"bio\": \"My bio is aweeeesomeeeeeeeeee\",\r\n    \"expectedTypeOfWork\": \"any\",\r\n    \"targetWorkCity\": \"re\",\r\n    \"expectedContractType\": \"any\",\r\n    \"expectedSalary\": \"6000 USD\",\r\n    \"canTakeApprenticeship\": \"yes\",\r\n    \"monthsOfCommercialExp\": 5 ,\r\n    \"education\": \"\",\r\n    \"workExperience\": \"\",\r\n    \"courses\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/student/{{studentId}}",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"student",
+								"{{studentId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"\r",
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User data is an Object \", ()=>{\r",
+									"    pm.expect(response).to.be.an(\"Object\");\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response message 'Student deleted' to receive\", ()=>{\r",
+									"pm.expect(response.DeleteStudentStatus).to.be.equal(\"Student deleted\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/student/{{studentId}}",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"student",
+								"{{studentId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "HR",
+			"item": [
+				{
+					"name": "Register HR",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"hrId\", jsonData.id);\r",
+									"\r",
+									"pm.test(\"Status code is 201\",  ()=> {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Id is defined\", ()=>{\r",
+									"pm.expect(response.id).not.to.be.undefined\r",
+									"})\r",
+									"\r",
+									"pm.test(\"registrationToken is null\", ()=>{\r",
+									"pm.expect(response.registrationToken).to.be.null})\r",
+									"\r",
+									"pm.test(\"Student active is true\", ()=>{\r",
+									"pm.expect(response.active).to.be.true\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pwd\": \"{{hrPwd}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/user/register/{{hrId}}/{{HrRegistrationToken}}",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"user",
+								"register",
+								"{{hrId}}",
+								"{{HrRegistrationToken}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login HR",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"hrAccessToken\", jsonData.token);\r",
+									"\r",
+									"postman.setEnvironmentVariable(\"hrId\", jsonData.id);\r",
+									"\r",
+									"pm.test(\"Status code is 201\",  ()=> {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Role to be student\", ()=>{\r",
+									"pm.expect(response.role).to.be.equal(\"hr\")\r",
+									"})\r",
+									"pm.test(\"Token to be generated\", ()=>{\r",
+									"pm.expect(response.token).not.to.be.undefined\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{hrEmail}}\",\r\n    \"pwd\": \"{{hrPwd}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/auth/login",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Candidates List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"\r",
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Array of all candidates is an Array \", ()=>{\r",
+									"    pm.expect(response).to.be.an(\"array\");\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Array of all candidates is not emply\", ()=>{\r",
+									"    pm.expect(response.length).to.be.greaterThan(0)\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/hr/candidate/list",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"hr",
+								"candidate",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One Candidate",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/hr/candidate/635f9548-04b3-4456-9f62-5d12893dcdb2",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"hr",
+								"candidate",
+								"635f9548-04b3-4456-9f62-5d12893dcdb2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Candidate To List",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":\"dac7983d-b1e6-4a4e-a3de-dryj\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/hr/candidate/{{studentId}}",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"hr",
+								"candidate",
+								"{{studentId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"\r",
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response status is OK\", ()=>{\r",
+									"    pm.expect(response.ok).to.be.true;\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{endpoint}}/auth/logout",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "endpoint",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "studentEmail",
+			"value": "student@test.com",
+			"type": "string"
+		},
+		{
+			"key": "studentPwd",
+			"value": "Password123!",
+			"type": "string"
+		},
+		{
+			"key": "studentRole",
+			"value": "STUDENT",
+			"type": "string"
+		},
+		{
+			"key": "studentId",
+			"value": "<studentId will be set when you create new user>",
+			"type": "string"
+		},
+		{
+			"key": "studentAccessToken",
+			"value": "<accessToken will be set when you login>",
+			"type": "string"
+		},
+		{
+			"key": "studentRegistrationToken",
+			"value": "<studentRegistrationToken will be set when you create new user>",
+			"type": "string"
+		},
+		{
+			"key": "studentBonusProjectUrls",
+			"value": "https://github.com/Fremen1990/head-hunter-frontend;  https://head-hunter-frontend.vercel.app/login; https://github.com/Fremen1990/head-hunter-backend",
+			"type": "string"
+		},
+		{
+			"key": "uploadStudentsArray",
+			"value": "<uploadStudentsArray will be set when you upload the file from hard drive>",
+			"type": "string"
+		},
+		{
+			"key": "uploadHrArray",
+			"value": "<uploadHrArraywill be set when you upload the file from hard drive>",
+			"type": "string"
+		},
+		{
+			"key": "hrEmail",
+			"value": "kuba&bartek@megak.pl",
+			"type": "string"
+		},
+		{
+			"key": "hrPwd",
+			"value": "ProgramistyczneŚwiry2022!",
+			"type": "string"
+		},
+		{
+			"key": "hrRole",
+			"value": "HR",
+			"type": "string"
+		},
+		{
+			"key": "hrId",
+			"value": "<hrIdwill be set when you create new user>",
+			"type": "string"
+		},
+		{
+			"key": "hrAccessToken",
+			"value": "<hrAccessToken will be set when you login>",
+			"type": "string"
+		},
+		{
+			"key": "HrRegistrationToken",
+			"value": "<HrRegistrationToken will be set when you create new user>",
+			"type": "string"
+		},
+		{
+			"key": "resetPasswordToken",
+			"value": "<resetPasswordToken will be set when you run Send Reset Password Code>",
+			"type": "string"
+		},
+		{
+			"key": "newPwd",
+			"value": "1234",
+			"type": "string"
+		},
+		{
+			"key": "adminEmail",
+			"value": "admin@test.com",
+			"type": "string"
+		},
+		{
+			"key": "adminPwd",
+			"value": "admin1234!",
+			"type": "string"
+		},
+		{
+			"key": "adminId",
+			"value": "<adminId will be set when you create new user>",
+			"type": "string"
+		},
+		{
+			"key": "adminAccessToken",
+			"value": "<accessToken will be set when you login>",
+			"type": "string"
+		}
+	]
+}
