@@ -10,7 +10,50 @@
 			"name": "auth",
 			"item": [
 				{
-					"name": "login student",
+					"name": "Login Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"adminAccessToken\", jsonData.user.token);\r",
+									"\r",
+									"postman.setEnvironmentVariable(\"adminId\", jsonData.user.id);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{adminEmail}}\",\r\n    \"pwd\": \"{{adminPwd}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/auth/login",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Student",
 					"event": [
 						{
 							"listen": "test",
@@ -53,16 +96,16 @@
 					"response": []
 				},
 				{
-					"name": "login hr",
+					"name": "Login HR",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);\r",
-									"postman.setEnvironmentVariable(\"studentAccessToken\", jsonData.user.token);\r",
+									"postman.setEnvironmentVariable(\"hrAccessToken\", jsonData.user.token);\r",
 									"\r",
-									"postman.setEnvironmentVariable(\"stidentId\", jsonData.user.id);\r",
+									"postman.setEnvironmentVariable(\"hrId\", jsonData.user.id);\r",
 									"\r",
 									""
 								],
@@ -96,7 +139,7 @@
 					"response": []
 				},
 				{
-					"name": "logout",
+					"name": "Logout",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -187,6 +230,31 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Current User",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{endpoint}}/auth/current-user",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"auth",
+								"current-user"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -242,14 +310,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{endpoint}}/hr/candidate/0ece141f-4f89-4b5a-ab5f-985fbc2b9125",
+							"raw": "{{endpoint}}/hr/candidate/635f9548-04b3-4456-9f62-5d12893dcdb2",
 							"host": [
 								"{{endpoint}}"
 							],
 							"path": [
 								"hr",
 								"candidate",
-								"0ece141f-4f89-4b5a-ab5f-985fbc2b9125"
+								"635f9548-04b3-4456-9f62-5d12893dcdb2"
 							]
 						}
 					},
@@ -289,7 +357,7 @@
 			"name": "student",
 			"item": [
 				{
-					"name": "getOneStudent",
+					"name": "Get One Student",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -307,13 +375,13 @@
 					"response": []
 				},
 				{
-					"name": "updateStudentDetails",
+					"name": "Update Student Profile",
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"studentStatus\": \"available\",\r\n    \"tel\": \"666-666-666\",\r\n    \"firstName\": \"tOMASZEK\",\r\n    \"lastName\": \"\",\r\n    \"githubUserName\": \"\",\r\n    \"portfolioUrls\": \"\",\r\n    \"projectUrls\": \"\",\r\n    \"bio\": \"My bio is aweeeesomeeeeeeeeee\",\r\n    \"expectedTypeOfWork\": \"\",\r\n    \"targetWorkCity\": \"\",\r\n    \"expectedContractType\": \"\",\r\n    \"expectedSalary\": \"\",\r\n    \"canTakeApprenticeship\": \"\",\r\n    \"monthsOfCommercialExp\": \"\",\r\n    \"education\": \"\",\r\n    \"workExperience\": \"\",\r\n    \"courses\": \"\"\r\n}",
+							"raw": "{\r\n    \"studentStatus\": \"available\",\r\n    \"tel\": \"{{$randomPhoneNumber}}\",\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\",\r\n    \"githubUserName\": \"fremen1990\",\r\n    \"portfolioUrls\": [\"rv\", \"rfev\"],\r\n    \"projectUrls\":[\"rv\", \"rfev\"],\r\n    \"bio\": \"My bio is aweeeesomeeeeeeeeee\",\r\n    \"expectedTypeOfWork\": \"any\",\r\n    \"targetWorkCity\": \"re\",\r\n    \"expectedContractType\": \"any\",\r\n    \"expectedSalary\": \"6000 USD\",\r\n    \"canTakeApprenticeship\": \"yes\",\r\n    \"monthsOfCommercialExp\": 5 ,\r\n    \"education\": \"\",\r\n    \"workExperience\": \"\",\r\n    \"courses\": \"\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -334,7 +402,7 @@
 					"response": []
 				},
 				{
-					"name": "deleteStudent",
+					"name": "Delete Student",
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -366,13 +434,13 @@
 			"name": "admin",
 			"item": [
 				{
-					"name": "createOneStudent",
+					"name": "Create One Student",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"var jsonData = JSON.parse(responseBody);\r",
+									"const jsonData = JSON.parse(responseBody);\r",
 									"postman.setEnvironmentVariable(\"studentId\", jsonData.createdUser.id);\r",
 									"\r",
 									"postman.setEnvironmentVariable(\"studentRegistrationToken\", jsonData.createdUser.registrationToken);\r",
@@ -409,7 +477,7 @@
 					"response": []
 				},
 				{
-					"name": "createOneHr",
+					"name": "Create One HR",
 					"event": [
 						{
 							"listen": "test",
@@ -452,7 +520,7 @@
 					"response": []
 				},
 				{
-					"name": "upload-students",
+					"name": "Upload Students step1",
 					"event": [
 						{
 							"listen": "test",
@@ -522,7 +590,7 @@
 					"response": []
 				},
 				{
-					"name": "import-students",
+					"name": "Import Students step2",
 					"event": [
 						{
 							"listen": "test",
@@ -567,7 +635,53 @@
 					"response": []
 				},
 				{
-					"name": "upload-hr",
+					"name": "Import Random Fake Students Data 100",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"numberOfStudents\": 15\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/admin/import-students/random100",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"admin",
+								"import-students",
+								"random100"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload HR step1",
 					"protocolProfileBehavior": {
 						"disabledSystemHeaders": {}
 					},
@@ -623,7 +737,7 @@
 					"response": []
 				},
 				{
-					"name": "import-hr",
+					"name": "Import HR step2",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -657,12 +771,12 @@
 					"response": []
 				},
 				{
-					"name": "students/all",
+					"name": "Get All Students",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{endpoint}}/admin/students/all",
+							"raw": "{{endpoint}}/admin/students/all?studentStatus=AVAILABLE",
 							"host": [
 								"{{endpoint}}"
 							],
@@ -670,13 +784,19 @@
 								"admin",
 								"students",
 								"all"
+							],
+							"query": [
+								{
+									"key": "studentStatus",
+									"value": "AVAILABLE"
+								}
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "hr/all",
+					"name": "Get All HR",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -695,7 +815,7 @@
 					"response": []
 				},
 				{
-					"name": "getOneUser",
+					"name": "Get One Student",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -714,12 +834,12 @@
 					"response": []
 				},
 				{
-					"name": "getAllUsers",
+					"name": "Get All Users",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{endpoint}}/admin/user/all",
+							"raw": "{{endpoint}}/admin/user/all?registrationToken=9zlt9wczu78847f9pwbg7mlvn",
 							"host": [
 								"{{endpoint}}"
 							],
@@ -727,6 +847,12 @@
 								"admin",
 								"user",
 								"all"
+							],
+							"query": [
+								{
+									"key": "registrationToken",
+									"value": "9zlt9wczu78847f9pwbg7mlvn"
+								}
 							]
 						}
 					},
@@ -794,20 +920,126 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get User Details",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/user/current/profile",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"user",
+								"current",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{accessToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
+		},
+		{
+			"name": "API Status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{endpoint}}",
+					"host": [
+						"{{endpoint}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = JSON.parse(responseBody);\r",
+							"postman.setEnvironmentVariable(\"adminId\", jsonData.createdUser.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{adminEmail}}\",\r\n    \"pwd\": \"{{adminPwd}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{endpoint}}/create-admin",
+					"host": [
+						"{{endpoint}}"
+					],
+					"path": [
+						"create-admin"
+					]
+				}
+			},
+			"response": []
 		}
 	],
-	"auth": {
-		"type": "bearer",
-		"bearer": [
-			{
-				"key": "token",
-				"value": "{{accessToken}}",
-				"type": "string"
-			}
-		]
-	},
 	"event": [
 		{
 			"listen": "prerequest",
@@ -917,6 +1149,26 @@
 		{
 			"key": "newPwd",
 			"value": "1234",
+			"type": "string"
+		},
+		{
+			"key": "adminEmail",
+			"value": "admin@test.com",
+			"type": "string"
+		},
+		{
+			"key": "adminPwd",
+			"value": "admin1234!",
+			"type": "string"
+		},
+		{
+			"key": "adminId",
+			"value": "<adminId will be set when you create new user>",
+			"type": "string"
+		},
+		{
+			"key": "adminAccessToken",
+			"value": "<accessToken will be set when you login>",
 			"type": "string"
 		}
 	]
