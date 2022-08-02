@@ -25,10 +25,9 @@ export class HrController {
    constructor(@Inject(HrService) private hrService: HrService) {}
 
    @Get('/candidate/list')
-   candidateList(
-      @Body() excludedIds: ExcludedIdsDto,
-   ): Promise<HrCandidateListResponse[] | Student[]> {
-      return this.hrService.getCandidatesList(excludedIds);
+   candidateList(): // @Body() excludedIds: ExcludedIdsDto,
+   Promise<HrCandidateListResponse[] | Student[]> {
+      return this.hrService.getCandidatesList();
    }
 
    @Get('/candidate/:studentId')

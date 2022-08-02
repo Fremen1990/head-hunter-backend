@@ -86,16 +86,24 @@ export class UserService {
       return await User.find();
    }
 
-   async getCurrentUserProfile(user): Promise<getUserProfileResponse> {
-      const userInfo = this.filterProfile(user);
+   async getCurrentUserProfile(user): Promise<any> {
+      // const userInfo = this.filterProfile(user);
       let userDetails;
 
       if (user.role === 'student') {
-         userDetails = await Student.findBy({ studentId: user.id });
+         userDetails = await User.find({
+            relations: ['student'],
+            where: { id: user.id },
+         });
       } else if (user.role === 'hr') {
-         userDetails = await Hr.findBy({ hrId: user.id });
+         userDetails = await User.find({
+            relations: ['hr'],
+            where: { id: user.id },
+         });
+      } else if (user.role === 'admin') {
+         userDetails = user;
       }
 
-      return { userInfo, userDetails };
+      return userDetails;
    }
 }

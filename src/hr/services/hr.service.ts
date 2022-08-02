@@ -10,9 +10,8 @@ import { Hr } from '../entities/hr.entity';
 
 @Injectable()
 export class HrService {
-   async getCandidatesList(
-      excludedIds,
-   ): Promise<HrCandidateListResponse[] | Student[]> {
+   async getCandidatesList(): // excludedIds,
+   Promise<HrCandidateListResponse[] | Student[]> {
       /*
        
        Radek -> dodałem or Student[] aby nie krzyczał
