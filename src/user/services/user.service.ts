@@ -91,17 +91,20 @@ export class UserService {
       let userDetails;
 
       if (user.role === 'student') {
-         userDetails = await User.find({
+         const student = await User.find({
             relations: ['student'],
             where: { id: user.id },
          });
+         userDetails = student[0];
       } else if (user.role === 'hr') {
-         userDetails = await User.find({
+         const hr = await User.find({
             relations: ['hr'],
             where: { id: user.id },
          });
+         userDetails = hr[0];
       } else if (user.role === 'admin') {
-         userDetails = user;
+         const admin = await User.findBy({ id: user.id });
+         userDetails = admin[0];
       }
 
       return userDetails;
