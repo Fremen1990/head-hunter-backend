@@ -5,7 +5,7 @@
   "compilerOptions": {
     "assets": [{
         "include": "storage/upload-file/**/*",
-        "outDir": "dist/"
+        "outDir": "dist"
       },
       {
       "include": "mail/templates/**/*",

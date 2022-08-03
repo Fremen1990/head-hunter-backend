@@ -11,6 +11,7 @@ import {
 import { Role } from '../../enums/role.enum';
 import { Student } from '../../student/entities/student.entity';
 import { Hr } from '../../hr/entities/hr.entity';
+import { Interview } from '../../hr/entities/interview.entity';
 
 @Entity('user')
 export class User extends BaseEntity {

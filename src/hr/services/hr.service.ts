@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { v4 as uuid } from 'uuid';
 import { Student } from '../../student/entities/student.entity';
 import {
    HrCandidateAddResponse,
@@ -8,113 +9,18 @@ import {
 import { User } from '../../user/entities/user.entity';
 import { Hr } from '../entities/hr.entity';
 import { DataSource } from 'typeorm';
+import { Interview } from '../entities/interview.entity';
+import { generateReservationDate } from '../../utils/reservation-date';
+import { encrypt } from '../../utils/pwd-tools';
+import nanoToken from '../../utils/nano-token';
+import { Role } from '../../enums/role.enum';
+import { StudentStatus } from '../../enums/student-status.enum';
+import { type } from 'os';
+import { isInstance } from 'class-validator';
 
 @Injectable()
 export class HrService {
    constructor(@Inject(DataSource) private dataSource: DataSource) {}
-
-   // async getCandidatesList(
-   //    excludedIds,
-   // ): Promise<HrCandidateListResponse[] | Student[]> {
-   //    /*
-   //
-   //     Radek -> dodałem or Student[] aby nie krzyczał
-   //     */
-   //
-   //    // const candidates = User.find({ relations: ['student'] });
-   //    const candidates = await Student.find({
-   //       relations: ['user'],
-   //    });
-   //    // TO DO QUERY BUILDER WHERE FIND CANDIDATES WITHOUT IDS FROM BODY
-   //    return candidates;
-   //
-   //    //    return User.createQueryBuilder('user')
-   //    //       .leftJoinAndSelect('user.student', 'student')
-   //    //       .leftJoinAndSelect('user.hr', 'hr')
-   //    //       .where('user.id NOT IN hr.candidates')
-   //    //       .getMany();
-   //    // }
-   //
-   //    // return User.createQueryBuilder('user')
-   //    //    .leftJoinAndSelect('user.student', 'student')
-   //    //    .leftJoinAndSelect('user.hr', 'hr')
-   //    //    .getMany();
-   // }
-
-   // async getOneCandidate(
-   //    studentId,
-   // ): Promise<HrCandidateListResponse | Student> {
-   //    /*
-   //
-   //     Radek -> dodałem or Student aby nie krzyczał
-   //
-   //     */
-   //    const candidate = await Student.findOneBy({ studentId: studentId });
-   //
-   //    if (!candidate) {
-   //       throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
-   //    }
-   //    return candidate;
-   // }
-
-   async addOneCandidateToList(
-      // TODO TO BE COMPLETED LATER WHEN RELATIONS BETWEEN STUDENTS VS INTERVIEW VS HR IS SET UP
-      hrUser: User,
-      studentId: string,
-   ): Promise<HrCandidateAddResponse> {
-      // console.log('stuendtID: ', studentId);
-      // console.log('user HR', hrUser);
-
-      const candidate = await Student.findOneBy({ studentId: studentId });
-      const hr = await Hr.findOneBy({ hrId: hrUser.id });
-      // console.log('HR USER', hr);
-
-      console.log(candidate.studentId);
-
-      if (!candidate) {
-         throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
-      }
-
-      // const newInterview = new Interview();
-      // // @ts-ignore
-      // newInterview.student = candidate.email;
-      // // @ts-ignore
-      // newInterview.interviewer = hrUser.email;
-      //
-      // await newInterview.save();
-
-      // const newInterview = await Interview.create({
-      //    studentId: candidate.id,
-      //    interviewerId: hrUser.id,
-      // });
-
-      return {
-         id: candidate.studentId,
-         // email: candidate.email,
-         firstName: candidate.firstName,
-         lastName: candidate.lastName,
-         portfolioUrls: candidate.portfolioUrls,
-      };
-   }
-
-   async removeFromList(
-      // TODO TO BE COMPLETED LATER WHEN RELATIONS BETWEEN STUDENTS VS INTERVIEW VS HR IS SET UP
-      hrUser: User,
-      studentId: string,
-   ): Promise<HrCandidateRemoveResponse> {
-      const candidate = await Student.findOneBy({ studentId: studentId });
-
-      if (!candidate) {
-         throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
-      }
-
-      return {
-         id: candidate.studentId,
-         // email: candidate.email,
-         firstName: candidate.firstName,
-         lastName: candidate.lastName,
-      };
-   }
 
    // Nowe
    async getCandidatesList(): Promise<any> {
@@ -127,6 +33,27 @@ export class HrService {
          })
          .andWhere('user.active = :active', { active: true })
          .getMany();
+   }
+
+   // use only to getData on frontend
+   async getOneHr(hrId): Promise<any> {
+      //dodaj walidajce roli
+      const user = await User.findOneBy({ id: hrId });
+
+      if (!user) {
+         throw new HttpException('Hr not found', HttpStatus.NOT_FOUND);
+      }
+
+      const hr = await this.dataSource
+         .getRepository(User)
+         .createQueryBuilder('user')
+         .leftJoinAndSelect('user.hr', 'hr')
+         .where('hr.hrId = :hrId', {
+            hrId: `${hrId}`,
+         })
+         .getOne();
+
+      return hr;
    }
 
    async getOneCandidate(studentId): Promise<any> {
@@ -157,5 +84,58 @@ export class HrService {
       }
 
       return newCandidate;
+   }
+
+   async addOneCandidateToList(user: User, studentId: string): Promise<any> {
+      const interviewingHr = await Hr.findOneBy({ hrId: user.id });
+      const candidate = await this.getOneCandidate(studentId);
+      const { firstName, lastName } = candidate.student;
+      const interviews = (await Interview.findBy({ hrId: user.id })).map(
+         (interview) => interview,
+      );
+      console.log(interviews);
+
+      const newInterview = new Interview();
+      newInterview.interviewId = uuid();
+      newInterview.interviewTitle = `${firstName} ${lastName}`;
+      newInterview.date = generateReservationDate();
+      newInterview.studentId = candidate.id;
+      newInterview.hrId = interviewingHr.hrId;
+
+      await newInterview.save();
+
+      candidate.student.studentStatus = StudentStatus.INTERVIEW;
+
+      await candidate.student.save();
+
+      interviewingHr.interview = [...interviews, newInterview];
+
+      await interviewingHr.save();
+
+      return {
+         interviewingHr,
+         candidate,
+         interview: `Interview between ${newInterview.interviewTitle} and ${interviewingHr.fullName} has been set`,
+         interviewId: newInterview.interviewId,
+      };
+   }
+
+   async removeFromList(
+      // TODO TO BE COMPLETED LATER WHEN RELATIONS BETWEEN STUDENTS VS INTERVIEW VS HR IS SET UP
+      hrUser: User,
+      studentId: string,
+   ): Promise<HrCandidateRemoveResponse> {
+      const candidate = await Student.findOneBy({ studentId: studentId });
+
+      if (!candidate) {
+         throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
+      }
+
+      return {
+         id: candidate.studentId,
+         // email: candidate.email,
+         firstName: candidate.firstName,
+         lastName: candidate.lastName,
+      };
    }
 }

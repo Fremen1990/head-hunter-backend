@@ -5,6 +5,7 @@ import {
    Inject,
    Param,
    Patch,
+   Post,
    UseGuards,
 } from '@nestjs/common';
 import { HrService } from '../services/hr.service';
@@ -18,6 +19,7 @@ import { UserObj } from '../../decorators/portal-users.decorator';
 import { User } from '../../user/entities/user.entity';
 import { Student } from '../../student/entities/student.entity';
 import { AuthGuard } from '@nestjs/passport';
+import { Hr } from '../entities/hr.entity';
 
 // @UseGuards(AuthGuard('jwt'))
 @Controller('hr')
@@ -43,17 +45,33 @@ export class HrController {
    //    return this.hrService.getOneCandidate(studentId);
    // }
 
+   @UseGuards(AuthGuard('jwt'))
    @Get('/candidate/:studentId')
    getOneCandidate(@Param('studentId') studentId: string): Promise<any> {
       return this.hrService.getOneCandidate(studentId);
    }
 
-   @Patch('/candidate/:studentId')
+   @UseGuards(AuthGuard('jwt'))
+   @Get('/:hrId')
+   getOneHr(@Param('hrId') hrId: string): Promise<any> {
+      return this.hrService.getOneHr(hrId);
+   }
+
+   // @Patch('/candidate/:studentId')
+   // addToList(
+   //    @UserObj() hrUser: User,
+   //    @Param('studentId') studentId: string,
+   // ): Promise<HrCandidateAddResponse> {
+   //    return this.hrService.addOneCandidateToList(hrUser, studentId);
+   // }
+
+   @UseGuards(AuthGuard('jwt'))
+   @Post('/candidate/:studentId')
    addToList(
-      @UserObj() hrUser: User,
+      @UserObj() user: User,
       @Param('studentId') studentId: string,
-   ): Promise<HrCandidateAddResponse> {
-      return this.hrService.addOneCandidateToList(hrUser, studentId);
+   ): Promise<any> {
+      return this.hrService.addOneCandidateToList(user, studentId);
    }
 
    @Patch('/candidate/:studentId/hire')
