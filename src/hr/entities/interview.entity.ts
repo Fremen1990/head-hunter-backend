@@ -1,16 +1,35 @@
-import { BaseEntity, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+   BaseEntity,
+   Column,
+   Entity,
+   JoinColumn,
+   ManyToOne,
+   PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Hr } from './hr.entity';
-import { Student } from '../../student/entities/student.entity';
 
 // student trafia na liste to zmienia status na do rozmowy, hr ma 10 dni jak nie to wraca spowrotem na dostępny
-@Entity('candidates-to-interview')
-export class Candidates extends BaseEntity {
+
+@Entity('interview')
+export class Interview extends BaseEntity {
    @PrimaryGeneratedColumn('uuid')
    interviewId: string;
 
-   @ManyToOne(() => Hr, (hr) => hr.interview)
-   hr: Hr;
+   @Column()
+   interviewTitle: string;
 
-   @ManyToOne(() => Student, (student) => student.interview)
-   student: Student;
+   @Column({ type: 'date' })
+   date: string;
+
+   @Column({ length: 36 })
+   studentId: string;
+
+   @Column({ name: 'hrId' })
+   hrId: string;
+
+   @ManyToOne(() => Hr, (hr) => hr.interview)
+   @JoinColumn({
+      name: 'hrId',
+   })
+   hr: Hr;
 }

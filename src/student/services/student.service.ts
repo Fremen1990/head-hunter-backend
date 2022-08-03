@@ -13,19 +13,15 @@ import {
 import { Student } from '../entities/student.entity';
 import { DeleteStudentResponse } from '../../interfaces/student';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
-import { validateStudentStatus } from '../../enums/student-status.enum';
-import { validateWorkType } from '../../enums//work-type.enum';
-import { validateContractType } from '../../enums//contract-type.enum';
-import { validateApprenticeship } from '../../enums//apprenticeship.enum';
 import { UserService } from 'src/user/services/user.service';
 import { User } from '../../user/entities/user.entity';
 import { Role } from '../../enums/role.enum';
 
+// do napisania interfejsy do zwrotu
 @Injectable()
 export class StudentService {
    constructor(@Inject(UserService) private userService: UserService) {}
 
-   // do napisania interfejsy do zwrotu
    async getOneStudent(id: string): Promise<Student | any> {
       const student = await User.findOne({
          where: {
@@ -42,7 +38,6 @@ export class StudentService {
       return student;
    }
 
-   // do napisania interfejsy do zwrotu
    async getAllStudents(): Promise<any> {
       const students = await User.find({
          where: {
@@ -75,17 +70,11 @@ export class StudentService {
    //    "courses": "sad"
    // }
 
-   //do refactor
    async updateStudentDetails(id: string, studentDetails: UpdateProfileDto) {
       const student = await Student.findOneBy({ studentId: id });
 
       if (student) {
-         //-----------------validation not working------------------
-         // student.studentStatus = validateStudentStatus(
-         //    studentDetails.studentStatus,
-         // );
          student.studentStatus = studentDetails.studentStatus;
-         //-----------------------------------------------------------
          student.tel = studentDetails.tel;
          student.firstName = studentDetails.firstName;
          student.lastName = studentDetails.lastName;
@@ -93,27 +82,11 @@ export class StudentService {
          student.portfolioUrls = studentDetails.portfolioUrls;
          student.projectUrls = studentDetails.projectUrls;
          student.bio = studentDetails.bio;
-         //-----------------validation not working------------------
-         // student.expectedTypeOfWork = validateWorkType(
-         //    studentDetails.expectedTypeOfWork,
-         // );
          student.expectedTypeOfWork = studentDetails.expectedTypeOfWork;
-         //-----------------------------------------------------------
-
          student.targetWorkCity = studentDetails.targetWorkCity;
-         //--------------------validation not working --------------
-         // student.expectedContractType = validateContractType(
-         //    studentDetails.expectedContractType,
-         // );
          student.expectedContractType = studentDetails.expectedContractType;
-         //------------------------------------------------------------------
          student.expectedSalary = studentDetails.expectedSalary;
-         //--------------------validation not working --------------
-         // student.canTakeApprenticeship = validateApprenticeship(
-         //    studentDetails.canTakeApprenticeship,
-         // );
          student.canTakeApprenticeship = studentDetails.canTakeApprenticeship;
-         //-----------------------------------------------------------------
          student.monthsOfCommercialExp = Number(
             studentDetails.monthsOfCommercialExp,
          );
@@ -121,7 +94,6 @@ export class StudentService {
          student.workExperience = studentDetails.workExperience;
          student.courses = studentDetails.courses;
          await student.save();
-         console.log(student);
       }
 
       if (!student) {

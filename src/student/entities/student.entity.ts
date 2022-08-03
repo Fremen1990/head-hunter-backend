@@ -16,7 +16,7 @@ import { WorkType } from '../../enums/work-type.enum';
 import { ContactType } from '../../enums/contract-type.enum';
 import { Apprenticeship } from '../../enums/apprenticeship.enum';
 import { Min } from 'class-validator';
-import { Candidates } from '../../hr/entities/interview.entity';
+// import { Candidates } from '../../hr/entities/interview.entity';
 
 @Entity('student')
 export class Student extends BaseEntity {
@@ -161,6 +161,9 @@ export class Student extends BaseEntity {
    user: User;
 
    // test
-   @OneToMany(() => Candidates, (interview) => interview.student)
-   interview: Candidates;
+   //    @OneToMany(() => Candidates, (interview) => interview.student)
+   //    interview: Candidates;
+   // }
+
+   // test2
 }

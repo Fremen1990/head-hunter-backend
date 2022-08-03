@@ -40,10 +40,10 @@ import { UserService } from '../../user/services/user.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ImportRandomStudentsResponse } from '../../interfaces/student';
 
-@UseGuards(AuthGuard('jwt'))
 @ApiTags('Admin')
 @ApiCookieAuth()
 @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+@UseGuards(AuthGuard('jwt'))
 @Controller('admin')
 export class AdminController {
    constructor(
