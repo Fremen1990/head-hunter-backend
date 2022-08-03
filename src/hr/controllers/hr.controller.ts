@@ -19,7 +19,6 @@ import { Student } from '../../student/entities/student.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { Hr } from '../entities/hr.entity';
 
-
 import {
    ApiCookieAuth,
    ApiCreatedResponse,
@@ -35,8 +34,8 @@ import {
 @Controller('hr')
 export class HrController {
    constructor(@Inject(HrService) private hrService: HrService) {}
-   
-//============================HR CANDIDATES LIST================================
+
+   //============================HR CANDIDATES LIST================================
    @ApiOkResponse({
       description:
          'Students list array with user data in relation to student table ',
@@ -46,26 +45,24 @@ export class HrController {
       return this.hrService.getCandidatesList();
    }
 
-
    //============================GET ONE HR ================================
    @UseGuards(AuthGuard('jwt'))
    @Get('/:hrId')
    getOneHr(@Param('hrId') hrId: string): Promise<any> {
       return this.hrService.getOneHr(hrId);
    }
-   
+
    //============================HR ADD ONE CANDIDATE================================
-      @ApiCookieAuth()
-      @ApiCreatedResponse({ description: 'One candidate added to HR list' })
-      @UseGuards(AuthGuard('jwt'))
-    @Patch('/candidate/:studentId')
+   @ApiCookieAuth()
+   @ApiCreatedResponse({ description: 'One candidate added to HR list' })
+   @UseGuards(AuthGuard('jwt'))
+   @Patch('/candidate/:studentId')
    addToList(
       @UserObj() hrUser: User,
       @Param('studentId') studentId: string,
    ): Promise<HrCandidateAddResponse> {
       return this.hrService.addOneCandidateToList(hrUser, studentId);
    }
-
 
    //============================HR REMOVE ONE CANDIDATE================================
    @ApiCookieAuth()

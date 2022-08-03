@@ -33,45 +33,39 @@ export class HrService {
          })
          .andWhere('user.active = :active', { active: true })
          .getMany();
+   }
 
+   //  async getCandidatesList(): // excludedIds,
+   //  Promise<HrCandidateListResponse[] | Student[]> {
+   /*
 
+   Radek -> dodałem or Student[] aby nie krzyczał
+   */
 
-
- //  async getCandidatesList(): // excludedIds,
- //  Promise<HrCandidateListResponse[] | Student[]> {
-      /*
-       
-       Radek -> dodałem or Student[] aby nie krzyczał
-       */
-
-      // const candidates = User.find({ relations: ['student'] });
-  //    const candidates = await Student.find({
-    //     relations: ['user'],
+   // const candidates = User.find({ relations: ['student'] });
+   //    const candidates = await Student.find({
+   //     relations: ['user'],
    //   });
-      // TODO QUERY BUILDER WHERE FIND CANDIDATES WITHOUT IDS FROM BODY
-    //  return candidates;
+   // TODO QUERY BUILDER WHERE FIND CANDIDATES WITHOUT IDS FROM BODY
+   //  return candidates;
 
-      //    return User.createQueryBuilder('user')
-      //       .leftJoinAndSelect('user.student', 'student')
-      //       .leftJoinAndSelect('user.hr', 'hr')
-      //       .where('user.id NOT IN hr.candidates')
-      //       .getMany();
-      // }
+   //    return User.createQueryBuilder('user')
+   //       .leftJoinAndSelect('user.student', 'student')
+   //       .leftJoinAndSelect('user.hr', 'hr')
+   //       .where('user.id NOT IN hr.candidates')
+   //       .getMany();
+   // }
 
-      // return User.createQueryBuilder('user')
-      //    .leftJoinAndSelect('user.student', 'student')
-      //    .leftJoinAndSelect('user.hr', 'hr')
-      //    .getMany();
- //  }
-
-
-
+   // return User.createQueryBuilder('user')
+   //    .leftJoinAndSelect('user.student', 'student')
+   //    .leftJoinAndSelect('user.hr', 'hr')
+   //    .getMany();
+   //  }
 
    // use only to getData on frontend
    async getOneHr(hrId): Promise<any> {
       //dodaj walidajce roli
       const user = await User.findOneBy({ id: hrId });
-
       if (!user) {
          throw new HttpException('Hr not found', HttpStatus.NOT_FOUND);
       }
@@ -90,7 +84,6 @@ export class HrService {
 
    async getOneCandidate(studentId): Promise<any> {
       const user = await User.findOneBy({ id: studentId });
-
       if (!user) {
          throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
       }
@@ -152,8 +145,10 @@ export class HrService {
       };
    }
 
+   async;
+
+   // TODO TO BE COMPLETED LATER WHEN RELATIONS BETWEEN STUDENTS VS INTERVIEW VS HR IS SET UP
    async removeFromList(
-      // TODO TO BE COMPLETED LATER WHEN RELATIONS BETWEEN STUDENTS VS INTERVIEW VS HR IS SET UP
       hrUser: User,
       studentId: string,
    ): Promise<HrCandidateRemoveResponse> {
