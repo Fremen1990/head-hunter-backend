@@ -46,15 +46,24 @@ export class UserService {
       const user = await this.getOneUser(id);
 
       if (!user) {
-         throw new Error('No user in database with such ID');
+         throw new HttpException(
+            'No user in database with such ID',
+            HttpStatus.NOT_FOUND,
+         );
       }
 
       if (!user.registrationToken && Number(user.active) === 1) {
-         throw new Error('Student already registered!');
+         throw new HttpException(
+            'Student already registered',
+            HttpStatus.CONFLICT,
+         );
       }
 
       if (user.registrationToken !== registrationToken) {
-         throw new Error('Incorrect token in parameter!');
+         throw new HttpException(
+            'Incorrect token in parameter',
+            HttpStatus.CONFLICT,
+         );
       }
 
       if (user.registrationToken === registrationToken) {
@@ -86,16 +95,27 @@ export class UserService {
       return await User.find();
    }
 
-   async getCurrentUserProfile(user): Promise<getUserProfileResponse> {
-      const userInfo = this.filterProfile(user);
+   async getCurrentUserProfile(user): Promise<any> {
+      // const userInfo = this.filterProfile(user);
       let userDetails;
 
       if (user.role === 'student') {
-         userDetails = await Student.findBy({ studentId: user.id });
+         const student = await User.find({
+            relations: ['student'],
+            where: { id: user.id },
+         });
+         userDetails = student[0];
       } else if (user.role === 'hr') {
-         userDetails = await Hr.findBy({ hrId: user.id });
+         const hr = await User.find({
+            relations: ['hr'],
+            where: { id: user.id },
+         });
+         userDetails = hr[0];
+      } else if (user.role === 'admin') {
+         const admin = await User.findBy({ id: user.id });
+         userDetails = admin[0];
       }
 
-      return { userInfo, userDetails };
+      return userDetails;
    }
 }

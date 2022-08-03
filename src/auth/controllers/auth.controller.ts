@@ -7,30 +7,67 @@ import { UserObj } from '../../decorators/portal-users.decorator';
 import { User } from '../../user/entities/user.entity';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 import { ResetListLinkRequestDto } from '../dto/reset-link-request.dto';
+import {
+   ApiBody,
+   ApiConflictResponse,
+   ApiCookieAuth,
+   ApiCreatedResponse,
+   ApiNotFoundResponse,
+   ApiOkResponse,
+   ApiTags,
+   ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
    constructor(private readonly authService: AuthService) {}
 
+   //============================LOGIN================================
+   @ApiCreatedResponse({
+      description: 'User login',
+   })
+   @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+   @ApiNotFoundResponse({ description: 'Email not found' })
+   @ApiNotFoundResponse({ description: 'This user is not registered' })
+   @ApiBody({ type: AuthLoginDto })
    @Post('/login')
    async login(@Body() req: AuthLoginDto, @Res() res: Response): Promise<any> {
       return this.authService.login(req, res);
    }
 
-   @Get('/logout')
+   //============================LOGOUT================================
+   @ApiCookieAuth()
+   @ApiOkResponse({ description: 'User logout' })
+   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
    @UseGuards(AuthGuard('jwt'))
+   @Get('/logout')
    async logout(@UserObj() user: User, @Res() res: Response) {
       console.log({ user });
       return this.authService.logout(user, res);
    }
 
+   //============================SEND-RESET-PASSWORD================================
+   @ApiCookieAuth()
+   @ApiOkResponse({ description: 'Send reset password' })
+   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+   @UseGuards(AuthGuard('jwt'))
    @Post('/send-reset-password-link')
+   @ApiBody({ type: ResetListLinkRequestDto })
    async sendResetPasswordLink(@Body() email: ResetListLinkRequestDto) {
       return this.authService.sendResetPasswordLink(email);
    }
 
+   //============================CHANGE-PASSWORD================================
+   @ApiOkResponse({ description: 'Password changed successfully' })
+   @ApiCookieAuth()
+   @ApiConflictResponse({
+      description: 'Your reset password token is not correct',
+   })
+   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+   @ApiBody({ type: ResetPasswordDto })
+   @UseGuards(AuthGuard('jwt'))
    @Post('/change-password')
-   // @UseGuards(AuthGuard('jwt'))
    async changePassword(
       @UserObj() user: User,
       @Body() req: ResetPasswordDto,

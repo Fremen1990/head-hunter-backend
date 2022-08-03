@@ -33,7 +33,39 @@ export class HrService {
          })
          .andWhere('user.active = :active', { active: true })
          .getMany();
-   }
+
+
+
+
+ //  async getCandidatesList(): // excludedIds,
+ //  Promise<HrCandidateListResponse[] | Student[]> {
+      /*
+       
+       Radek -> dodałem or Student[] aby nie krzyczał
+       */
+
+      // const candidates = User.find({ relations: ['student'] });
+  //    const candidates = await Student.find({
+    //     relations: ['user'],
+   //   });
+      // TODO QUERY BUILDER WHERE FIND CANDIDATES WITHOUT IDS FROM BODY
+    //  return candidates;
+
+      //    return User.createQueryBuilder('user')
+      //       .leftJoinAndSelect('user.student', 'student')
+      //       .leftJoinAndSelect('user.hr', 'hr')
+      //       .where('user.id NOT IN hr.candidates')
+      //       .getMany();
+      // }
+
+      // return User.createQueryBuilder('user')
+      //    .leftJoinAndSelect('user.student', 'student')
+      //    .leftJoinAndSelect('user.hr', 'hr')
+      //    .getMany();
+ //  }
+
+
+
 
    // use only to getData on frontend
    async getOneHr(hrId): Promise<any> {

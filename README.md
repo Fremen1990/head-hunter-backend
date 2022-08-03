@@ -24,6 +24,20 @@
 
 <br/>
 
+---
+
+## Newman test and reports based on PostMan collection:
+
+### Run newman CLI report:
+
+`newman run '.\Head Hunter.postman_collection.json'`
+
+### Run newman HTML Extra report:
+
+`newman run '.\Head Hunter.postman_collection.json' --reporter-htmlextra-export`
+
+---
+
 ## Docker container:
 
 ` docker run -p 3000:8080 head-hunter-backend-docerized`
@@ -63,17 +77,3 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
--  Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
--  Website - [https://nestjs.com](https://nestjs.com/)
--  Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).

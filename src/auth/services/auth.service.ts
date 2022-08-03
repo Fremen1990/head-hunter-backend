@@ -46,11 +46,14 @@ export class AuthService {
          });
 
          if (!user) {
-            return res.json({ error: 'Email not found' });
+            throw new HttpException('Email not found', HttpStatus.NOT_FOUND);
          }
 
          if (!user.active) {
-            return res.json({ error: 'This user is not registered.' });
+            throw new HttpException(
+               'This user is not registered.',
+               HttpStatus.NOT_FOUND,
+            );
          }
 
          if (user) {
@@ -58,6 +61,10 @@ export class AuthService {
 
             if (decryptedPwd !== req.pwd) {
                return res.status(400).json({ error: 'Incorrect password!' });
+               throw new HttpException(
+                  'Incorrect password',
+                  HttpStatus.CONFLICT,
+               );
             }
          }
          //
@@ -74,15 +81,11 @@ export class AuthService {
                httpOnly: true,
             })
             .json({
-               ok: true,
+               id: user.id,
+               email: user.email,
+               role: user.role,
                token: token.accessToken,
-               user: {
-                  id: user.id,
-                  email: user.email,
-                  role: user.role,
-                  active: user.active,
-                  token: token.accessToken,
-               },
+               active: user.active,
             });
       } catch (e) {
          return res.status(400).json({ error: e.message });
