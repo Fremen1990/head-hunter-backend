@@ -1,5 +1,4 @@
 import {
-   Body,
    Controller,
    Get,
    Inject,
@@ -13,23 +12,39 @@ import {
    HrCandidateListResponse,
    HrCandidateRemoveResponse,
 } from '../../interfaces/hr';
-import { ExcludedIdsDto } from '../dto/excluded-ids.dto';
 import { UserObj } from '../../decorators/portal-users.decorator';
 import { User } from '../../user/entities/user.entity';
 import { Student } from '../../student/entities/student.entity';
 import { AuthGuard } from '@nestjs/passport';
+import {
+   ApiCookieAuth,
+   ApiCreatedResponse,
+   ApiOkResponse,
+   ApiTags,
+   ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
+@ApiTags('HR')
+@ApiCookieAuth()
+@ApiUnauthorizedResponse({ description: 'Unauthorized' })
 @UseGuards(AuthGuard('jwt'))
 @Controller('hr')
 export class HrController {
    constructor(@Inject(HrService) private hrService: HrService) {}
 
+   //============================HR CANDIDATES LIST================================
+   @ApiOkResponse({
+      description:
+         'Students list array with user data in relation to student table ',
+   })
    @Get('/candidate/list')
    candidateList(): // @Body() excludedIds: ExcludedIdsDto,
    Promise<HrCandidateListResponse[] | Student[]> {
       return this.hrService.getCandidatesList();
    }
 
+   //============================HR GET ONE CANDIDATE================================
+   @ApiOkResponse({ description: 'One candidate return' })
    @Get('/candidate/:studentId')
    getOneCandidate(
       @Param('studentId') studentId: string,
@@ -37,6 +52,9 @@ export class HrController {
       return this.hrService.getOneCandidate(studentId);
    }
 
+   //============================HR ADD ONE CANDIDATE================================
+   @ApiCookieAuth()
+   @ApiCreatedResponse({ description: 'One candidate added to HR list' })
    @Patch('/candidate/:studentId')
    addToList(
       @UserObj() hrUser: User,
@@ -45,6 +63,9 @@ export class HrController {
       return this.hrService.addOneCandidateToList(hrUser, studentId);
    }
 
+   //============================HR REMOVE ONE CANDIDATE================================
+   @ApiCookieAuth()
+   @ApiCreatedResponse({ description: 'One candidate removed from HR list' })
    @Patch('/candidate/:studentId/hire')
    removeFromList(
       @UserObj() hrUser: User,

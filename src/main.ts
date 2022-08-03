@@ -9,9 +9,12 @@ async function bootstrap() {
 
    const config = new DocumentBuilder()
       .setTitle('MegaK Head Hunter')
-      .setDescription('The Head Hunter API for HR recruiters and developers')
-      .setVersion('1.0')
+      .setDescription(
+         'The Head Hunter API for HR recruiters and developers. This is NestJS and TypeScript backend with MySQL Database for React and TypeScript FrontEnd App. It is a final bonus group project in MegaK one year JavaScript Full Stack Bootcamp',
+      )
+      .setVersion('1.0.0')
       .addTag('developer')
+      .addCookieAuth('jwt')
       .build();
 
    const document = SwaggerModule.createDocument(app, config);

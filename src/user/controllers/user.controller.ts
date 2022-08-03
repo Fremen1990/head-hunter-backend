@@ -17,22 +17,44 @@ import {
 } from '../../interfaces/user';
 import { AuthGuard } from '@nestjs/passport';
 import { UserObj } from '../../decorators/portal-users.decorator';
+import {
+   ApiCookieAuth,
+   ApiCreatedResponse,
+   ApiOkResponse,
+   ApiTags,
+   ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
+@ApiTags('User')
 @Controller('user')
 export class UserController {
    constructor(@Inject(UserService) private userService: UserService) {}
 
+   //============================GET ALL USERS================================
+   @ApiCookieAuth()
+   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+   @ApiOkResponse({
+      description: 'User table results',
+   })
    @UseGuards(AuthGuard('jwt'))
    @Get('/')
    getAll(): Promise<User[]> {
       return this.userService.getAllUsers();
    }
 
+   //============================GET ONE USERS================================
+   @ApiOkResponse({
+      description: 'One user results',
+   })
    @Get('/:id')
    getOneUser(@Param('id') id: string): Promise<User> {
       return this.userService.getOneUser(id);
    }
 
+   //============================ACTIVATE  USER================================
+   @ApiCreatedResponse({
+      description: 'User active true, registration token null',
+   })
    @Post('/register/:userId/:registrationToken')
    register(
       @Body() userPwd: RegisterUserDto,
@@ -43,7 +65,12 @@ export class UserController {
       return this.userService.register(userPwd, userId, registrationToken);
    }
 
-   // ---------------GET  USER PROFILE TO REDUX FROM  DATABASE!!-------------------------
+   //===============GET CURRENT  USER PROFILE TO REDUX STORE==================
+   @ApiCookieAuth()
+   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+   @ApiOkResponse({
+      description: 'Current logged in user data to redux store',
+   })
    @UseGuards(AuthGuard('jwt'))
    @Get('/current/profile')
    getCurrentUserProfile(
