@@ -1,15 +1,12 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import {
-   createOneUserResponse,
-   ImportUserResponse,
-} from '../../interfaces/user';
+import { createOneUserResponse, ImportUserResponse } from '../../types/user';
 import { User } from '../../user/entities/user.entity';
 import { Student } from '../../student/entities/student.entity';
 import {
    UploadFileFailedInterface,
    UploadFileResponseInterface,
-} from '../../interfaces/upload';
-import { MulterDiskUploadedFiles } from '../../interfaces/files';
+} from '../../types/upload';
+import { MulterDiskUploadedFiles } from '../../types/files';
 import { v4 as uuid } from 'uuid';
 import { faker } from '@faker-js/faker';
 
@@ -28,7 +25,7 @@ import { encrypt } from '../../utils/pwd-tools';
 import { MailService } from '../../mail/mail.service';
 import { UserService } from '../..//user/services/user.service';
 import { getRandomArbitrary } from '../../utils/random-number';
-import { ImportRandomStudentsResponse } from '../../interfaces/student';
+import { ImportRandomStudentsResponse } from '../../types/student';
 
 @Injectable()
 export class AdminService {

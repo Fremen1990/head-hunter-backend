@@ -17,6 +17,7 @@ import {
    ApiTags,
    ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { LoginUserResponse } from '../../types/user';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -32,7 +33,10 @@ export class AuthController {
    @ApiNotFoundResponse({ description: 'This user is not registered' })
    @ApiBody({ type: AuthLoginDto })
    @Post('/login')
-   async login(@Body() req: AuthLoginDto, @Res() res: Response): Promise<any> {
+   async login(
+      @Body() req: AuthLoginDto,
+      @Res() res: Response,
+   ): Promise<LoginUserResponse> {
       return this.authService.login(req, res);
    }
 

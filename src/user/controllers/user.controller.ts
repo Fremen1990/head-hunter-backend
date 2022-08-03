@@ -11,10 +11,7 @@ import { User } from '../entities/user.entity';
 
 import { UserService } from '../services/user.service';
 import { RegisterUserDto } from '../dto/register-user.dto';
-import {
-   getUserProfileResponse,
-   RegisterUserResponse,
-} from '../../interfaces/user';
+import { getUserProfileResponse, RegisterUserResponse } from '../../types/user';
 import { AuthGuard } from '@nestjs/passport';
 import { UserObj } from '../../decorators/portal-users.decorator';
 import {

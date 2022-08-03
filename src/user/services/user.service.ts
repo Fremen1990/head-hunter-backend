@@ -4,7 +4,7 @@ import {
    getUserProfileResponse,
    RegisterUserResponse,
    userProfile,
-} from '../../interfaces/user';
+} from '../../types/user';
 import { RegisterUserDto } from '../dto/register-user.dto';
 import { decrypt, encrypt, hashPwd } from '../../utils/pwd-tools';
 import { Student } from '../../student/entities/student.entity';

@@ -12,7 +12,7 @@ import { StudentService } from '../services/student.service';
 import {
    DeleteStudentResponse,
    UpdateStudentResponse,
-} from 'src/interfaces/student';
+} from 'src/types/student';
 import { Student } from '../entities/student.entity';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
 import { AuthGuard } from '@nestjs/passport';

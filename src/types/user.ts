@@ -2,6 +2,14 @@ import { User } from '../user/entities/user.entity';
 import { Student } from '../student/entities/student.entity';
 import { Hr } from '../hr/entities/hr.entity';
 
+export interface LoginUserResponse {
+   id: string;
+   email: string;
+   role: string;
+   token: string;
+   active: boolean;
+}
+
 export interface RegisterUserResponse {
    id: string;
    registrationToken: string | null;

@@ -5,7 +5,7 @@ import {
    HrCandidateAddResponse,
    HrCandidateListResponse,
    HrCandidateRemoveResponse,
-} from '../../interfaces/hr';
+} from '../../types/hr';
 import { User } from '../../user/entities/user.entity';
 import { Hr } from '../entities/hr.entity';
 import { DataSource } from 'typeorm';

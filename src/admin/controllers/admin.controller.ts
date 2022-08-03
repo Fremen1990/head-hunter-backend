@@ -19,18 +19,15 @@ import {
    ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AdminService } from '../services/admin.service';
-import {
-   createOneUserResponse,
-   ImportUserResponse,
-} from '../../interfaces/user';
+import { createOneUserResponse, ImportUserResponse } from '../../types/user';
 import {
    UploadFileFailedInterface,
    UploadFileResponseInterface,
-} from '../../interfaces/upload';
+} from '../../types/upload';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import * as path from 'path';
 import { multerStorage, storageDir } from '../../utils/storage';
-import { MulterDiskUploadedFiles } from '../../interfaces/files';
+import { MulterDiskUploadedFiles } from '../../types/files';
 import { HrDto } from '../dto/hr.dto';
 import { Student } from '../../student/entities/student.entity';
 import { Hr } from '../../hr/entities/hr.entity';
@@ -38,7 +35,7 @@ import { StudentDto } from '../dto/student.dto';
 import { User } from '../../user/entities/user.entity';
 import { UserService } from '../../user/services/user.service';
 import { AuthGuard } from '@nestjs/passport';
-import { ImportRandomStudentsResponse } from '../../interfaces/student';
+import { ImportRandomStudentsResponse } from '../../types/student';
 
 @ApiTags('Admin')
 @ApiCookieAuth()

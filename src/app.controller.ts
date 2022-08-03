@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AdminDto } from './admin/dto/admin.dto';
-import { createAdminResponse } from './interfaces/admin';
+import { createAdminResponse } from './types/admin';
 import {
    ApiConflictResponse,
    ApiCreatedResponse,

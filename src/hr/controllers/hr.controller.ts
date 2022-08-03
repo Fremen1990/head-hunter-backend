@@ -12,7 +12,7 @@ import {
    HrCandidateAddResponse,
    HrCandidateListResponse,
    HrCandidateRemoveResponse,
-} from '../../interfaces/hr';
+} from '../../types/hr';
 import { UserObj } from '../../decorators/portal-users.decorator';
 import { User } from '../../user/entities/user.entity';
 import { Student } from '../../student/entities/student.entity';

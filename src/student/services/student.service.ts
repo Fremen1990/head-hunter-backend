@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 
 import { Student } from '../entities/student.entity';
-import { DeleteStudentResponse } from '../../interfaces/student';
+import { DeleteStudentResponse } from '../../types/student';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
 import { UserService } from 'src/user/services/user.service';
 import { User } from '../../user/entities/user.entity';
