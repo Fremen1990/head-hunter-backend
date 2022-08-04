@@ -598,7 +598,7 @@
 									"});\r",
 									"\r",
 									"pm.test(\"Array of new students have 100 items\", ()=>{\r",
-									"    pm.expect(response.createdUsersList.length).to.be.equal(100)\r",
+									"    pm.expect(response.length).to.be.equal(100)\r",
 									"})\r",
 									""
 								],
@@ -1164,7 +1164,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"studentStatus\": \"available\",\r\n    \"tel\": \"{{$randomPhoneNumber}}\",\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\",\r\n    \"githubUserName\": \"fremen1990\",\r\n    \"portfolioUrls\": [\"rv\", \"rfev\"],\r\n    \"projectUrls\":[\"rv\", \"rfev\"],\r\n    \"bio\": \"My bio is aweeeesomeeeeeeeeee\",\r\n    \"expectedTypeOfWork\": \"any\",\r\n    \"targetWorkCity\": \"re\",\r\n    \"expectedContractType\": \"any\",\r\n    \"expectedSalary\": \"6000 USD\",\r\n    \"canTakeApprenticeship\": \"yes\",\r\n    \"monthsOfCommercialExp\": 5 ,\r\n    \"education\": \"\",\r\n    \"workExperience\": \"\",\r\n    \"courses\": \"\"\r\n}",
+							"raw": "{\r\n    \"studentStatus\": \"available\",\r\n    \"tel\": \"{{$randomPhoneNumber}}\",\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\",\r\n    \"githubUserName\": \"fremen1990\",\r\n    \"portfolioUrls\": [\"https://github.com/Fremen1990/DevSocialMedia-backend\", \"https://github.com/Fremen1990/DevSocialMedia-frontend\"],\r\n    \"projectUrls\":[\"https://github.com/Fremen1990/head-hunter-frontend\", \"https://github.com/Fremen1990/head-hunter-backend\"],\r\n    \"bio\": \"I am Tech lover, highly motivated with creation websites and applications. Born in the Villige in central Poland. I am Financial Analyst with love for programming, interested about Front-End and a Back-End as well, as i like to know how things works. In 2019 i have decided that i will learn programming, and the never ending journey has started, enjoing the process. I love learning about new technologies and problem solving. Already finished 1 year IT bootcamp called StudiujeIT and currently im in the middle of Full-Stack 1 year bootcamp MEGA-K.\",\r\n    \"expectedTypeOfWork\": \"any\",\r\n    \"targetWorkCity\": \"Warsaw, Cracov, Gdansk\",\r\n    \"expectedContractType\": \"any\",\r\n    \"expectedSalary\": \"6000 USD\",\r\n    \"canTakeApprenticeship\": \"yes\",\r\n    \"monthsOfCommercialExp\": 8 ,\r\n    \"education\": \"Master Degree Finance, StudiujeIT, Samuraj Path, MegaK\",\r\n    \"workExperience\": \"7 years in Finance\",\r\n    \"courses\": \"KursReacta, PluralSight, EggHead, MegaK, StudiujeIT\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1545,6 +1545,284 @@
 							"path": [
 								"auth",
 								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create New Student for FE testing",
+			"item": [
+				{
+					"name": "Login Admin for FE testing",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"adminAccessToken\", jsonData.token);\r",
+									"\r",
+									"postman.setEnvironmentVariable(\"adminId\", jsonData.id);\r",
+									"\r",
+									"pm.test(\"Status code is 201\",  ()=> {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Role to be admin\", ()=>{\r",
+									"pm.expect(response.role).to.be.equal(\"admin\")\r",
+									"})\r",
+									"pm.test(\"Token to be generated\", ()=>{\r",
+									"pm.expect(response.token).not.to.be.undefined\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{adminEmail}}\",\r\n    \"pwd\": \"{{adminPwd}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/auth/login",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create One Student for FE testing",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"studentId\", jsonData.createdUser.id);\r",
+									"\r",
+									"postman.setEnvironmentVariable(\"studentRegistrationToken\", jsonData.createdUser.registrationToken);\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 201\",  ()=> {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Role to be student\", ()=>{\r",
+									"pm.expect(response.createdUser.role).to.be.equal(\"student\")\r",
+									"})\r",
+									"pm.test(\"Token to be generated\", ()=>{\r",
+									"pm.expect(response.createdUser.registrationToken).not.to.be.undefined\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{studentEmail}}\",\r\n    \"pwd\": \"{{studentPwd}}\",\r\n    \"role\": \"{{studentRole}}\",\r\n    \"courseCompletion\": 4,\r\n    \"courseEngagement\": 4,\r\n    \"projectDegree\": 3,\r\n    \"teamProjectDegree\": 1,\r\n    \"bonusProjectUrls\": \"{{studentBonusProjectUrls}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/admin/add-student",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"admin",
+								"add-student"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student for FE testing",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"studentId\", jsonData.id);\r",
+									"\r",
+									"pm.test(\"Status code is 201\",  ()=> {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Id is defined\", ()=>{\r",
+									"pm.expect(response.id).not.to.be.undefined\r",
+									"})\r",
+									"\r",
+									"pm.test(\"registrationToken is null\", ()=>{\r",
+									"pm.expect(response.registrationToken).to.be.null})\r",
+									"\r",
+									"pm.test(\"Student active is true\", ()=>{\r",
+									"pm.expect(response.active).to.be.true\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pwd\": \"{{studentPwd}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/user/register/{{studentId}}/{{studentRegistrationToken}}",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"user",
+								"register",
+								"{{studentId}}",
+								"{{studentRegistrationToken}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Student for FE testing",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"studentAccessToken\", jsonData.token);\r",
+									"\r",
+									"postman.setEnvironmentVariable(\"stidentId\", jsonData.id);\r",
+									"\r",
+									"pm.test(\"Status code is 201\",  ()=> {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Role to be student\", ()=>{\r",
+									"pm.expect(response.role).to.be.equal(\"student\")\r",
+									"})\r",
+									"pm.test(\"Token to be generated\", ()=>{\r",
+									"pm.expect(response.token).not.to.be.undefined\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{studentEmail}}\",\r\n    \"pwd\": \"{{studentPwd}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/auth/login",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Student Profile for FE testing",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"\r",
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User data is an Object \", ()=>{\r",
+									"    pm.expect(response).to.be.an(\"Object\");\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response message 'Student details updated' to receive\", ()=>{\r",
+									"pm.expect(response.UpdateStudentStatus).to.be.equal(\"Student details updated\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"studentStatus\": \"available\",\r\n    \"tel\": \"{{$randomPhoneNumber}}\",\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\",\r\n    \"githubUserName\": \"fremen1990\",\r\n    \"portfolioUrls\": [\"https://github.com/Fremen1990/DevSocialMedia-backend\", \"https://github.com/Fremen1990/DevSocialMedia-frontend\"],\r\n    \"projectUrls\":[\"https://github.com/Fremen1990/head-hunter-frontend\", \"https://github.com/Fremen1990/head-hunter-backend\"],\r\n    \"bio\": \"I am Tech lover, highly motivated with creation websites and applications. Born in the Villige in central Poland. I am Financial Analyst with love for programming, interested about Front-End and a Back-End as well, as i like to know how things works. In 2019 i have decided that i will learn programming, and the never ending journey has started, enjoing the process. I love learning about new technologies and problem solving. Already finished 1 year IT bootcamp called StudiujeIT and currently im in the middle of Full-Stack 1 year bootcamp MEGA-K.\",\r\n    \"expectedTypeOfWork\": \"any\",\r\n    \"targetWorkCity\": \"Warsaw, Cracov, Gdansk\",\r\n    \"expectedContractType\": \"any\",\r\n    \"expectedSalary\": \"6000 USD\",\r\n    \"canTakeApprenticeship\": \"yes\",\r\n    \"monthsOfCommercialExp\": 8 ,\r\n    \"education\": \"Master Degree Finance, StudiujeIT, Samuraj Path, MegaK\",\r\n    \"workExperience\": \"7 years in Finance\",\r\n    \"courses\": \"KursReacta, PluralSight, EggHead, MegaK, StudiujeIT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/student/{{studentId}}",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"student",
+								"{{studentId}}"
 							]
 						}
 					},
