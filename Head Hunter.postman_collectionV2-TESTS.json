@@ -590,6 +590,9 @@
 								"exec": [
 									"const response = pm.response.json()\r",
 									"\r",
+									"postman.setEnvironmentVariable(\"hrStudentId\", response[0].id);\r",
+									"\r",
+									"\r",
 									"pm.test(\"Status code is 201\",  ()=> {\r",
 									"    pm.response.to.have.status(201);\r",
 									"});\r",
@@ -1442,14 +1445,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{endpoint}}/hr/candidate/635f9548-04b3-4456-9f62-5d12893dcdb2",
+							"raw": "{{endpoint}}/hr/candidate/{{hrStudentId}}",
 							"host": [
 								"{{endpoint}}"
 							],
 							"path": [
 								"hr",
 								"candidate",
-								"635f9548-04b3-4456-9f62-5d12893dcdb2"
+								"{{hrStudentId}}"
 							]
 						}
 					},
@@ -1478,11 +1481,11 @@
 						}
 					],
 					"request": {
-						"method": "POST",
+						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\":\"dac7983d-b1e6-4a4e-a3de-dryj\"\r\n}",
+							"raw": "{\r\n    \"studentId\":\"{{studentId}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1490,14 +1493,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{endpoint}}/hr/candidate/{{studentId}}",
+							"raw": "{{endpoint}}/hr/candidate",
 							"host": [
 								"{{endpoint}}"
 							],
 							"path": [
 								"hr",
-								"candidate",
-								"{{studentId}}"
+								"candidate"
 							]
 						}
 					},
@@ -1650,6 +1652,11 @@
 		{
 			"key": "HrRegistrationToken",
 			"value": "<HrRegistrationToken will be set when you create new user>",
+			"type": "string"
+		},
+		{
+			"key": "hrStudentId",
+			"value": "<hrStudentId will be set when 100 random students will be generated>",
 			"type": "string"
 		},
 		{

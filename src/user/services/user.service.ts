@@ -1,14 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from '../entities/user.entity';
-import {
-   getUserProfileResponse,
-   RegisterUserResponse,
-   userProfile,
-} from '../../types/user';
+import { RegisterUserResponse, UserProfile } from '../../types';
 import { RegisterUserDto } from '../dto/register-user.dto';
-import { decrypt, encrypt, hashPwd } from '../../utils/pwd-tools';
-import { Student } from '../../student/entities/student.entity';
-import { Hr } from '../../hr/entities/hr.entity';
+import { encrypt } from '../../utils/pwd-tools';
 
 @Injectable()
 export class UserService {
@@ -17,7 +11,7 @@ export class UserService {
       return { id, registrationToken, active };
    }
 
-   filterProfile(user: User): userProfile {
+   filterProfile(user: User): UserProfile {
       const {
          id,
          email,

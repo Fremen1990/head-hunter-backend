@@ -17,13 +17,14 @@ import { Role } from '../../enums/role.enum';
 import { StudentStatus } from '../../enums/student-status.enum';
 import { type } from 'os';
 import { isInstance } from 'class-validator';
+import { getUserProfileResponse } from '../../types';
 
 @Injectable()
 export class HrService {
    constructor(@Inject(DataSource) private dataSource: DataSource) {}
 
    // Nowe
-   async getCandidatesList(): Promise<any> {
+   async getCandidatesList(): Promise<getUserProfileResponse[]> {
       return await this.dataSource
          .getRepository(User)
          .createQueryBuilder('user')
@@ -107,14 +108,22 @@ export class HrService {
             HttpStatus.NOT_FOUND,
          );
       }
-
       return newCandidate;
    }
 
-   async addOneCandidateToList(user: User, studentId: string): Promise<any> {
+   async addOneCandidateToList(
+      user: User,
+      studentId: string,
+   ): Promise<HrCandidateAddResponse> {
+      console.log('STUDENT ID', studentId);
       const interviewingHr = await Hr.findOneBy({ hrId: user.id });
-      const candidate = await this.getOneCandidate(studentId);
-      const { firstName, lastName } = candidate.student;
+      // const candidate = await this.getOneCandidate(studentId);
+      const candidate = await Student.findOneBy({
+         studentId: studentId,
+      });
+      console.log('CANDIDATE', candidate);
+      // const { firstName, lastName } = candidate.student;
+      const { firstName, lastName } = candidate;
       const interviews = (await Interview.findBy({ hrId: user.id })).map(
          (interview) => interview,
       );
@@ -124,28 +133,29 @@ export class HrService {
       newInterview.interviewId = uuid();
       newInterview.interviewTitle = `${firstName} ${lastName}`;
       newInterview.date = generateReservationDate();
-      newInterview.studentId = candidate.id;
+      // newInterview.studentId = candidate.id;
+      newInterview.studentId = candidate.studentId;
       newInterview.hrId = interviewingHr.hrId;
 
       await newInterview.save();
 
-      candidate.student.studentStatus = StudentStatus.INTERVIEW;
+      // candidate.student.studentStatus = StudentStatus.INTERVIEW;
+      candidate.studentStatus = StudentStatus.INTERVIEW;
 
-      await candidate.student.save();
+      // await candidate.student.save();
+      await candidate.save();
 
       interviewingHr.interview = [...interviews, newInterview];
 
       await interviewingHr.save();
 
       return {
-         interviewingHr,
-         candidate,
+         // interviewingHr,
+         // candidate,
          interview: `Interview between ${newInterview.interviewTitle} and ${interviewingHr.fullName} has been set`,
          interviewId: newInterview.interviewId,
       };
    }
-
-   async;
 
    // TODO TO BE COMPLETED LATER WHEN RELATIONS BETWEEN STUDENTS VS INTERVIEW VS HR IS SET UP
    async removeFromList(

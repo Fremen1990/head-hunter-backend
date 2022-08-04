@@ -222,6 +222,8 @@ export class AdminService {
       createdUsersList.push(newStudent.email);
       //---------------- student Table insert END-----------------------
 
+      // await this.mailService.sendRegistrationLink(user); // to be tested only in one user, not import mass students
+
       return {
          createUserStatus: 'OK',
          createdUser: user,
@@ -298,7 +300,7 @@ export class AdminService {
    }
 
    // IMPORT FAKE STUDENTS
-   async importRandomFakeStudentsData(): Promise<ImportRandomStudentsResponse> {
+   async importRandomFakeStudentsData(): Promise<any> {
       const createdUsersList = [];
       const studentsNumberArray = Array.from({ length: 100 }, (v, i) => i);
 
@@ -350,12 +352,17 @@ export class AdminService {
          user.encryptedPwd = encrypt(nanoToken());
          user.role = Role.STUDENT;
          user.registrationToken = nanoToken();
+         user.active = true;
          user.student = student;
          await user.save();
 
-         createdUsersList.push(user.email);
+         createdUsersList.push({
+            no: userItem,
+            id: user.id,
+            email: user.email,
+         });
       }
 
-      return { createdUsersList: createdUsersList };
+      return createdUsersList;
    }
 }

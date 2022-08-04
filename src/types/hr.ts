@@ -27,12 +27,14 @@ export interface HrCandidateListResponse {
 }
 
 export interface HrCandidateAddResponse {
-   id: string;
-   // email: string;
-   firstName: string;
-   lastName: string;
-   // portfolioUrls: string;
-   portfolioUrls: string[];
+   // id: string;
+   // // email: string;
+   // firstName: string;
+   // lastName: string;
+   // // portfolioUrls: string;
+   // portfolioUrls: string[];
+   interview: string;
+   interviewId: string;
 }
 
 export interface HrCandidateRemoveResponse {

@@ -2,12 +2,22 @@ import { User } from '../user/entities/user.entity';
 import { Student } from '../student/entities/student.entity';
 import { Hr } from '../hr/entities/hr.entity';
 
+export interface LoginUser {
+   email: string;
+   pwd: string;
+}
+
 export interface LoginUserResponse {
    id: string;
    email: string;
    role: string;
    token: string;
    active: boolean;
+}
+
+export interface LogoutUserResponse {
+   ok?: string;
+   error?: string;
 }
 
 export interface RegisterUserResponse {
@@ -30,17 +40,31 @@ export interface createOneUserResponse {
    createdUser: User;
 }
 
-export interface userProfile {
+export interface UserProfile {
    id: string;
    email: string;
    role: string;
    currentSessionToken: string | null;
    active: boolean;
+   encryptedPwd?: string;
+   registrationToken?: string;
+   resetPasswordToken?: string;
    created_at: Date;
    updated_at: Date;
 }
 
 export interface getUserProfileResponse {
-   userInfo: userProfile;
-   userDetails?: User | Student | Hr;
+   id: string;
+   email: string;
+   encryptedPwd;
+   role: string;
+   currentSessionToken: string | null;
+   registrationToken: string;
+   resetPasswordToken: string;
+   active: boolean;
+   created_at: Date;
+   updated_at: Date;
+
+   student?: Student;
+   hr?: Hr;
 }

@@ -1,4 +1,5 @@
 import {
+   Body,
    Controller,
    Get,
    Inject,
@@ -26,6 +27,7 @@ import {
    ApiTags,
    ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { getUserProfileResponse } from '../../types';
 
 @ApiTags('HR')
 @ApiCookieAuth()
@@ -41,25 +43,28 @@ export class HrController {
          'Students list array with user data in relation to student table ',
    })
    @Get('/candidate/list')
-   candidateList(): Promise<any> {
+   candidateList(): Promise<getUserProfileResponse[]> {
       return this.hrService.getCandidatesList();
    }
 
-   //============================GET ONE HR ================================
-   @UseGuards(AuthGuard('jwt'))
-   @Get('/:hrId')
-   getOneHr(@Param('hrId') hrId: string): Promise<any> {
-      return this.hrService.getOneHr(hrId);
+   //============================HR GET ONE CANDIDATE================================
+   @ApiOkResponse({
+      description: 'One specific student has been found',
+   })
+   @Get('/candidate/:studentId')
+   getOneCandidate(@Param('studentId') studentId: string): Promise<any> {
+      return this.hrService.getOneCandidate(studentId);
    }
 
    //============================HR ADD ONE CANDIDATE================================
    @ApiCookieAuth()
    @ApiCreatedResponse({ description: 'One candidate added to HR list' })
    @UseGuards(AuthGuard('jwt'))
-   @Patch('/candidate/:studentId')
+   @Patch('/candidate')
    addToList(
       @UserObj() hrUser: User,
-      @Param('studentId') studentId: string,
+      @Body('studentId') studentId: string,
+      // @Param('studentId') studentId: string,
    ): Promise<HrCandidateAddResponse> {
       return this.hrService.addOneCandidateToList(hrUser, studentId);
    }
@@ -73,5 +78,12 @@ export class HrController {
       @Param('studentId') studentId: string,
    ): Promise<HrCandidateRemoveResponse> {
       return this.hrService.removeFromList(hrUser, studentId);
+   }
+
+   //============================GET ONE HR ================================
+   @UseGuards(AuthGuard('jwt'))
+   @Get('/:hrId')
+   getOneHr(@Param('hrId') hrId: string): Promise<any> {
+      return this.hrService.getOneHr(hrId);
    }
 }
