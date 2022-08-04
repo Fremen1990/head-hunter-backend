@@ -37,7 +37,7 @@ import { getUserProfileResponse } from '../../types';
 export class HrController {
    constructor(@Inject(HrService) private hrService: HrService) {}
 
-   //============================HR CANDIDATES LIST================================
+   //============================HR AVAILABLE CANDIDATES LIST = ACTIVE && AVAILABLE================================
    @ApiOkResponse({
       description:
          'Students list array with user data in relation to student table ',
@@ -47,7 +47,7 @@ export class HrController {
       return this.hrService.getCandidatesList();
    }
 
-   //============================HR GET ONE CANDIDATE================================
+   //============================HR GET ONE CANDIDATE = ACTIVE && AVAILABLE================================
    @ApiOkResponse({
       description: 'One specific student has been found',
    })
@@ -56,7 +56,7 @@ export class HrController {
       return this.hrService.getOneCandidate(studentId);
    }
 
-   //============================HR ADD ONE CANDIDATE================================
+   //============================HR ADD ONE CANDIDATE TO INTERVIEW================================
    @ApiCookieAuth()
    @ApiCreatedResponse({ description: 'One candidate added to HR list' })
    @UseGuards(AuthGuard('jwt'))
@@ -67,6 +67,16 @@ export class HrController {
       // @Param('studentId') studentId: string,
    ): Promise<HrCandidateAddResponse> {
       return this.hrService.addOneCandidateToList(hrUser, studentId);
+   }
+
+   @ApiCookieAuth()
+   @ApiCreatedResponse({
+      description: 'HR is getting his/hers open inteviews list',
+   })
+   @UseGuards(AuthGuard('jwt'))
+   @Get('/interviews')
+   async showMyInterviews(@UserObj() hrUser: User): Promise<any> {
+      return this.hrService.showMyInterviews(hrUser);
    }
 
    //============================HR REMOVE ONE CANDIDATE================================

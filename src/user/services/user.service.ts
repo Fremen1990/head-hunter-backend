@@ -74,15 +74,24 @@ export class UserService {
    }
 
    async getOneUser(id: string): Promise<User> {
-      const user = await User.findOneById(id);
+      // const user = await User.findOneById(id);
+      // if (!user) {
+      //    throw new HttpException(
+      //       `Cannot find user ID:${id}`,
+      //       HttpStatus.NOT_FOUND,
+      //    );
+      // } else {
+      //    return user;
+      // }
+      const user = await User.findOneBy({ id });
       if (!user) {
          throw new HttpException(
-            `Cannot find user ID:${id}`,
+            `Cannot find user ID: ${id}`,
             HttpStatus.NOT_FOUND,
          );
-      } else {
-         return user;
       }
+
+      return user;
    }
 
    async getAllUsers(): Promise<User[]> {
