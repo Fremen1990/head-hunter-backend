@@ -19,13 +19,26 @@ import { type } from 'os';
 import { isInstance } from 'class-validator';
 import { getUserProfileResponse } from '../../types';
 import { UserService } from '../../user/services/user.service';
+import { StudentService } from '../../student/services/student.service';
 
 @Injectable()
 export class HrService {
    constructor(
       @Inject(DataSource) private dataSource: DataSource,
       @Inject(UserService) private userService: UserService,
+      @Inject(StudentService) private studentService: StudentService,
    ) {}
+
+   async getInterviews(hrUser: User): Promise<any> {
+      return await Interview.find({
+         where: {
+            hrId: hrUser.id,
+         },
+         order: {
+            studentId: 'ASC',
+         },
+      });
+   }
 
    // get a list of students that can be added to interview - status available && active
    // in return object user with relations to student table, so all student data
@@ -90,12 +103,7 @@ export class HrService {
          );
       }
 
-      // przeniesc do osobnej metody
-      const openInterviews = await Interview.find({
-         where: {
-            hrId: hr.id,
-         },
-      });
+      const openInterviews = await this.getInterviews(hr);
 
       // test return of openInterviews
       return {
@@ -112,7 +120,7 @@ export class HrService {
       user: User,
       studentId: string,
    ): Promise<HrCandidateAddResponse> {
-      console.log('STUDENT ID', studentId);
+      // console.log('STUDENT ID', studentId);
       const interviewingHr = await Hr.findOneBy({ hrId: user.id });
       const candidate = await this.getOneCandidate(studentId);
       const { firstName, lastName } = candidate.student;
@@ -120,7 +128,7 @@ export class HrService {
       const interviews = (await Interview.findBy({ hrId: user.id })).map(
          (interview) => interview,
       );
-      console.log(interviews);
+      // console.log(interviews);
 
       const newInterview = new Interview();
       newInterview.interviewId = uuid();
@@ -153,18 +161,25 @@ export class HrService {
    //iterfejs do napisania
    async showMyInterviews(hrUser: User): Promise<any> {
       // znajdz wszystkich studentow, którzy maja ze mna rozmowe
-      const openInterviews = await Interview.find({
-         where: {
-            hrId: hrUser.id,
-         },
-         order: {
-            studentId: 'ASC',
-         },
-      });
+      const openInterviews = await this.getInterviews(hrUser);
+
+      // console.log('openInterviews', openInterviews);
+      // console.log('type', openInterviews instanceof Array);
+      // console.log(openInterviews.length);
+
+      if (openInterviews.length === 0) {
+         return {
+            message: 'No student added to interview',
+            data: openInterviews,
+         };
+      }
 
       // pobierz wszystkie id to tablicy, pobierz daty rozmow do tablicy - wszystko jest sortowane wiec bedzie sie zgadzać
       const studentsIds = openInterviews.map((student) => student.studentId);
       const interviewTill = openInterviews.map((student) => student.date);
+
+      // console.log('studentsIds', studentsIds);
+      // console.log('interviewTill', interviewTill);
 
       // pobierz wszystkich studentow z po id z tablicy
       const myInterviews = (
@@ -185,7 +200,6 @@ export class HrService {
             courseEngagement: student.courseEngagement,
             projectDegree: student.projectDegree,
             teamProjectDegree: student.teamProjectDegree,
-            bonusProjectUrls: student.bonusProjectUrls,
             expectedTypeOfWork: student.expectedTypeOfWork,
             targetWorkCity: student.targetWorkCity,
             expectedContractType: student.expectedContractType,
@@ -203,55 +217,69 @@ export class HrService {
          });
       }
 
-      return {
-         data,
-         //openInterviews, // just to compare, comment line
-      };
+      // return {
+      //    data,
+      //    //openInterviews, // just to compare, comment line
+      // };
+
+      return data;
    }
 
-   // TODO TO BE COMPLETED LATER WHEN RELATIONS BETWEEN STUDENTS VS INTERVIEW VS HR IS SET UP
-   async removeFromList(
-      hrUser: User,
-      studentId: string,
-   ): Promise<HrCandidateRemoveResponse> {
-      const candidate = await Student.findOneBy({ studentId: studentId });
+   async remove(hrUser: User, studentId: string): Promise<any> {
+      const student = await Student.findOneBy({ studentId });
 
-      if (!candidate) {
+      if (!student) {
          throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
       }
 
+      const interview = await Interview.findOneBy({
+         studentId: studentId,
+         hrId: hrUser.id,
+      });
+
+      if (!interview) {
+         throw new HttpException(
+            'This students in not on interview list',
+            HttpStatus.NOT_FOUND,
+         );
+      }
+
+      await interview.remove();
+
+      student.studentStatus = StudentStatus.AVAILABLE;
+      await student.save();
+
       return {
-         id: candidate.studentId,
-         // email: candidate.email,
-         firstName: candidate.firstName,
-         lastName: candidate.lastName,
+         message: `Interview with ${student.firstName} ${student.lastName} was canceled`,
+      };
+   }
+
+   async hire(hrUser: User, studentId: string): Promise<any> {
+      const student = await Student.findOneBy({ studentId });
+
+      if (!student) {
+         throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
+      }
+
+      const interview = await Interview.findOneBy({
+         studentId: studentId,
+         hrId: hrUser.id,
+      });
+
+      if (!interview) {
+         throw new HttpException(
+            'This students in not on interview list',
+            HttpStatus.NOT_FOUND,
+         );
+      }
+
+      await interview.remove();
+
+      student.studentStatus = StudentStatus.EMPLOYED;
+      await student.save();
+
+      return {
+         message: `${student.firstName} ${student.lastName} was hired`,
       };
    }
 }
-
-//  async getCandidatesList(): // excludedIds,
-//  Promise<HrCandidateListResponse[] | Student[]> {
-/*
-
-Radek -> dodałem or Student[] aby nie krzyczał
-*/
-
-// const candidates = User.find({ relations: ['student'] });
-//    const candidates = await Student.find({
-//     relations: ['user'],
-//   });
-// TODO QUERY BUILDER WHERE FIND CANDIDATES WITHOUT IDS FROM BODY
-//  return candidates;
-
-//    return User.createQueryBuilder('user')
-//       .leftJoinAndSelect('user.student', 'student')
-//       .leftJoinAndSelect('user.hr', 'hr')
-//       .where('user.id NOT IN hr.candidates')
-//       .getMany();
-// }
-
-// return User.createQueryBuilder('user')
-//    .leftJoinAndSelect('user.student', 'student')
-//    .leftJoinAndSelect('user.hr', 'hr')
-//    .getMany();
-//  }
