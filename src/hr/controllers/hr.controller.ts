@@ -1,6 +1,7 @@
 import {
    Body,
    Controller,
+   Delete,
    Get,
    Inject,
    Param,
@@ -85,7 +86,7 @@ export class HrController {
       description:
          'Hr is not interested by student anymore, removes him/his from interview',
    })
-   @Get('/interviews/:studentId/remove')
+   @Delete('/interviews/:studentId/remove')
    removeFromList(
       @UserObj() hrUser: User,
       @Param('studentId') studentId: string,
@@ -96,7 +97,7 @@ export class HrController {
    //============================HR HIRES ONE STUDENT FROM LIST================================
    @ApiCookieAuth()
    @ApiCreatedResponse({ description: 'HR is hiring student' })
-   @Get('/interviews/:studentId/hire')
+   @Patch('/interviews/:studentId/hire')
    hireStudent(
       @UserObj() hrUser: User,
       @Param('studentId') studentId: string,
