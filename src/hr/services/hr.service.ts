@@ -18,12 +18,30 @@ import { StudentStatus } from '../../enums/student-status.enum';
 import { type } from 'os';
 import { isInstance } from 'class-validator';
 import { getUserProfileResponse } from '../../types';
+import { UserService } from '../../user/services/user.service';
+import { StudentService } from '../../student/services/student.service';
 
 @Injectable()
 export class HrService {
-   constructor(@Inject(DataSource) private dataSource: DataSource) {}
+   constructor(
+      @Inject(DataSource) private dataSource: DataSource,
+      @Inject(UserService) private userService: UserService,
+      @Inject(StudentService) private studentService: StudentService,
+   ) {}
 
-   // Nowe
+   async getInterviews(hrUser: User): Promise<any> {
+      return await Interview.find({
+         where: {
+            hrId: hrUser.id,
+         },
+         order: {
+            studentId: 'ASC',
+         },
+      });
+   }
+
+   // get a list of students that can be added to interview - status available && active
+   // in return object user with relations to student table, so all student data
    async getCandidatesList(): Promise<getUserProfileResponse[]> {
       return await this.dataSource
          .getRepository(User)
@@ -36,58 +54,10 @@ export class HrService {
          .getMany();
    }
 
-   //  async getCandidatesList(): // excludedIds,
-   //  Promise<HrCandidateListResponse[] | Student[]> {
-   /*
-
-   Radek -> dodałem or Student[] aby nie krzyczał
-   */
-
-   // const candidates = User.find({ relations: ['student'] });
-   //    const candidates = await Student.find({
-   //     relations: ['user'],
-   //   });
-   // TODO QUERY BUILDER WHERE FIND CANDIDATES WITHOUT IDS FROM BODY
-   //  return candidates;
-
-   //    return User.createQueryBuilder('user')
-   //       .leftJoinAndSelect('user.student', 'student')
-   //       .leftJoinAndSelect('user.hr', 'hr')
-   //       .where('user.id NOT IN hr.candidates')
-   //       .getMany();
-   // }
-
-   // return User.createQueryBuilder('user')
-   //    .leftJoinAndSelect('user.student', 'student')
-   //    .leftJoinAndSelect('user.hr', 'hr')
-   //    .getMany();
-   //  }
-
-   // use only to getData on frontend
-   async getOneHr(hrId): Promise<any> {
-      //dodaj walidajce roli
-      const user = await User.findOneBy({ id: hrId });
-      if (!user) {
-         throw new HttpException('Hr not found', HttpStatus.NOT_FOUND);
-      }
-
-      const hr = await this.dataSource
-         .getRepository(User)
-         .createQueryBuilder('user')
-         .leftJoinAndSelect('user.hr', 'hr')
-         .where('hr.hrId = :hrId', {
-            hrId: `${hrId}`,
-         })
-         .getOne();
-
-      return hr;
-   }
-
+   // get a student that can be added to interview - status available && active
+   // in return object user with relations to student table, so all student data
    async getOneCandidate(studentId): Promise<any> {
-      const user = await User.findOneBy({ id: studentId });
-      if (!user) {
-         throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
-      }
+      await this.userService.getOneUser(studentId);
 
       const newCandidate = await this.dataSource
          .getRepository(User)
@@ -111,39 +81,68 @@ export class HrService {
       return newCandidate;
    }
 
+   // get one HR user data
+   // in return object user with relations to hr table, so all hr data including open interviews
+   // use only to getData on frontend
+   async getOneHr(hrId): Promise<any> {
+      await this.userService.getOneUser(hrId);
+
+      const hr = await this.dataSource
+         .getRepository(User)
+         .createQueryBuilder('user')
+         .leftJoinAndSelect('user.hr', 'hr')
+         .where('hr.hrId = :hrId', {
+            hrId: `${hrId}`,
+         })
+         .getOne();
+
+      if (!hr) {
+         throw new HttpException(
+            'This user has different role than HR',
+            HttpStatus.NOT_FOUND,
+         );
+      }
+
+      const openInterviews = await this.getInterviews(hr);
+
+      // test return of openInterviews
+      return {
+         hr,
+         openInterviews:
+            openInterviews ??
+            `This HR doesn't have any interviews with students now`,
+      };
+   }
+
+   // add student to interview with reservation on next 10 days, change student status on inverview,
+   // then is not visible/available for other hr users
    async addOneCandidateToList(
       user: User,
       studentId: string,
    ): Promise<HrCandidateAddResponse> {
-      console.log('STUDENT ID', studentId);
+      // console.log('STUDENT ID', studentId);
       const interviewingHr = await Hr.findOneBy({ hrId: user.id });
-      // const candidate = await this.getOneCandidate(studentId);
-      const candidate = await Student.findOneBy({
-         studentId: studentId,
-      });
-      console.log('CANDIDATE', candidate);
-      // const { firstName, lastName } = candidate.student;
-      const { firstName, lastName } = candidate;
+      const candidate = await this.getOneCandidate(studentId);
+      const { firstName, lastName } = candidate.student;
+
       const interviews = (await Interview.findBy({ hrId: user.id })).map(
          (interview) => interview,
       );
-      console.log(interviews);
+      // console.log(interviews);
 
       const newInterview = new Interview();
       newInterview.interviewId = uuid();
       newInterview.interviewTitle = `${firstName} ${lastName}`;
       newInterview.date = generateReservationDate();
-      // newInterview.studentId = candidate.id;
-      newInterview.studentId = candidate.studentId;
+      newInterview.studentId = candidate.id;
+
       newInterview.hrId = interviewingHr.hrId;
 
       await newInterview.save();
 
-      // candidate.student.studentStatus = StudentStatus.INTERVIEW;
-      candidate.studentStatus = StudentStatus.INTERVIEW;
+      candidate.student.studentStatus = StudentStatus.INTERVIEW;
 
-      // await candidate.student.save();
-      await candidate.save();
+      await candidate.student.save();
 
       interviewingHr.interview = [...interviews, newInterview];
 
@@ -157,22 +156,130 @@ export class HrService {
       };
    }
 
-   // TODO TO BE COMPLETED LATER WHEN RELATIONS BETWEEN STUDENTS VS INTERVIEW VS HR IS SET UP
-   async removeFromList(
-      hrUser: User,
-      studentId: string,
-   ): Promise<HrCandidateRemoveResponse> {
-      const candidate = await Student.findOneBy({ studentId: studentId });
+   // show students that are being currently invterviewed by hr
+   // return needed data for view 'do rozmowy'
+   //iterfejs do napisania
+   async showMyInterviews(hrUser: User): Promise<any> {
+      // znajdz wszystkich studentow, którzy maja ze mna rozmowe
+      const openInterviews = await this.getInterviews(hrUser);
 
-      if (!candidate) {
+      // console.log('openInterviews', openInterviews);
+      // console.log('type', openInterviews instanceof Array);
+      // console.log(openInterviews.length);
+
+      if (openInterviews.length === 0) {
+         return {
+            message: 'No student added to interview',
+            data: openInterviews,
+         };
+      }
+
+      // pobierz wszystkie id to tablicy, pobierz daty rozmow do tablicy - wszystko jest sortowane wiec bedzie sie zgadzać
+      const studentsIds = openInterviews.map((student) => student.studentId);
+      const interviewTill = openInterviews.map((student) => student.date);
+
+      // console.log('studentsIds', studentsIds);
+      // console.log('interviewTill', interviewTill);
+
+      // pobierz wszystkich studentow z po id z tablicy
+      const myInterviews = (
+         await this.dataSource
+            .createQueryBuilder(Student, 'student')
+            .where('student.studentId IN (:studentsIds)', {
+               studentsIds: [...studentsIds],
+            })
+            .orderBy('student.studentId', 'ASC')
+            .getMany()
+      ).map((student) => {
+         return {
+            id: student.studentId,
+            githubUserName: student.githubUserName, // for user image purpose
+            firstName: student.firstName,
+            lastName: student.lastName,
+            courseCompletion: student.courseCompletion,
+            courseEngagement: student.courseEngagement,
+            projectDegree: student.projectDegree,
+            teamProjectDegree: student.teamProjectDegree,
+            expectedTypeOfWork: student.expectedTypeOfWork,
+            targetWorkCity: student.targetWorkCity,
+            expectedContractType: student.expectedContractType,
+            expectedSalary: student.expectedSalary,
+            canTakeApprenticeship: student.canTakeApprenticeship,
+            monthsOfCommercialExp: student.monthsOfCommercialExp,
+         };
+      });
+
+      const data = [];
+      for (let i = 0; i < myInterviews.length; i++) {
+         data.push({
+            availableTill: interviewTill[i],
+            ...myInterviews[i],
+         });
+      }
+
+      // return {
+      //    data,
+      //    //openInterviews, // just to compare, comment line
+      // };
+
+      return data;
+   }
+
+   async remove(hrUser: User, studentId: string): Promise<any> {
+      const student = await Student.findOneBy({ studentId });
+
+      if (!student) {
          throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
       }
 
+      const interview = await Interview.findOneBy({
+         studentId: studentId,
+         hrId: hrUser.id,
+      });
+
+      if (!interview) {
+         throw new HttpException(
+            'This students in not on interview list',
+            HttpStatus.NOT_FOUND,
+         );
+      }
+
+      await interview.remove();
+
+      student.studentStatus = StudentStatus.AVAILABLE;
+      await student.save();
+
       return {
-         id: candidate.studentId,
-         // email: candidate.email,
-         firstName: candidate.firstName,
-         lastName: candidate.lastName,
+         message: `Interview with ${student.firstName} ${student.lastName} was canceled`,
+      };
+   }
+
+   async hire(hrUser: User, studentId: string): Promise<any> {
+      const student = await Student.findOneBy({ studentId });
+
+      if (!student) {
+         throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
+      }
+
+      const interview = await Interview.findOneBy({
+         studentId: studentId,
+         hrId: hrUser.id,
+      });
+
+      if (!interview) {
+         throw new HttpException(
+            'This students in not on interview list',
+            HttpStatus.NOT_FOUND,
+         );
+      }
+
+      await interview.remove();
+
+      student.studentStatus = StudentStatus.EMPLOYED;
+      await student.save();
+
+      return {
+         message: `${student.firstName} ${student.lastName} was hired`,
       };
    }
 }

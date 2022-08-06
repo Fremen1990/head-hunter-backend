@@ -1,6 +1,7 @@
 import {
    Body,
    Controller,
+   Delete,
    Get,
    Inject,
    Param,
@@ -37,7 +38,7 @@ import { getUserProfileResponse } from '../../types';
 export class HrController {
    constructor(@Inject(HrService) private hrService: HrService) {}
 
-   //============================HR CANDIDATES LIST================================
+   //============================HR AVAILABLE CANDIDATES LIST = ACTIVE && AVAILABLE================================
    @ApiOkResponse({
       description:
          'Students list array with user data in relation to student table ',
@@ -47,7 +48,7 @@ export class HrController {
       return this.hrService.getCandidatesList();
    }
 
-   //============================HR GET ONE CANDIDATE================================
+   //============================HR GET ONE CANDIDATE = ACTIVE && AVAILABLE================================
    @ApiOkResponse({
       description: 'One specific student has been found',
    })
@@ -56,7 +57,7 @@ export class HrController {
       return this.hrService.getOneCandidate(studentId);
    }
 
-   //============================HR ADD ONE CANDIDATE================================
+   //============================HR ADD ONE CANDIDATE TO INTERVIEW================================
    @ApiCookieAuth()
    @ApiCreatedResponse({ description: 'One candidate added to HR list' })
    @UseGuards(AuthGuard('jwt'))
@@ -69,15 +70,39 @@ export class HrController {
       return this.hrService.addOneCandidateToList(hrUser, studentId);
    }
 
-   //============================HR REMOVE ONE CANDIDATE================================
    @ApiCookieAuth()
-   @ApiCreatedResponse({ description: 'One candidate removed from HR list' })
-   @Patch('/candidate/:studentId/hire')
+   @ApiCreatedResponse({
+      description: 'HR is getting his/hers open inteviews list',
+   })
+   @UseGuards(AuthGuard('jwt'))
+   @Get('/interviews')
+   async showMyInterviews(@UserObj() hrUser: User): Promise<any> {
+      return this.hrService.showMyInterviews(hrUser);
+   }
+
+   //============================HR REMOVES ONE STUDENT FROM LIST================================
+   @ApiCookieAuth()
+   @ApiCreatedResponse({
+      description:
+         'Hr is not interested by student anymore, removes him/his from interview',
+   })
+   @Delete('/interviews/:studentId/remove')
    removeFromList(
       @UserObj() hrUser: User,
       @Param('studentId') studentId: string,
-   ): Promise<HrCandidateRemoveResponse> {
-      return this.hrService.removeFromList(hrUser, studentId);
+   ): Promise<any> {
+      return this.hrService.remove(hrUser, studentId);
+   }
+
+   //============================HR HIRES ONE STUDENT FROM LIST================================
+   @ApiCookieAuth()
+   @ApiCreatedResponse({ description: 'HR is hiring student' })
+   @Patch('/interviews/:studentId/hire')
+   hireStudent(
+      @UserObj() hrUser: User,
+      @Param('studentId') studentId: string,
+   ): Promise<any> {
+      return this.hrService.hire(hrUser, studentId);
    }
 
    //============================GET ONE HR ================================
