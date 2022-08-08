@@ -249,7 +249,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"{{studentEmail}}\",\r\n    \"pwd\": \"{{studentPwd}}\",\r\n    \"role\": \"{{studentRole}}\",\r\n    \"courseCompletion\": 4,\r\n    \"courseEngagement\": 4,\r\n    \"projectDegree\": 3,\r\n    \"teamProjectDegree\": 1,\r\n    \"bonusProjectUrls\": \"{{studentBonusProjectUrls}}\"\r\n}",
+							"raw": "{\r\n    \"email\": \"{{studentEmail}}\",\r\n    \"pwd\": \"{{studentPwd}}\",\r\n    \"role\": \"{{studentRole}}\",\r\n    \"courseCompletion\": 4.23,\r\n    \"courseEngagement\": 2.13,\r\n    \"projectDegree\": 3.75,\r\n    \"teamProjectDegree\": 1.5,\r\n    \"bonusProjectUrls\": [\"https://github.com/Fremen1990/head-hunter-frontend\",  \"https://head-hunter-frontend.vercel.app/login\", \"https://github.com/Fremen1990/head-hunter-backend\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -824,37 +824,25 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"const jsonData = JSON.parse(responseBody);\r",
-									"postman.setEnvironmentVariable(\"studentId\", jsonData.id);\r",
-									"\r",
-									"pm.test(\"Status code is 201\",  ()=> {\r",
-									"    pm.response.to.have.status(201);\r",
+									"pm.test(\"Status code is 302\",  ()=> {\r",
+									"    pm.response.to.have.status(302);\r",
 									"});\r",
 									"\r",
-									"const response = pm.response.json();\r",
-									"\r",
-									"pm.test(\"Id is defined\", ()=>{\r",
-									"pm.expect(response.id).not.to.be.undefined\r",
-									"})\r",
-									"\r",
-									"pm.test(\"registrationToken is null\", ()=>{\r",
-									"pm.expect(response.registrationToken).to.be.null})\r",
-									"\r",
-									"pm.test(\"Student active is true\", ()=>{\r",
-									"pm.expect(response.active).to.be.true\r",
-									"})\r",
 									""
 								],
 								"type": "text/javascript"
 							}
 						}
 					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"pwd\": \"{{studentPwd}}\"\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1164,7 +1152,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"studentStatus\": \"available\",\r\n    \"tel\": \"{{$randomPhoneNumber}}\",\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\",\r\n    \"githubUserName\": \"fremen1990\",\r\n    \"portfolioUrls\": [\"https://github.com/Fremen1990/DevSocialMedia-backend\", \"https://github.com/Fremen1990/DevSocialMedia-frontend\"],\r\n    \"projectUrls\":[\"https://github.com/Fremen1990/head-hunter-frontend\", \"https://github.com/Fremen1990/head-hunter-backend\"],\r\n    \"bio\": \"I am Tech lover, highly motivated with creation websites and applications. Born in the Villige in central Poland. I am Financial Analyst with love for programming, interested about Front-End and a Back-End as well, as i like to know how things works. In 2019 i have decided that i will learn programming, and the never ending journey has started, enjoing the process. I love learning about new technologies and problem solving. Already finished 1 year IT bootcamp called StudiujeIT and currently im in the middle of Full-Stack 1 year bootcamp MEGA-K.\",\r\n    \"expectedTypeOfWork\": \"any\",\r\n    \"targetWorkCity\": \"Warsaw, Cracov, Gdansk\",\r\n    \"expectedContractType\": \"any\",\r\n    \"expectedSalary\": \"6000 USD\",\r\n    \"canTakeApprenticeship\": \"yes\",\r\n    \"monthsOfCommercialExp\": 8 ,\r\n    \"education\": \"Master Degree Finance, StudiujeIT, Samuraj Path, MegaK\",\r\n    \"workExperience\": \"7 years in Finance\",\r\n    \"courses\": \"KursReacta, PluralSight, EggHead, MegaK, StudiujeIT\"\r\n}",
+							"raw": "{\r\n    \"studentStatus\": \"available\",\r\n    \"tel\": \"{{$randomPhoneNumber}}\",\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\",\r\n    \"githubUserName\": \"fremen1990\",\r\n    \"portfolioUrls\": [\"https://github.com/Fremen1990/DevSocialMedia-backend\", \"https://github.com/Fremen1990/DevSocialMedia-frontend\"],\r\n    \"projectUrls\":[\"https://github.com/Fremen1990/head-hunter-frontend\", \"https://github.com/Fremen1990/head-hunter-backend\"],\r\n    \"bio\": \"Mam na imię Tomasz, moją pasją od prawie trzech lat jest programowanie, z zawodu i dotychczasowego doświadczenia jestem analitykiem finansowym, skończyłem roczny Bootcamp StudiujeIT, kursy Samuraja Programowania, liczne kursy Udemy, KursReacta Michała Raszyckiego i w tym momencie kończę Bootcamp Full Stack JavaScript MegaK, od niedawna aktywnie szukam pracy jako programista, mam nadzieję, że się spotkamy :)\",\r\n    \"expectedTypeOfWork\": \"any\",\r\n    \"targetWorkCity\": \"Warszawa\",\r\n    \"expectedContractType\": \"any\",\r\n    \"expectedSalary\": \"6000 USD\",\r\n    \"canTakeApprenticeship\": \"yes\",\r\n    \"monthsOfCommercialExp\": 8 ,\r\n    \"education\": \"Master Degree Finance, StudiujeIT, Samuraj Path, MegaK\",\r\n    \"workExperience\": \"7 years in Finance\",\r\n    \"courses\": \"KursReacta, PluralSight, EggHead, MegaK, StudiujeIT\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1246,37 +1234,24 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"const jsonData = JSON.parse(responseBody);\r",
-									"postman.setEnvironmentVariable(\"hrId\", jsonData.id);\r",
-									"\r",
-									"pm.test(\"Status code is 201\",  ()=> {\r",
-									"    pm.response.to.have.status(201);\r",
+									"pm.test(\"Status code is 302\",  ()=> {\r",
+									"    pm.response.to.have.status(302);\r",
 									"});\r",
-									"\r",
-									"const response = pm.response.json();\r",
-									"\r",
-									"pm.test(\"Id is defined\", ()=>{\r",
-									"pm.expect(response.id).not.to.be.undefined\r",
-									"})\r",
-									"\r",
-									"pm.test(\"registrationToken is null\", ()=>{\r",
-									"pm.expect(response.registrationToken).to.be.null})\r",
-									"\r",
-									"pm.test(\"Student active is true\", ()=>{\r",
-									"pm.expect(response.active).to.be.true\r",
-									"})\r",
 									""
 								],
 								"type": "text/javascript"
 							}
 						}
 					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"pwd\": \"{{hrPwd}}\"\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1445,14 +1420,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{endpoint}}/hr/candidate/{{hrStudentId}}",
+							"raw": "{{endpoint}}/hr/candidate/{{studentId}}",
 							"host": [
 								"{{endpoint}}"
 							],
 							"path": [
 								"hr",
 								"candidate",
-								"{{hrStudentId}}"
+								"{{studentId}}"
 							]
 						}
 					},
@@ -1500,6 +1475,154 @@
 							"path": [
 								"hr",
 								"candidate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get HR Interviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"\r",
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"ENDPOINT UNDER CONSTRUCTION!! \", ()=>{\r",
+									"pm.expect(response.statusCode).not.to.be.equal(404)\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/hr/interviews",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"hr",
+								"interviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove from List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"\r",
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"ENDPOINT UNDER CONSTRUCTION!! \", ()=>{\r",
+									"pm.expect(response.statusCode).not.to.be.equal(404)\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/hr/interviews/{{studentId}}/remove",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"hr",
+								"interviews",
+								"{{studentId}}",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Hire Student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"\r",
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"ENDPOINT UNDER CONSTRUCTION!! \", ()=>{\r",
+									"pm.expect(response.statusCode).not.to.be.equal(404)\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"studentId\":\"{{studentId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/hr/interviews/{{studentId}}/hire",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"hr",
+								"interviews",
+								"{{studentId}}",
+								"hire"
 							]
 						}
 					},
@@ -1889,7 +2012,7 @@
 		},
 		{
 			"key": "studentBonusProjectUrls",
-			"value": "https://github.com/Fremen1990/head-hunter-frontend;  https://head-hunter-frontend.vercel.app/login; https://github.com/Fremen1990/head-hunter-backend",
+			"value": "[https://github.com/Fremen1990/head-hunter-frontend; https://github.com/Fremen1990/head-hunter-backend]",
 			"type": "string"
 		},
 		{
