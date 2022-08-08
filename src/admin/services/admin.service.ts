@@ -263,6 +263,8 @@ export class AdminService {
 
       createdUsersList.push(newHr.email);
 
+      await this.mailService.sendRegistrationLink(user); // to be tested only in one user, not import mass students
+
       return {
          createUserStatus: 'OK',
          createdUser: user,
