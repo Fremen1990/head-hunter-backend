@@ -1,4 +1,10 @@
-import { IsArray, IsEnum, IsNumber, IsString } from 'class-validator';
+import {
+   IsArray,
+   IsBoolean,
+   IsEnum,
+   IsNumber,
+   IsString,
+} from 'class-validator';
 import { WorkType } from '../../enums/work-type.enum';
 import { StudentStatus } from '../../enums/student-status.enum';
 import { ContactType } from '../../enums/contract-type.enum';
@@ -147,4 +153,7 @@ export class UpdateProfileDto {
    })
    @IsString()
    courses: string;
+
+   @IsBoolean()
+   firstLogin: boolean;
 }

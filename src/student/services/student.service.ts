@@ -93,6 +93,7 @@ export class StudentService {
          student.education = studentDetails.education;
          student.workExperience = studentDetails.workExperience;
          student.courses = studentDetails.courses;
+         student.firstLogin = false;
          await student.save();
       }
 
