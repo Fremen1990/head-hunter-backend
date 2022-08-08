@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class StudentDto {
@@ -62,8 +62,8 @@ export class StudentDto {
       type: String,
       description: 'Bonus project urls',
       example:
-         '[https://github.com/Fremen1990/head-hunter-frontend, https://github.com/Fremen1990/head-hunter-backend]',
+         '["https://github.com/Fremen1990/head-hunter-frontend", "https://github.com/Fremen1990/head-hunter-backend"]',
    })
-   @IsString()
+   @IsArray()
    bonusProjectUrls: string[];
 }
