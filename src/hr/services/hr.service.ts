@@ -29,6 +29,12 @@ export class HrService {
       @Inject(StudentService) private studentService: StudentService,
    ) {}
 
+   // get maximum reservation for HR
+   async getMaxReservedStudents(hrId: string): Promise<number> {
+      const { maxReservedStudents } = await Hr.findOneBy({ hrId });
+      return maxReservedStudents;
+   }
+
    async getInterviews(hrUser: User): Promise<any> {
       return await Interview.find({
          where: {
@@ -56,6 +62,7 @@ export class HrService {
 
    // get a student that can be added to interview - status available && active
    // in return object user with relations to student table, so all student data
+   // todo interface for promise when front end accepts this return
    async getOneCandidate(studentId): Promise<any> {
       await this.userService.getOneUser(studentId);
 
@@ -84,6 +91,7 @@ export class HrService {
    // get one HR user data
    // in return object user with relations to hr table, so all hr data including open interviews
    // use only to getData on frontend
+   // todo interface for promise when front end accepts this return
    async getOneHr(hrId): Promise<any> {
       await this.userService.getOneUser(hrId);
 
@@ -128,7 +136,13 @@ export class HrService {
       const interviews = (await Interview.findBy({ hrId: user.id })).map(
          (interview) => interview,
       );
-      // console.log(interviews);
+
+      if (interviews.length >= (await this.getMaxReservedStudents(user.id))) {
+         throw new HttpException(
+            'This HR reached the maximum number of students that can be interviewed at once',
+            HttpStatus.CONFLICT,
+         );
+      }
 
       const newInterview = new Interview();
       newInterview.interviewId = uuid();
@@ -159,6 +173,7 @@ export class HrService {
    // show students that are being currently invterviewed by hr
    // return needed data for view 'do rozmowy'
    //iterfejs do napisania
+   // todo interface for promise when front end accepts this return
    async showMyInterviews(hrUser: User): Promise<any> {
       // znajdz wszystkich studentow, którzy maja ze mna rozmowe
       const openInterviews = await this.getInterviews(hrUser);
@@ -225,6 +240,7 @@ export class HrService {
       return data;
    }
 
+   // todo interface for promise when front end accepts this return
    async remove(hrUser: User, studentId: string): Promise<any> {
       const student = await Student.findOneBy({ studentId });
 
@@ -254,6 +270,7 @@ export class HrService {
       };
    }
 
+   // todo interface for promise when front end accepts this return
    async hire(hrUser: User, studentId: string): Promise<any> {
       const student = await Student.findOneBy({ studentId });
 
