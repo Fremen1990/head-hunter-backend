@@ -35,7 +35,7 @@ import { StudentDto } from '../dto/student.dto';
 import { User } from '../../user/entities/user.entity';
 import { UserService } from '../../user/services/user.service';
 import { AuthGuard } from '@nestjs/passport';
-import { ImportRandomStudentsResponse } from '../../types/student';
+import { ImportRandomStudentsResponse } from '../../types';
 
 @ApiTags('Admin')
 @ApiCookieAuth()

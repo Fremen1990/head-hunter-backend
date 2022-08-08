@@ -1,3 +1,5 @@
+import { UpdateProfileDto } from '../student/dto/update-profile.dto';
+
 export interface UpdateStudentResponse {
    UpdateStudentStatus: string;
 }

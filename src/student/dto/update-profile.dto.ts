@@ -1,4 +1,4 @@
-import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsEnum, IsNumber, IsString } from 'class-validator';
 import { WorkType } from '../../enums/work-type.enum';
 import { StudentStatus } from '../../enums/student-status.enum';
 import { ContactType } from '../../enums/contract-type.enum';
@@ -12,6 +12,7 @@ export class UpdateProfileDto {
       example: 'available',
    })
    @IsEnum(StudentStatus)
+   // @IsString()
    studentStatus: string;
 
    @ApiProperty({
@@ -51,7 +52,7 @@ export class UpdateProfileDto {
       description: 'Portfolio links / urls',
       example: '[https://www.devthomas.pl, https://netflix-app-69791.web.app]',
    })
-   @IsString({ each: true })
+   @IsArray({ each: true })
    portfolioUrls: string[];
 
    @ApiProperty({
@@ -60,7 +61,7 @@ export class UpdateProfileDto {
       example:
          '[https://github.com/Fremen1990/head-hunter-backend, https://github.com/Fremen1990/head-hunter-frontend]',
    })
-   @IsString({ each: true })
+   @IsArray({ each: true })
    projectUrls: string[];
 
    @ApiProperty({
@@ -78,12 +79,13 @@ export class UpdateProfileDto {
       example: 'any',
    })
    @IsEnum(WorkType)
+   // @IsString()
    expectedTypeOfWork: string;
 
    @ApiProperty({
       type: String,
       description: 'Target city where you would like to work',
-      example: 'Warsaw / Gdansk / Cracov',
+      example: 'Warsaw',
    })
    @IsString()
    targetWorkCity: string;
@@ -94,6 +96,7 @@ export class UpdateProfileDto {
       example: 'UoP / B2B',
    })
    @IsEnum(ContactType)
+   // @IsString()
    expectedContractType: string;
 
    @ApiProperty({
@@ -110,6 +113,7 @@ export class UpdateProfileDto {
       example: 'no',
    })
    @IsEnum(Apprenticeship)
+   // @IsString()
    canTakeApprenticeship: string;
 
    @ApiProperty({

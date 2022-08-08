@@ -222,7 +222,7 @@ export class AdminService {
       createdUsersList.push(newStudent.email);
       //---------------- student Table insert END-----------------------
 
-      // await this.mailService.sendRegistrationLink(user); // to be tested only in one user, not import mass students
+      await this.mailService.sendRegistrationLink(user); // to be tested only in one user, not import mass students
 
       return {
          createUserStatus: 'OK',

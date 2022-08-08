@@ -5,6 +5,7 @@ import {
    Inject,
    Param,
    Post,
+   Redirect,
    UseGuards,
 } from '@nestjs/common';
 import { User } from '../entities/user.entity';
@@ -52,14 +53,15 @@ export class UserController {
    @ApiCreatedResponse({
       description: 'User active true, registration token null',
    })
-   @Post('/register/:userId/:registrationToken')
+   @Get('/register/:userId/:registrationToken')
+   @Redirect('http://localhost:3000/login', 302)
    register(
-      @Body() userPwd: RegisterUserDto,
+      // @Body() userPwd: RegisterUserDto,
       @Param('userId') userId: string,
       @Param('registrationToken') registrationToken: string,
    ): Promise<RegisterUserResponse> {
-      console.log('kontoler', userId, registrationToken);
-      return this.userService.register(userPwd, userId, registrationToken);
+      // console.log('kontoler', userId, registrationToken);
+      return this.userService.register(userId, registrationToken);
    }
 
    //===============GET CURRENT  USER PROFILE TO REDUX STORE==================

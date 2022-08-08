@@ -60,7 +60,8 @@ export class StudentController {
    @Put('/:id')
    updateStudent(
       @Param('id') id: string,
-      @Body() studentDetails: UpdateProfileDto,
+      @Body() studentDetails: any,
+      // UpdateProfileDto, // TODO - compare and clean up with front-end
    ): Promise<UpdateStudentResponse> {
       console.log('CONTROLER UPDATE WORKDS');
 
