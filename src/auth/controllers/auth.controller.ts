@@ -73,10 +73,11 @@ export class AuthController {
    // @UseGuards(AuthGuard('jwt'))
    @Post('/change-password')
    async changePassword(
-      @UserObj() user: User,
+      // @UserObj() user: User,
       @Body() req: ResetPasswordDto,
       @Res() res: Response,
    ) {
-      return this.authService.changePassword(user, req, res);
+      // return this.authService.changePassword(user, req, res);
+      return this.authService.changePassword(req, res);
    }
 }

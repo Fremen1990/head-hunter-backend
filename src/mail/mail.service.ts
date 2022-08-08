@@ -28,4 +28,21 @@ export class MailService {
          user,
       };
    }
+
+   async sendResetPasswordToken(user: User) {
+      await this.mailerService.sendMail({
+         to: user.email,
+         from: '"Support Team Group 19" <team19@megak.pl>',
+         subject: 'Zmiana hasła w 😈 MegaK Head-Hunter 😈',
+         template: './change-password',
+         context: {
+            email: user.email,
+            resetPasswordToken: user.resetPasswordToken,
+         },
+      });
+
+      return {
+         user,
+      };
+   }
 }

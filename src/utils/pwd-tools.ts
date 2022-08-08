@@ -3,19 +3,24 @@ import * as crypto from 'crypto';
 const ALGORITHM = 'aes-256-cbc';
 const ENCODING = 'hex';
 const IV_LENGTH = 16;
+const SECRET = process.env.PASS_SECRET;
+// TODO to be delted in final refactor
 // const SECRET = process.env.SECRET_KEY!;
-const SECRET = 'dontbescaredhomie';
+// const SECRET = 'dontbescaredhomie';
 const KEY = crypto
    .createHash('sha256')
    .update(String(SECRET))
    .digest('base64')
    .substr(0, 32);
 
-const hmacKey =
-   'lk;kgfl;dsgojwer ojeoprjpoewj roewjo23242@#$#@$Edffewdfdspojafdjohdsfuoihf#24noidsfhy8#$wkfnsd kasndf  naskd n}S}AD}sa';
+// TODO to be delted in final refactor
+// const HMAC_KEY =
+//    'lk;kgfl;dsgojwer ojeoprjpoewj roewjo23242@#$#@$Edffewdfdspojafdjohdsfuoihf#24noidsfhy8#$wkfnsd kasndf  naskd n}S}AD}sa';
+
+const HMAC_KEY = process.env.PASS_HMAC_KEY;
 
 export const hashPwd = (p: string): string => {
-   const hmac = crypto.createHmac('sha512', hmacKey);
+   const hmac = crypto.createHmac('sha512', HMAC_KEY);
    hmac.update(p);
    return hmac.digest('hex');
 };
@@ -39,5 +44,3 @@ export const decrypt = (data: string) => {
       decipher.final(),
    ]).toString();
 };
-
-//To do move params to env

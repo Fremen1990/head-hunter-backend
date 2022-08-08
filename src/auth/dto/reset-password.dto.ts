@@ -5,6 +5,13 @@ export class ResetPasswordDto {
    @IsString()
    @ApiProperty({
       type: String,
+      description: 'email to confirm authentication for new password',
+   })
+   email: string;
+
+   @IsString()
+   @ApiProperty({
+      type: String,
       description:
          'Reset password token to confirm authentication for new password',
    })

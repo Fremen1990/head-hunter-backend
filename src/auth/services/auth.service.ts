@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import e, { Response } from 'express';
 import { v4 as uuid } from 'uuid';
 import { sign } from 'jsonwebtoken';
@@ -8,9 +8,12 @@ import { hashPwd, decrypt, encrypt } from '../../utils/pwd-tools';
 import { User } from '../../user/entities/user.entity';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 import nanoToken from '../../utils/nano-token';
+import { MailService } from '../../mail/mail.service';
 
 @Injectable()
 export class AuthService {
+   constructor(@Inject(MailService) private mailService: MailService) {}
+
    private createToken(currentTokenId: string): {
       accessToken: string;
       expiresIn: number;
@@ -110,6 +113,7 @@ export class AuthService {
    //---------------- SEND RESET PASSWORD TOKEN AND ADD TO DATABASE ----------------
    async sendResetPasswordLink({ email }) {
       const user = await User.findOneBy({ email });
+      console.log(user);
 
       if (!user) {
          throw new HttpException('User not found', HttpStatus.NOT_FOUND);
@@ -120,14 +124,22 @@ export class AuthService {
       user.resetPasswordToken = code;
       await user.save();
 
-      throw new HttpException(
-         `${code}`, // THIS HAS TO BE DELETED!!! ONLY FOR POSTMAN TESTING PURPOSES --!!!!!!!!!!!!
-         // 'Reset password link sent'
-         HttpStatus.OK,
-      );
+      // throw new HttpException(
+      //    `${code}`, // THIS HAS TO BE DELETED!!! ONLY FOR POSTMAN TESTING PURPOSES --!!!!!!!!!!!!
+      //    // 'Reset password link sent'
+      //    HttpStatus.OK,
+      // );
+
+      await this.mailService.sendResetPasswordToken(user);
+
+      return {
+         Status: `Reset password token has been sent to ${user.email}`,
+      };
    }
    //---------------- CHANGE PASSWORD BASED ON RESET PASSWORD TOKEN ----------------
-   async changePassword(user: User, req: ResetPasswordDto, res: e.Response) {
+   async changePassword(req: ResetPasswordDto, res: e.Response) {
+      const user = await User.findOneBy({ email: req.email });
+
       console.log('user ->', user);
 
       if (req.resetPasswordToken !== user.resetPasswordToken) {

@@ -70,7 +70,7 @@ export class Student extends BaseEntity {
    studentStatus: string;
 
    // not null
-   @Column({ length: 15, nullable: false })
+   @Column({ length: 20, nullable: false })
    tel: string;
 
    // not null
