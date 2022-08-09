@@ -16,6 +16,13 @@ export class MailService {
          to: user.email,
          from: '"Support Team Group 19" <team19@megak.pl>',
          subject: 'Rejestracja w 😈 MegaK Head-Hunter 😈',
+         attachments: [
+            {
+               filename: 'readme_logo.png',
+               path: __dirname + '/assets/readme_logo.png',
+               cid: 'image-name',
+            },
+         ],
          template: './register',
          context: {
             email: user.email,

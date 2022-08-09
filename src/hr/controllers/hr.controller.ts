@@ -70,6 +70,7 @@ export class HrController {
       return this.hrService.addOneCandidateToList(hrUser, studentId);
    }
 
+   //============================HR GET INTERVIEWS ================================
    @ApiCookieAuth()
    @ApiCreatedResponse({
       description: 'HR is getting his/hers open inteviews list',

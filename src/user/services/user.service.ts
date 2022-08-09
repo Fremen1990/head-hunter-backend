@@ -33,7 +33,7 @@ export class UserService {
    }
 
    async register(
-      userPwd: RegisterUserDto,
+      // userPwd: RegisterUserDto,
       id: string,
       registrationToken: string,
    ): Promise<RegisterUserResponse> {
@@ -65,7 +65,7 @@ export class UserService {
       } else {
          throw new Error('Ooops! Still something is wrong');
       }
-      user.encryptedPwd = encrypt(userPwd.pwd);
+      // user.encryptedPwd = encrypt(userPwd.pwd);
       user.active = true;
 
       await user.save();

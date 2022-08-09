@@ -151,6 +151,9 @@ export class Student extends BaseEntity {
    @Column({ type: 'longtext' })
    courses: string;
 
+   @Column({ default: true })
+   firstLogin: boolean;
+
    @CreateDateColumn()
    created_at: Date;
 
