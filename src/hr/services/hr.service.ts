@@ -178,66 +178,84 @@ export class HrService {
       // znajdz wszystkich studentow, którzy maja ze mna rozmowe
       const openInterviews = await this.getInterviews(hrUser);
 
-      // console.log('openInterviews', openInterviews);
-      // console.log('type', openInterviews instanceof Array);
-      // console.log(openInterviews.length);
-
       if (openInterviews.length === 0) {
-         return {
-            message: 'No student added to interview',
-            data: openInterviews,
-         };
+         return openInterviews;
       }
 
       // pobierz wszystkie id to tablicy, pobierz daty rozmow do tablicy - wszystko jest sortowane wiec bedzie sie zgadzać
       const studentsIds = openInterviews.map((student) => student.studentId);
-      const interviewTill = openInterviews.map((student) => student.date);
 
-      // console.log('studentsIds', studentsIds);
-      // console.log('interviewTill', interviewTill);
-
-      // pobierz wszystkich studentow z po id z tablicy
-      const myInterviews = (
-         await this.dataSource
-            .createQueryBuilder(Student, 'student')
-            .where('student.studentId IN (:studentsIds)', {
-               studentsIds: [...studentsIds],
-            })
-            .orderBy('student.studentId', 'ASC')
-            .getMany()
-      ).map((student) => {
-         return {
-            id: student.studentId,
-            githubUserName: student.githubUserName, // for user image purpose
-            firstName: student.firstName,
-            lastName: student.lastName,
-            courseCompletion: student.courseCompletion,
-            courseEngagement: student.courseEngagement,
-            projectDegree: student.projectDegree,
-            teamProjectDegree: student.teamProjectDegree,
-            expectedTypeOfWork: student.expectedTypeOfWork,
-            targetWorkCity: student.targetWorkCity,
-            expectedContractType: student.expectedContractType,
-            expectedSalary: student.expectedSalary,
-            canTakeApprenticeship: student.canTakeApprenticeship,
-            monthsOfCommercialExp: student.monthsOfCommercialExp,
-         };
-      });
+      const myInterviews = await this.dataSource
+         .createQueryBuilder(Student, 'student')
+         .where('student.studentId IN (:studentsIds)', {
+            studentsIds: [...studentsIds],
+         })
+         .orderBy('student.studentId', 'ASC')
+         .getMany();
 
       const data = [];
       for (let i = 0; i < myInterviews.length; i++) {
          data.push({
-            availableTill: interviewTill[i],
-            ...myInterviews[i],
+            ...openInterviews[i],
+            student: {
+               ...myInterviews[i],
+            },
          });
       }
 
-      // return {
-      //    data,
-      //    //openInterviews, // just to compare, comment line
-      // };
-
       return data;
+
+      // ---------- to be deleted if Maciek accepts new object -----------
+
+      //const interviewTill = openInterviews.map((student) => student.date);
+
+      // const myOpenInteviews = await this.dataSource
+      //    .createQueryBuilder(Interview, 'interview')
+      //    .where('interview.studentId IN (:studentsIds)', {
+      //       studentsIds: [...studentsIds],
+      //    })
+      //    .orderBy('interview.studentId', 'ASC')
+      //    .getMany();
+
+      // return myOpenInteviews;
+
+      // pobierz wszystkich studentow z po id z tablicy
+      // const myInterviews = (
+      //    await this.dataSource
+      //       .createQueryBuilder(Student, 'student')
+      //       .where('student.studentId IN (:studentsIds)', {
+      //          studentsIds: [...studentsIds],
+      //       })
+      //       .orderBy('student.studentId', 'ASC')
+      //       .getMany()
+      // ).map((student) => {
+      //    return {
+      //       id: student.studentId,
+      //       githubUserName: student.githubUserName, // for user image purpose
+      //       firstName: student.firstName,
+      //       lastName: student.lastName,
+      //       courseCompletion: student.courseCompletion,
+      //       courseEngagement: student.courseEngagement,
+      //       projectDegree: student.projectDegree,
+      //       teamProjectDegree: student.teamProjectDegree,
+      //       expectedTypeOfWork: student.expectedTypeOfWork,
+      //       targetWorkCity: student.targetWorkCity,
+      //       expectedContractType: student.expectedContractType,
+      //       expectedSalary: student.expectedSalary,
+      //       canTakeApprenticeship: student.canTakeApprenticeship,
+      //       monthsOfCommercialExp: student.monthsOfCommercialExp,
+      //    };
+      // });
+
+      // const data = [];
+      // for (let i = 0; i < myInterviews.length; i++) {
+      //    data.push({
+      //       availableTill: interviewTill[i],
+      //       ...myInterviews[i],
+      //    });
+      // }
+      //
+      // return data;
    }
 
    // todo interface for promise when front end accepts this return
