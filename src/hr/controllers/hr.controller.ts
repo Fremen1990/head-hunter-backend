@@ -81,6 +81,11 @@ export class HrController {
       return this.hrService.showMyInterviews(hrUser);
    }
 
+   @Delete('/cleanup')
+   async cleanUp(): Promise<any> {
+      return this.hrService.removeStudentsFromInterview();
+   }
+
    //============================HR REMOVES ONE STUDENT FROM LIST================================
    @ApiCookieAuth()
    @ApiCreatedResponse({

@@ -10,7 +10,10 @@ import { User } from '../../user/entities/user.entity';
 import { Hr } from '../entities/hr.entity';
 import { DataSource } from 'typeorm';
 import { Interview } from '../entities/interview.entity';
-import { generateReservationDate } from '../../utils/reservation-date';
+import {
+   generateReservationDate,
+   getTodayDateString,
+} from '../../utils/date-tools';
 import { encrypt } from '../../utils/pwd-tools';
 import nanoToken from '../../utils/nano-token';
 import { Role } from '../../enums/role.enum';
@@ -315,6 +318,36 @@ export class HrService {
 
       return {
          message: `${student.firstName} ${student.lastName} was hired`,
+      };
+   }
+
+   //only for test purposes, moved to cron service
+   async removeStudentsFromInterview(): Promise<any> {
+      const today = getTodayDateString();
+
+      const openInterviews = await Interview.find({
+         where: {
+            date: today,
+         },
+      });
+
+      if (openInterviews.length > 0) {
+         for (const interview of openInterviews) {
+            const student = await Student.findOneBy({
+               studentId: interview.studentId,
+            });
+
+            student.studentStatus = StudentStatus.AVAILABLE;
+            await student.save();
+            await interview.remove();
+         }
+         return {
+            message: `Deleted ${openInterviews.length} records`,
+         };
+      }
+
+      return {
+         message: 'No records removed today',
       };
    }
 }
