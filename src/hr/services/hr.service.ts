@@ -32,6 +32,42 @@ export class HrService {
       @Inject(StudentService) private studentService: StudentService,
    ) {}
 
+   // when student is hired, remove him/her from other interviews
+   async cleanUpAfterHiring(studentId: string): Promise<void> {
+      const count = await this.getStudentInterviewsCount(studentId);
+      // console.log('Count', count);
+      if (count > 0) {
+         const studentsInterviews = await Interview.find({
+            where: {
+               studentId,
+            },
+         });
+         // console.log('studentsInterviews', studentsInterviews);
+         for (const interview of studentsInterviews) {
+            await interview.remove();
+            // tutaj mozna dołozyć maila do wszystkich HRów z informacją
+         }
+         console.log('All remaining interviews have been canceled');
+      }
+   }
+
+   async getStudentInterviewsCount(studentId: string): Promise<number> {
+      return (
+         await Interview.find({
+            where: {
+               studentId,
+            },
+         })
+      ).length;
+   }
+
+   // prevent HR for adding student to inteview twice
+   async doubleInterviewCheck(hrUser: User, studentId): Promise<boolean> {
+      return (await this.getInterviews(hrUser)).some(
+         (interview) => interview.studentId === studentId,
+      );
+   }
+
    // get maximum reservation for HR
    async getMaxReservedStudents(hrId: string): Promise<number> {
       const { maxReservedStudents } = await Hr.findOneBy({ hrId });
@@ -49,15 +85,15 @@ export class HrService {
       });
    }
 
-   // get a list of students that can be added to interview - status available && active
+   // get a list of students that can be added to interview - status (interview || available) &&  active
    // in return object user with relations to student table, so all student data
    async getCandidatesList(): Promise<getUserProfileResponse[]> {
       return await this.dataSource
          .getRepository(User)
          .createQueryBuilder('user')
          .leftJoinAndSelect('user.student', 'student')
-         .where('student.studentStatus = :studentStatus', {
-            studentStatus: 'available',
+         .where('student.studentStatus IN (:studentStatus)', {
+            studentStatus: ['available', 'interview'],
          })
          .andWhere('user.active = :active', { active: true })
          .getMany();
@@ -76,18 +112,19 @@ export class HrService {
          .where('student.studentId = :studentId', {
             studentId: `${studentId}`,
          })
-         .andWhere('student.studentStatus = :studentStatus', {
-            studentStatus: 'available',
+         .andWhere('student.studentStatus IN (:studentStatus)', {
+            studentStatus: ['available', 'interview'],
          })
          .andWhere('user.active = :active', { active: true })
          .getOne();
 
       if (!newCandidate) {
          throw new HttpException(
-            'Student is not active yet, other possibilities are that is being currently interviewed or employed',
+            'Student is not active yet or has been employed.',
             HttpStatus.NOT_FOUND,
          );
       }
+
       return newCandidate;
    }
 
@@ -126,7 +163,6 @@ export class HrService {
    }
 
    // add student to interview with reservation on next 10 days, change student status on inverview,
-   // then is not visible/available for other hr users
    async addOneCandidateToList(
       user: User,
       studentId: string,
@@ -147,6 +183,13 @@ export class HrService {
          );
       }
 
+      if (await this.doubleInterviewCheck(user, candidate.id)) {
+         throw new HttpException(
+            `Wake up, you are already interviewing ${firstName} ${lastName}`,
+            HttpStatus.CONFLICT,
+         );
+      }
+
       const newInterview = new Interview();
       newInterview.interviewId = uuid();
       newInterview.interviewTitle = `${firstName} ${lastName}`;
@@ -157,9 +200,12 @@ export class HrService {
 
       await newInterview.save();
 
-      candidate.student.studentStatus = StudentStatus.INTERVIEW;
+      if (candidate.student.studentStatus === 'available') {
+         console.log('zmiana statusu');
+         candidate.student.studentStatus = StudentStatus.INTERVIEW;
 
-      await candidate.student.save();
+         await candidate.student.save();
+      }
 
       interviewingHr.interview = [...interviews, newInterview];
 
@@ -283,8 +329,10 @@ export class HrService {
 
       await interview.remove();
 
-      student.studentStatus = StudentStatus.AVAILABLE;
-      await student.save();
+      if ((await this.getStudentInterviewsCount(studentId)) === 0) {
+         student.studentStatus = StudentStatus.AVAILABLE;
+         await student.save();
+      }
 
       return {
          message: `Interview with ${student.firstName} ${student.lastName} was canceled`,
@@ -312,6 +360,8 @@ export class HrService {
       }
 
       await interview.remove();
+
+      await this.cleanUpAfterHiring(studentId);
 
       student.studentStatus = StudentStatus.EMPLOYED;
       await student.save();
