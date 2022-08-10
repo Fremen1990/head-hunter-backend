@@ -1,8 +1,7 @@
-import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { Response } from 'express';
 import { AuthLoginDto } from '../dto/auth-login.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { UserObj } from '../../decorators/portal-users.decorator';
 import { User } from '../../user/entities/user.entity';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
@@ -17,7 +16,7 @@ import {
    ApiTags,
    ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { LoginUserResponse } from '../../types/user';
+import { LoginUserResponse } from '../../types';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -41,10 +40,8 @@ export class AuthController {
    }
 
    //============================LOGOUT================================
-   @ApiCookieAuth()
    @ApiOkResponse({ description: 'User logout' })
    @ApiUnauthorizedResponse({ description: 'Unauthorized' })
-   @UseGuards(AuthGuard('jwt'))
    @Get('/logout')
    async logout(@UserObj() user: User, @Res() res: Response) {
       console.log({ user });
