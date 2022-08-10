@@ -7,7 +7,7 @@ import { StudentStatus } from '../enums/student-status.enum';
 
 @Injectable()
 export class CronService {
-   @Cron('30 1 * * * *')
+   @Cron('30 1 * * * ')
    async removeStudentsFromInterview(): Promise<any> {
       const today = getTodayDateString();
 
@@ -22,7 +22,7 @@ export class CronService {
             const student = await Student.findOneBy({
                studentId: interview.studentId,
             });
-
+            // to refactor after mofifyin hr module
             student.studentStatus = StudentStatus.AVAILABLE;
             await student.save();
             await interview.remove();

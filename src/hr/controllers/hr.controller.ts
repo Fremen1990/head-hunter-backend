@@ -44,8 +44,8 @@ export class HrController {
          'Students list array with user data in relation to student table ',
    })
    @Get('/candidate/list')
-   candidateList(): Promise<getUserProfileResponse[]> {
-      return this.hrService.getCandidatesList();
+   candidateList(@UserObj() hrUser: User): Promise<getUserProfileResponse[]> {
+      return this.hrService.getCandidatesList(hrUser);
    }
 
    //============================HR GET ONE CANDIDATE = ACTIVE && AVAILABLE================================

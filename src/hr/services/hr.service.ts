@@ -87,7 +87,16 @@ export class HrService {
 
    // get a list of students that can be added to interview - status (interview || available) &&  active
    // in return object user with relations to student table, so all student data
-   async getCandidatesList(): Promise<getUserProfileResponse[]> {
+   async getCandidatesList(hrUser: User): Promise<getUserProfileResponse[]> {
+      // do osobnej metody bo sie powtarza 3 razy
+      const openInterviews = await this.getInterviews(hrUser);
+
+      let studentsIds = openInterviews.map((student) => student.studentId);
+
+      if (studentsIds.length === 0) {
+         studentsIds = [''];
+      }
+
       return await this.dataSource
          .getRepository(User)
          .createQueryBuilder('user')
@@ -96,6 +105,9 @@ export class HrService {
             studentStatus: ['available', 'interview'],
          })
          .andWhere('user.active = :active', { active: true })
+         .andWhere('student.studentId NOT IN (:studentId)', {
+            studentId: [...studentsIds],
+         })
          .getMany();
    }
 
