@@ -68,3 +68,5 @@ export interface getUserProfileResponse {
    student?: Student;
    hr?: Hr;
 }
+
+export type UserType = typeof User;

@@ -1,4 +1,7 @@
 // do modyfikacji co jest potrzebne dla Hr-owca
+import { Hr } from 'src/hr/entities/hr.entity';
+import { User } from '../user/entities/user.entity';
+
 export interface HrCandidateListResponse {
    id: string;
    email: string;
@@ -43,3 +46,5 @@ export interface HrCandidateRemoveResponse {
    firstName: string;
    lastName: string;
 }
+
+export type HrType = typeof Hr;

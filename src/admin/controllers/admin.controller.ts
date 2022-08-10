@@ -19,15 +19,15 @@ import {
    ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AdminService } from '../services/admin.service';
-import { createOneUserResponse, ImportUserResponse } from '../../types/user';
+import { createOneUserResponse, ImportUserResponse } from '../../types';
 import {
    UploadFileFailedInterface,
    UploadFileResponseInterface,
-} from '../../types/upload';
+} from '../../types';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import * as path from 'path';
 import { multerStorage, storageDir } from '../../utils/storage';
-import { MulterDiskUploadedFiles } from '../../types/files';
+import { MulterDiskUploadedFiles } from '../../types';
 import { HrDto } from '../dto/hr.dto';
 import { Student } from '../../student/entities/student.entity';
 import { Hr } from '../../hr/entities/hr.entity';
