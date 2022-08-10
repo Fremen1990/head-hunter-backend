@@ -9,3 +9,15 @@ export const generateReservationDate = (): string => {
 
    return dateString;
 };
+
+export const getTodayDateString = (): string => {
+   const date = new Date();
+
+   const dateString = new Date(
+      date.getTime() - date.getTimezoneOffset() * 60000,
+   )
+      .toISOString()
+      .split('T')[0];
+
+   return dateString;
+};

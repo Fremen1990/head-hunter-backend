@@ -21,6 +21,9 @@ import { AdminModule } from './admin/admin.module';
 import { MailModule } from './mail/mail.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './guards/roles.guard';
+import { ScheduleModule } from '@nestjs/schedule';
+import { CronService } from './cron/cron.service';
+import { CronModule } from './cron/cron.module';
 
 @Module({
    imports: [
@@ -34,12 +37,14 @@ import { RolesGuard } from './guards/roles.guard';
             ...configService.get('database'),
          }),
       }),
+      ScheduleModule.forRoot(),
       HrModule,
       StudentModule,
       AuthModule,
       UserModule,
       AdminModule,
       MailModule,
+      CronModule,
    ],
    controllers: [
       AppController,
@@ -57,6 +62,7 @@ import { RolesGuard } from './guards/roles.guard';
          provide: APP_GUARD,
          useClass: RolesGuard,
       },
+      CronService,
    ],
 })
 export class AppModule {}
