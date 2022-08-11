@@ -6,20 +6,13 @@ import {
    Inject,
    Param,
    Patch,
-   Post,
    UseGuards,
 } from '@nestjs/common';
 import { HrService } from '../services/hr.service';
-import {
-   HrCandidateAddResponse,
-   HrCandidateListResponse,
-   HrCandidateRemoveResponse,
-} from '../../types/hr';
+import { HrCandidateAddResponse } from '../../types';
 import { UserObj } from '../../decorators/portal-users.decorator';
 import { User } from '../../user/entities/user.entity';
-import { Student } from '../../student/entities/student.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { Hr } from '../entities/hr.entity';
 
 import {
    ApiCookieAuth,
@@ -29,6 +22,9 @@ import {
    ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { getUserProfileResponse } from '../../types';
+import { Role } from '../../enums/role.enum';
+import { Roles } from '../../decorators/roles.decorator';
+import { RolesGuard } from '../../guards/roles.guard';
 
 @ApiTags('HR')
 @ApiCookieAuth()
@@ -43,6 +39,8 @@ export class HrController {
       description:
          'Students list array with user data in relation to student table ',
    })
+   @Roles(Role.ADMIN, Role.HR)
+   @UseGuards(RolesGuard)
    @Get('/candidate/list')
    candidateList(): Promise<getUserProfileResponse[]> {
       return this.hrService.getCandidatesList();
@@ -52,6 +50,8 @@ export class HrController {
    @ApiOkResponse({
       description: 'One specific student has been found',
    })
+   @Roles(Role.ADMIN, Role.HR)
+   @UseGuards(RolesGuard)
    @Get('/candidate/:studentId')
    getOneCandidate(@Param('studentId') studentId: string): Promise<any> {
       return this.hrService.getOneCandidate(studentId);
@@ -60,7 +60,8 @@ export class HrController {
    //============================HR ADD ONE CANDIDATE TO INTERVIEW================================
    @ApiCookieAuth()
    @ApiCreatedResponse({ description: 'One candidate added to HR list' })
-   @UseGuards(AuthGuard('jwt'))
+   @Roles(Role.ADMIN, Role.HR)
+   @UseGuards(RolesGuard)
    @Patch('/candidate')
    addToList(
       @UserObj() hrUser: User,
@@ -75,12 +76,15 @@ export class HrController {
    @ApiCreatedResponse({
       description: 'HR is getting his/hers open inteviews list',
    })
-   @UseGuards(AuthGuard('jwt'))
+   @Roles(Role.ADMIN, Role.HR)
+   @UseGuards(RolesGuard)
    @Get('/interviews')
    async showMyInterviews(@UserObj() hrUser: User): Promise<any> {
       return this.hrService.showMyInterviews(hrUser);
    }
 
+   @Roles(Role.ADMIN, Role.HR)
+   @UseGuards(RolesGuard)
    @Delete('/cleanup')
    async cleanUp(): Promise<any> {
       return this.hrService.removeStudentsFromInterview();
@@ -92,6 +96,8 @@ export class HrController {
       description:
          'Hr is not interested by student anymore, removes him/his from interview',
    })
+   @Roles(Role.ADMIN, Role.HR)
+   @UseGuards(RolesGuard)
    @Delete('/interviews/:studentId/remove')
    removeFromList(
       @UserObj() hrUser: User,
@@ -112,7 +118,6 @@ export class HrController {
    }
 
    //============================GET ONE HR ================================
-   @UseGuards(AuthGuard('jwt'))
    @Get('/:hrId')
    getOneHr(@Param('hrId') hrId: string): Promise<any> {
       return this.hrService.getOneHr(hrId);

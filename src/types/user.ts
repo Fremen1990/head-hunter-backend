@@ -1,6 +1,7 @@
 import { User } from '../user/entities/user.entity';
 import { Student } from '../student/entities/student.entity';
 import { Hr } from '../hr/entities/hr.entity';
+import { ResetPasswordDto } from '../auth/dto/reset-password.dto';
 
 export interface LoginUser {
    email: string;
@@ -70,3 +71,5 @@ export interface getUserProfileResponse {
 }
 
 export type UserType = typeof User;
+
+export type ResetPwdType = typeof ResetPasswordDto;

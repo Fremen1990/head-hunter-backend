@@ -23,11 +23,15 @@ import {
    ApiTags,
    ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { Roles } from '../../decorators/roles.decorator';
+import { Role } from '../../enums/role.enum';
+import { RolesGuard } from '../../guards/roles.guard';
 
 @ApiTags('Student')
 @ApiCookieAuth()
 @ApiUnauthorizedResponse({ description: 'Unauthorized' })
-@UseGuards(AuthGuard('jwt'))
+@Roles(Role.ADMIN, Role.STUDENT)
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('student')
 export class StudentController {
    constructor(
