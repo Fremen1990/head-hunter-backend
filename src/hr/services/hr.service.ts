@@ -1,11 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import { Student } from '../../student/entities/student.entity';
-import {
-   HrCandidateAddResponse,
-   HrCandidateListResponse,
-   HrCandidateRemoveResponse,
-} from '../../types/hr';
+import { HrCandidateAddResponse } from '../../types';
 import { User } from '../../user/entities/user.entity';
 import { Hr } from '../entities/hr.entity';
 import { DataSource } from 'typeorm';
@@ -14,12 +10,7 @@ import {
    generateReservationDate,
    getTodayDateString,
 } from '../../utils/date-tools';
-import { encrypt } from '../../utils/pwd-tools';
-import nanoToken from '../../utils/nano-token';
-import { Role } from '../../enums/role.enum';
 import { StudentStatus } from '../../enums/student-status.enum';
-import { type } from 'os';
-import { isInstance } from 'class-validator';
 import { getUserProfileResponse } from '../../types';
 import { UserService } from '../../user/services/user.service';
 import { StudentService } from '../../student/services/student.service';

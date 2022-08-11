@@ -1,4 +1,3 @@
-import { UpdateProfileDto } from '../student/dto/update-profile.dto';
 import { Student } from '../student/entities/student.entity';
 import { StudentDto } from '../admin/dto/student.dto';
 
@@ -43,3 +42,5 @@ export interface UpdateStudentProfile {
 export type StudentType = typeof Student;
 
 export type StudentUploadFileType = typeof StudentDto;
+
+export type AddOneStudentType = typeof StudentDto;

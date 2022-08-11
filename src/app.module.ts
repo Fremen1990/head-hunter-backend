@@ -19,8 +19,6 @@ import { UserModule } from './user/user.module';
 import { AdminController } from './admin/controllers/admin.controller';
 import { AdminModule } from './admin/admin.module';
 import { MailModule } from './mail/mail.module';
-import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from './guards/roles.guard';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CronService } from './cron/cron.service';
 import { CronModule } from './cron/cron.module';
@@ -53,16 +51,6 @@ import { CronModule } from './cron/cron.module';
       HrController,
       AdminController,
    ],
-   providers: [
-      AppService,
-      AuthService,
-      StudentService,
-      HrService,
-      {
-         provide: APP_GUARD,
-         useClass: RolesGuard,
-      },
-      CronService,
-   ],
+   providers: [AppService, AuthService, StudentService, HrService, CronService],
 })
 export class AppModule {}

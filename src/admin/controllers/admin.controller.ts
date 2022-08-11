@@ -36,11 +36,15 @@ import { User } from '../../user/entities/user.entity';
 import { UserService } from '../../user/services/user.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ImportRandomStudentsResponse } from '../../types';
+import { Role } from '../../enums/role.enum';
+import { Roles } from '../../decorators/roles.decorator';
+import { RolesGuard } from '../../guards/roles.guard';
 
 @ApiTags('Admin')
 @ApiCookieAuth()
 @ApiUnauthorizedResponse({ description: 'Unauthorized' })
-@UseGuards(AuthGuard('jwt'))
+@Roles(Role.ADMIN)
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('admin')
 export class AdminController {
    constructor(
