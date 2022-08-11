@@ -42,6 +42,7 @@ export class StudentController {
    @ApiOkResponse({
       description: 'User table results together with Student table relation',
    })
+   @Roles(Role.ADMIN, Role.STUDENT, Role.HR)
    @Get('/:id')
    getStudent(@Param('id') id: string): Promise<Student> {
       return this.studentService.getOneStudent(id);
