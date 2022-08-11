@@ -83,6 +83,7 @@ export class HrController {
       return this.hrService.showMyInterviews(hrUser);
    }
 
+   // for test purpose only
    @Roles(Role.ADMIN, Role.HR)
    @UseGuards(RolesGuard)
    @Delete('/cleanup')
