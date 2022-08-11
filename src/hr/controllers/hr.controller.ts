@@ -42,8 +42,8 @@ export class HrController {
    @Roles(Role.ADMIN, Role.HR)
    @UseGuards(RolesGuard)
    @Get('/candidate/list')
-   candidateList(): Promise<getUserProfileResponse[]> {
-      return this.hrService.getCandidatesList();
+   candidateList(@UserObj() hrUser: User): Promise<getUserProfileResponse[]> {
+      return this.hrService.getCandidatesList(hrUser);
    }
 
    //============================HR GET ONE CANDIDATE = ACTIVE && AVAILABLE================================
