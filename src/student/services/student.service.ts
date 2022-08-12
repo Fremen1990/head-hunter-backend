@@ -11,11 +11,15 @@ import {
 } from '@nestjs/common';
 
 import { Student } from '../entities/student.entity';
-import { DeleteStudentResponse } from '../../types/student';
+import {
+   DeleteStudentResponse,
+   UpdateStudentStatus,
+} from '../../types/student';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
-import { UserService } from 'src/user/services/user.service';
+import { UserService } from '../../user/services/user.service';
 import { User } from '../../user/entities/user.entity';
 import { Role } from '../../enums/role.enum';
+import { StudentStatus } from '../../enums/student-status.enum';
 
 // do napisania interfejsy do zwrotu
 @Injectable()
@@ -112,5 +116,19 @@ export class StudentService {
       await student.remove();
 
       return { DeleteStudentStatus: 'Student deleted' };
+   }
+
+   async updateStatus(user: User): Promise<UpdateStudentStatus> {
+      const student = await Student.findOneByOrFail({ studentId: user.id });
+
+      if (student.studentStatus === StudentStatus.AVAILABLE) {
+         student.studentStatus = await StudentStatus.EMPLOYED;
+         await student.save();
+      } else if (student.studentStatus === StudentStatus.EMPLOYED) {
+         student.studentStatus = await StudentStatus.AVAILABLE;
+         await student.save();
+      }
+
+      return { studentStatusUpdatedTo: 'Student status updated' };
    }
 }

@@ -9,6 +9,10 @@ export interface DeleteStudentResponse {
    DeleteStudentStatus: string;
 }
 
+export interface UpdateStudentStatus {
+   studentStatusUpdatedTo: string;
+}
+
 interface CreatedRandomUser {
    no: string;
    id: string;
