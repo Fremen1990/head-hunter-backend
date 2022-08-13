@@ -210,6 +210,12 @@ describe('AdminController', () => {
       getAllUsers: jest.fn().mockImplementation(() => {
          return mockGetAllUsers;
       }),
+      getOneUser: jest.fn().mockImplementation((id) => {
+         const specificUserById = mockGetAllUsers.filter((user) => {
+            return user.id === id;
+         });
+         return specificUserById[0];
+      }),
    };
 
    beforeEach(async () => {
@@ -270,6 +276,12 @@ describe('AdminController', () => {
    it('should get all Users', async () => {
       const getAllUsersTest = await adminController.getAll();
       await expect(getAllUsersTest).toEqual(mockGetAllUsers);
+   });
+
+   it('should get one user by ID', async () => {
+      const exampleUserId = '03ac5adb-0705-41ba-9201-7c88314747c7';
+      const getAllUsersTest = await adminController.getOne(exampleUserId);
+      await expect(getAllUsersTest).toEqual(mockGetAllUsers[0]);
    });
 
    //   TODO GET ONE USER ADMIN CONTROLLER LINE 101
