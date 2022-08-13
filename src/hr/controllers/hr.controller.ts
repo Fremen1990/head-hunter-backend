@@ -46,6 +46,21 @@ export class HrController {
       return this.hrService.getCandidatesList(hrUser);
    }
 
+   //============================HR AVAILABLE CANDIDATES LIST = ACTIVE && AVAILABLE - filtered================================
+   @ApiOkResponse({
+      description:
+         'Students list array with user data in relation to student table - filtered ',
+   })
+   @Roles(Role.ADMIN, Role.HR)
+   @UseGuards(RolesGuard)
+   @Get('/candidate/list/filter')
+   candidateListFiltered(
+      @UserObj() hrUser: User,
+      @Body() obj: any,
+   ): Promise<any> {
+      return this.hrService.getCandidatesListFiltered(hrUser, obj);
+   }
+
    //============================HR GET ONE CANDIDATE = ACTIVE && AVAILABLE================================
    @ApiOkResponse({
       description: 'One specific student has been found',
@@ -81,6 +96,21 @@ export class HrController {
    @Get('/interviews')
    async showMyInterviews(@UserObj() hrUser: User): Promise<any> {
       return this.hrService.showMyInterviews(hrUser);
+   }
+
+   //============================HR GET INTERVIEWS - FILTERED ================================
+   @ApiCookieAuth()
+   @ApiCreatedResponse({
+      description: 'HR is getting his/hers open inteviews list - filtered',
+   })
+   @Roles(Role.ADMIN, Role.HR)
+   @UseGuards(RolesGuard)
+   @Get('/interviews/filter')
+   async showMyInterviewsFiltered(
+      @UserObj() hrUser: User,
+      @Body() obj: any,
+   ): Promise<any> {
+      return this.hrService.showMyInterviewsFiltered(hrUser, obj);
    }
 
    // for test purpose only
