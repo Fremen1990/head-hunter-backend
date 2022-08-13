@@ -149,6 +149,7 @@ export class AdminController {
    async sendRegistrationEmailToStudents(): Promise<any> {
       return this.adminService.mailUsers();
    }
+
    //=======================GENERATE RANDOM 100 STUDENTS=======================
    @ApiCreatedResponse({
       description: 'Generate x100 random students with fulfilled data ',

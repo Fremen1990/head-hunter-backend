@@ -52,7 +52,6 @@ export class AuthController {
    @ApiCookieAuth()
    @ApiOkResponse({ description: 'Send reset password' })
    @ApiUnauthorizedResponse({ description: 'Unauthorized' })
-   // @UseGuards(AuthGuard('jwt'))
    @Post('/send-reset-password-link')
    @ApiBody({ type: ResetListLinkRequestDto })
    async sendResetPasswordLink(@Body() email: ResetListLinkRequestDto) {
@@ -67,7 +66,6 @@ export class AuthController {
    })
    @ApiUnauthorizedResponse({ description: 'Unauthorized' })
    @ApiBody({ type: ResetPasswordDto })
-   // @UseGuards(AuthGuard('jwt'))
    @Post('/change-password')
    async changePassword(
       // @UserObj() user: User,

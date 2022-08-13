@@ -1,6 +1,6 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
-import { decrypt } from 'src/utils/pwd-tools';
+import { decrypt } from '../utils/pwd-tools';
 import { User } from '../user/entities/user.entity';
 import { join } from 'path';
 

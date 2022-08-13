@@ -302,7 +302,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"{{hrEmail}}\",\r\n    \"pwd\": \"{{hrPwd}}\",\r\n    \"fullName\": \"MEGAK TEAM\",\r\n    \"company\": \"Samuraje Polscy SA\",\r\n    \"maxReservedStudents\": 666\r\n}",
+							"raw": "{\r\n    \"email\": \"fremen1990@gmail.com\",\r\n    \"pwd\": \"{{hrPwd}}\",\r\n    \"fullName\": \"MEGAK TEAM\",\r\n    \"company\": \"Samuraje Polscy SA\",\r\n    \"maxReservedStudents\": 666\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1152,7 +1152,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"studentStatus\": \"available\",\r\n    \"tel\": \"{{$randomPhoneNumber}}\",\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\",\r\n    \"githubUserName\": \"fremen1990\",\r\n    \"portfolioUrls\": [\"https://github.com/Fremen1990/DevSocialMedia-backend\", \"https://github.com/Fremen1990/DevSocialMedia-frontend\"],\r\n    \"projectUrls\":[\"https://github.com/Fremen1990/head-hunter-frontend\", \"https://github.com/Fremen1990/head-hunter-backend\"],\r\n    \"bio\": \"Mam na imię Tomasz, moją pasją od prawie trzech lat jest programowanie, z zawodu i dotychczasowego doświadczenia jestem analitykiem finansowym, skończyłem roczny Bootcamp StudiujeIT, kursy Samuraja Programowania, liczne kursy Udemy, KursReacta Michała Raszyckiego i w tym momencie kończę Bootcamp Full Stack JavaScript MegaK, od niedawna aktywnie szukam pracy jako programista, mam nadzieję, że się spotkamy :)\",\r\n    \"expectedTypeOfWork\": \"any\",\r\n    \"targetWorkCity\": \"Warszawa\",\r\n    \"expectedContractType\": \"any\",\r\n    \"expectedSalary\": \"6000 USD\",\r\n    \"canTakeApprenticeship\": \"yes\",\r\n    \"monthsOfCommercialExp\": 8 ,\r\n    \"education\": \"Master Degree Finance, StudiujeIT, Samuraj Path, MegaK\",\r\n    \"workExperience\": \"7 years in Finance\",\r\n    \"courses\": \"KursReacta, PluralSight, EggHead, MegaK, StudiujeIT\"\r\n}",
+							"raw": "{\r\n    \"studentStatus\": \"available\",\r\n    \"tel\": \"{{$randomPhoneNumber}}\",\r\n    \"firstName\": \"Tomasz\",\r\n    \"lastName\": \"Stanisz\",\r\n    \"githubUserName\": \"fremen1990\",\r\n    \"portfolioUrls\": [\"https://github.com/Fremen1990/DevSocialMedia-backend\", \"https://github.com/Fremen1990/DevSocialMedia-frontend\"],\r\n    \"projectUrls\":[\"https://github.com/Fremen1990/head-hunter-frontend\", \"https://github.com/Fremen1990/head-hunter-backend\"],\r\n    \"bio\": \"Mam na imię Tomasz, moją pasją od prawie trzech lat jest programowanie, z zawodu i dotychczasowego doświadczenia jestem analitykiem finansowym, skończyłem roczny Bootcamp StudiujeIT, kursy Samuraja Programowania, liczne kursy Udemy, KursReacta Michała Raszyckiego i w tym momencie kończę Bootcamp Full Stack JavaScript MegaK, od niedawna aktywnie szukam pracy jako programista, mam nadzieję, że się spotkamy :)\",\r\n    \"expectedTypeOfWork\": \"any\",\r\n    \"targetWorkCity\": \"Warszawa\",\r\n    \"expectedContractType\": \"any\",\r\n    \"expectedSalary\": \"6000 USD\",\r\n    \"canTakeApprenticeship\": \"yes\",\r\n    \"monthsOfCommercialExp\": 8 ,\r\n    \"education\": \"Master Degree Finance, StudiujeIT, Samuraj Path, MegaK\",\r\n    \"workExperience\": \"7 years in Finance\",\r\n    \"courses\": \"KursReacta, PluralSight, EggHead, MegaK, StudiujeIT\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1167,6 +1167,56 @@
 							"path": [
 								"student",
 								"{{studentId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Student Profile Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"\r",
+									"pm.test(\"Status code is 200\",  ()=> {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User data is an Object \", ()=>{\r",
+									"    pm.expect(response).to.be.an(\"Object\");\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response message 'Student details updated' to receive\", ()=>{\r",
+									"pm.expect(response.UpdateStudentStatus).to.be.equal(\"Student details updated\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"studentStatus\": \"available\",\r\n    \"tel\": \"{{$randomPhoneNumber}}\",\r\n    \"firstName\": \"Tomasz\",\r\n    \"lastName\": \"Stanisz\",\r\n    \"githubUserName\": \"fremen1990\",\r\n    \"portfolioUrls\": [\"https://github.com/Fremen1990/DevSocialMedia-backend\", \"https://github.com/Fremen1990/DevSocialMedia-frontend\"],\r\n    \"projectUrls\":[\"https://github.com/Fremen1990/head-hunter-frontend\", \"https://github.com/Fremen1990/head-hunter-backend\"],\r\n    \"bio\": \"Mam na imię Tomasz, moją pasją od prawie trzech lat jest programowanie, z zawodu i dotychczasowego doświadczenia jestem analitykiem finansowym, skończyłem roczny Bootcamp StudiujeIT, kursy Samuraja Programowania, liczne kursy Udemy, KursReacta Michała Raszyckiego i w tym momencie kończę Bootcamp Full Stack JavaScript MegaK, od niedawna aktywnie szukam pracy jako programista, mam nadzieję, że się spotkamy :)\",\r\n    \"expectedTypeOfWork\": \"any\",\r\n    \"targetWorkCity\": \"Warszawa\",\r\n    \"expectedContractType\": \"any\",\r\n    \"expectedSalary\": \"6000 USD\",\r\n    \"canTakeApprenticeship\": \"yes\",\r\n    \"monthsOfCommercialExp\": 8 ,\r\n    \"education\": \"Master Degree Finance, StudiujeIT, Samuraj Path, MegaK\",\r\n    \"workExperience\": \"7 years in Finance\",\r\n    \"courses\": \"KursReacta, PluralSight, EggHead, MegaK, StudiujeIT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/student/updateStatus",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"student",
+								"updateStatus"
 							]
 						}
 					},
@@ -1981,6 +2031,16 @@
 			"type": "string"
 		},
 		{
+			"key": "adminEmail",
+			"value": "admin@test.com",
+			"type": "string"
+		},
+		{
+			"key": "adminPwd",
+			"value": "admin1234!",
+			"type": "string"
+		},
+		{
 			"key": "studentEmail",
 			"value": "student@test.com",
 			"type": "string"
@@ -1998,6 +2058,11 @@
 		{
 			"key": "studentId",
 			"value": "<studentId will be set when you create new user>",
+			"type": "string"
+		},
+		{
+			"key": "adminId",
+			"value": "<adminId will be set when you create new user>",
 			"type": "string"
 		},
 		{
@@ -2068,21 +2133,6 @@
 		{
 			"key": "newPwd",
 			"value": "1234",
-			"type": "string"
-		},
-		{
-			"key": "adminEmail",
-			"value": "admin@test.com",
-			"type": "string"
-		},
-		{
-			"key": "adminPwd",
-			"value": "admin1234!",
-			"type": "string"
-		},
-		{
-			"key": "adminId",
-			"value": "<adminId will be set when you create new user>",
 			"type": "string"
 		},
 		{

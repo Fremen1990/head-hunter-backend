@@ -1,18 +1,29 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const httpMocks = require('node-mocks-http');
 import { AuthController } from './auth.controller';
+import { AuthService } from '../services/auth.service';
 
 describe('AuthController', () => {
-   let controller: AuthController;
+   let authController: AuthController;
+   let authService: AuthService;
+   const mockAuthService = {};
 
    beforeEach(async () => {
-      const module: TestingModule = await Test.createTestingModule({
+      const moduleRef: TestingModule = await Test.createTestingModule({
          controllers: [AuthController],
-      }).compile();
+         providers: [AuthService],
+      })
+         .overrideProvider(AuthService)
+         .useValue(mockAuthService)
+         .compile();
 
-      controller = module.get<AuthController>(AuthController);
+      authService = moduleRef.get<AuthService>(AuthService);
+      authController = moduleRef.get<AuthController>(AuthController);
    });
 
    it('should be defined', () => {
-      expect(controller).toBeDefined();
+      expect(authController).toBeDefined();
    });
 });
