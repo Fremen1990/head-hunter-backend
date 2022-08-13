@@ -94,14 +94,14 @@ export class AdminController {
    //============================GET ALL USERS================================
    @ApiOkResponse({ description: 'Displayed All User from DB' })
    @Get('/user/all')
-   getAll(): Promise<User[]> {
+   async getAll(): Promise<User[]> {
       return this.userService.getAllUsers();
    }
 
-   //============================GET ONE USERS================================
+   //============================GET ONE USER================================
    @ApiOkResponse({ description: 'Displayed one  User from DB' })
    @Get('/user/:id')
-   getOne(@Param('id') id: string): Promise<User> {
+   async getOne(@Param('id') id: string): Promise<User> {
       return this.userService.getOneUser(id);
    }
 
