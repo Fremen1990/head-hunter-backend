@@ -183,7 +183,6 @@ describe('AdminController', () => {
          updated_at: '2022-08-11T10:24:13.492Z',
       },
    ];
-
    const mockAdminService = {
       createOneStudent: jest
          .fn()
@@ -204,6 +203,11 @@ describe('AdminController', () => {
 
       getAllHr: jest.fn().mockImplementation(() => {
          return mockGetAllHr;
+      }),
+
+      importStudents: jest.fn().mockImplementation((newImportUsers) => {
+         return;
+         // todo mock import from file
       }),
    };
    const mockUserService = {

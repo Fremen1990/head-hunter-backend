@@ -1,18 +1,27 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HrController } from './hr.controller';
+import { HrService } from '../services/hr.service';
 
 describe('HrController', () => {
-   let controller: HrController;
+   let hrController: HrController;
+   let hrService: HrService;
+
+   const mockHrService = {};
 
    beforeEach(async () => {
-      const module: TestingModule = await Test.createTestingModule({
+      const moduleRef: TestingModule = await Test.createTestingModule({
          controllers: [HrController],
-      }).compile();
+         providers: [HrService],
+      })
+         .overrideProvider(hrService)
+         .useValue(mockHrService)
+         .compile();
 
-      controller = module.get<HrController>(HrController);
+      hrController = moduleRef.get<HrController>(HrController);
+      hrService = moduleRef.get<HrService>(HrService);
    });
 
    it('should be defined', () => {
-      expect(controller).toBeDefined();
+      expect(hrController).toBeDefined();
    });
 });
