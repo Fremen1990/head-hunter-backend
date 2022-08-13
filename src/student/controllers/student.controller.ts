@@ -79,7 +79,7 @@ export class StudentController {
       return this.studentService.updateStudentDetails(id, studentDetails);
    }
 
-   //============================UPDATE STUDENT PROFILE================================
+   //============================UPDATE STUDENT STATUS================================
    @ApiOkResponse({
       description: 'Student deleted',
    })

@@ -10,7 +10,7 @@ export interface DeleteStudentResponse {
 }
 
 export interface UpdateStudentStatus {
-   studentStatusUpdatedTo: string;
+   studentStatus: string;
 }
 
 interface CreatedRandomUser {

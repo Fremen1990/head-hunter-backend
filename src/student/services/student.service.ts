@@ -120,15 +120,17 @@ export class StudentService {
 
    async updateStatus(user: User): Promise<UpdateStudentStatus> {
       const student = await Student.findOneByOrFail({ studentId: user.id });
-
+      let studentStatus = '';
       if (student.studentStatus === StudentStatus.AVAILABLE) {
          student.studentStatus = await StudentStatus.EMPLOYED;
+         studentStatus = StudentStatus.EMPLOYED;
          await student.save();
       } else if (student.studentStatus === StudentStatus.EMPLOYED) {
          student.studentStatus = await StudentStatus.AVAILABLE;
+         studentStatus = StudentStatus.AVAILABLE;
          await student.save();
       }
 
-      return { studentStatusUpdatedTo: 'Student status updated' };
+      return { studentStatus };
    }
 }
