@@ -4,7 +4,7 @@ import { Student } from '../../student/entities/student.entity';
 import { HrCandidateAddResponse } from '../../types';
 import { User } from '../../user/entities/user.entity';
 import { Hr } from '../entities/hr.entity';
-import { DataSource } from 'typeorm';
+import { Brackets, DataSource, Not } from 'typeorm';
 import { Interview } from '../entities/interview.entity';
 import {
    generateReservationDate,
@@ -14,6 +14,7 @@ import { StudentStatus } from '../../enums/student-status.enum';
 import { getUserProfileResponse } from '../../types';
 import { UserService } from '../../user/services/user.service';
 import { StudentService } from '../../student/services/student.service';
+import { Role } from 'src/enums/role.enum';
 
 @Injectable()
 export class HrService {
@@ -74,6 +75,19 @@ export class HrService {
             studentId: 'ASC',
          },
       });
+   }
+
+   // exlude user to not show them in as available
+   async excludeIds(hrUser: User): Promise<string[]> {
+      const openInterviews = await this.getInterviews(hrUser);
+
+      let excludedIds = openInterviews.map((student) => student.studentId);
+
+      if (excludedIds.length === 0) {
+         excludedIds = [''];
+      }
+
+      return excludedIds;
    }
 
    // get a list of students that can be added to interview - status (interview || available) &&  active
@@ -256,58 +270,6 @@ export class HrService {
       }
 
       return data;
-
-      // ---------- to be deleted if Maciek accepts new object -----------
-
-      //const interviewTill = openInterviews.map((student) => student.date);
-
-      // const myOpenInteviews = await this.dataSource
-      //    .createQueryBuilder(Interview, 'interview')
-      //    .where('interview.studentId IN (:studentsIds)', {
-      //       studentsIds: [...studentsIds],
-      //    })
-      //    .orderBy('interview.studentId', 'ASC')
-      //    .getMany();
-
-      // return myOpenInteviews;
-
-      // pobierz wszystkich studentow z po id z tablicy
-      // const myInterviews = (
-      //    await this.dataSource
-      //       .createQueryBuilder(Student, 'student')
-      //       .where('student.studentId IN (:studentsIds)', {
-      //          studentsIds: [...studentsIds],
-      //       })
-      //       .orderBy('student.studentId', 'ASC')
-      //       .getMany()
-      // ).map((student) => {
-      //    return {
-      //       id: student.studentId,
-      //       githubUserName: student.githubUserName, // for user image purpose
-      //       firstName: student.firstName,
-      //       lastName: student.lastName,
-      //       courseCompletion: student.courseCompletion,
-      //       courseEngagement: student.courseEngagement,
-      //       projectDegree: student.projectDegree,
-      //       teamProjectDegree: student.teamProjectDegree,
-      //       expectedTypeOfWork: student.expectedTypeOfWork,
-      //       targetWorkCity: student.targetWorkCity,
-      //       expectedContractType: student.expectedContractType,
-      //       expectedSalary: student.expectedSalary,
-      //       canTakeApprenticeship: student.canTakeApprenticeship,
-      //       monthsOfCommercialExp: student.monthsOfCommercialExp,
-      //    };
-      // });
-
-      // const data = [];
-      // for (let i = 0; i < myInterviews.length; i++) {
-      //    data.push({
-      //       availableTill: interviewTill[i],
-      //       ...myInterviews[i],
-      //    });
-      // }
-      //
-      // return data;
    }
 
    // todo interface for promise when front end accepts this return
@@ -402,5 +364,420 @@ export class HrService {
       return {
          message: 'No records removed today',
       };
+   }
+
+   // define DTO and interface;
+   async getCandidatesListFiltered(hrUser: User, obj: any): Promise<any> {
+      const max = 99999;
+      const degreesCategories = [];
+      const studentsIds = await this.excludeIds(hrUser); // get excluded ids
+
+      let {
+         courseCompletion,
+         courseEngagement,
+         expectedContractType,
+         expectedTypeOfWork,
+         projectDegree,
+         teamProjectDegree,
+      } = obj;
+
+      const { canTakeApprenticeship, expectedSalary, monthsOfCommercialExp } =
+         obj;
+
+      // injected
+      console.log('canTakeApprenticeship - Injected', canTakeApprenticeship);
+      console.log('courseCompletion - Injected', courseCompletion);
+      console.log('courseEngagement - Injected', courseEngagement);
+      console.log('expectedContractType - Injected', expectedContractType);
+      console.log(
+         'expectedSalary - Injected - min, max',
+         expectedSalary.min,
+         expectedSalary.max,
+      );
+      console.log('expectedTypeOfWork - Injected', expectedTypeOfWork);
+      console.log('monthsOfCommercialExp - Injected', monthsOfCommercialExp);
+      console.log('projectDegree', projectDegree);
+      console.log('teamProjectDegree', teamProjectDegree);
+
+      // validation to fix values
+      if (courseCompletion.length === 0) {
+         courseCompletion = ['1', '2', '3', '4', '5'];
+         degreesCategories.push(`courseCompletion`);
+      } else {
+         degreesCategories.push(`courseCompletion`);
+      }
+
+      if (courseEngagement.length === 0) {
+         courseEngagement = ['1', '2', '3', '4', '5'];
+         degreesCategories.push(`courseEngagement`);
+      } else {
+         degreesCategories.push(`courseEngagement`);
+      }
+
+      if (expectedContractType.length === 0) {
+         expectedContractType = ['any', 'uop', 'b2b', 'uz_uod'];
+      }
+      if (expectedSalary.max === '') {
+         expectedSalary.max = max;
+      }
+      if (expectedTypeOfWork.length === 0) {
+         expectedTypeOfWork = [
+            'any',
+            'office',
+            'remote',
+            'hybrid',
+            'ready_to_move',
+         ];
+      }
+      if (projectDegree.length === 0) {
+         projectDegree = ['1', '2', '3', '4', '5'];
+         degreesCategories.push(`projectDegree`);
+      } else {
+         degreesCategories.push(`projectDegree`);
+      }
+
+      if (teamProjectDegree.length === 0) {
+         teamProjectDegree = ['1', '2', '3', '4', '5'];
+         degreesCategories.push(`teamProjectDegree`);
+      } else {
+         degreesCategories.push(`teamProjectDegree`);
+      }
+
+      // Fixed values
+      console.log('studentsIds', studentsIds);
+      console.log('degressCategories', degreesCategories);
+      console.log('canTakeApprenticeship - Fixed', canTakeApprenticeship);
+      console.log('courseCompletion - Fixed', courseCompletion);
+      const minGrade0 = Number(courseCompletion[0]);
+      const maxGrade0 = Number(courseCompletion[0] + '.99');
+      console.log('search', minGrade0, maxGrade0);
+      console.log('courseEngagement - Fixed', courseEngagement);
+      console.log('expectedContractType - Fixed', expectedContractType);
+      console.log(
+         'expectedSalary - Fixed - min, max',
+         expectedSalary.min,
+         expectedSalary.max,
+      );
+      console.log('expectedTypeOfWork - Fixed', expectedTypeOfWork);
+      console.log('monthsOfCommercialExp - Fixed', monthsOfCommercialExp);
+      console.log('projectDegree - Fixed', projectDegree);
+      console.log('teamProjectDegree - Fixed', teamProjectDegree);
+
+      // QB
+      const results = await this.dataSource
+         .getRepository(User)
+         .createQueryBuilder('user')
+         .leftJoinAndSelect('user.student', 'student')
+         .where('student.studentStatus IN (:studentStatus)', {
+            studentStatus: ['available', 'interview'],
+         })
+         .andWhere('user.active = :active', { active: true })
+         .andWhere('student.studentId NOT IN (:studentId)', {
+            studentId: [...studentsIds],
+         })
+         .andWhere('student.canTakeApprenticeship = :canTakeApprenticeship', {
+            canTakeApprenticeship,
+         })
+         .andWhere('student.expectedContractType IN (:expectedContractType)', {
+            expectedContractType: [...expectedContractType],
+         })
+         .andWhere('student.monthsOfCommercialExp = :monthsOfCommercialExp', {
+            monthsOfCommercialExp,
+         })
+         .andWhere('student.expectedTypeOfWork IN (:expectedTypeOfWork)', {
+            expectedTypeOfWork: [...expectedTypeOfWork],
+         })
+         .andWhere(
+            'student.expectedSalary >= :min AND student.expectedSalary <= :max',
+            {
+               min: expectedSalary.min,
+               max: expectedSalary.max,
+            },
+         );
+
+      results.andWhere(
+         new Brackets((qb) => {
+            qb.where(
+               'student.courseCompletion >= :courseCompletionMin0 AND student.courseCompletion <= :courseCompletionMax0',
+               {
+                  courseCompletionMin0: Number(courseCompletion[0]),
+                  courseCompletionMax0: Number(courseCompletion[0] + '.99'),
+               },
+            );
+            for (let i = 1; i < courseCompletion.length; i++) {
+               qb.orWhere(
+                  `student.courseCompletion >= :courseCompletionMin${i} AND student.courseCompletion <= :courseCompletionMax${i}`,
+                  {
+                     [`courseCompletionMin${i}`]: Number(courseCompletion[i]),
+                     [`courseCompletionMax${i}`]: Number(
+                        courseCompletion[i] + '.99',
+                     ),
+                  },
+               );
+            }
+         }),
+      );
+
+      results.andWhere(
+         new Brackets((qb) => {
+            qb.where(
+               'student.courseEngagement >= :courseEngagementMin0 AND student.courseEngagement <= :courseEngagementMax0',
+               {
+                  courseEngagementMin0: Number(courseEngagement[0]),
+                  courseEngagementMax0: Number(courseEngagement[0] + '.99'),
+               },
+            );
+            for (let i = 1; i < courseEngagement.length; i++) {
+               qb.orWhere(
+                  `student.courseEngagement >= :courseEngagementMin${i} AND student.courseEngagement <= :courseEngagementMax${i}`,
+                  {
+                     [`courseEngagementMin${i}`]: Number(courseEngagement[i]),
+                     [`courseEngagementMax${i}`]: Number(
+                        courseEngagement[i] + '.99',
+                     ),
+                  },
+               );
+            }
+         }),
+      );
+
+      results.andWhere(
+         new Brackets((qb) => {
+            qb.where(
+               'student.projectDegree >= :projectDegreeMin0 AND student.projectDegree <= :projectDegreeMax0',
+               {
+                  projectDegreeMin0: Number(projectDegree[0]),
+                  projectDegreeMax0: Number(projectDegree[0] + '.99'),
+               },
+            );
+            for (let i = 1; i < projectDegree.length; i++) {
+               qb.orWhere(
+                  `student.projectDegree >= :projectDegreeMin${i} AND student.projectDegree <= :projectDegreeMax${i}`,
+                  {
+                     [`projectDegreeMin${i}`]: Number(projectDegree[i]),
+                     [`projectDegreeMax${i}`]: Number(projectDegree[i] + '.99'),
+                  },
+               );
+            }
+         }),
+      );
+
+      results.andWhere(
+         new Brackets((qb) => {
+            qb.where(
+               'student.teamProjectDegree >= :teamProjectDegreeMin0 AND student.teamProjectDegree <= :teamProjectDegreeMax0',
+               {
+                  teamProjectDegreeMin0: Number(teamProjectDegree[0]),
+                  teamProjectDegreeMax0: Number(teamProjectDegree[0] + '.99'),
+               },
+            );
+            for (let i = 1; i < teamProjectDegree.length; i++) {
+               qb.orWhere(
+                  `student.teamProjectDegree >= :teamProjectDegreeMin${i} AND student.teamProjectDegree <= :teamProjectDegreeMax${i}`,
+                  {
+                     [`teamProjectDegreeMin${i}`]: Number(teamProjectDegree[i]),
+                     [`teamProjectDegreeMax${i}`]: Number(
+                        teamProjectDegree[i] + '.99',
+                     ),
+                  },
+               );
+            }
+         }),
+      );
+
+      return results.getMany();
+   }
+
+   // define DTO and interface;
+   async showMyInterviewsFiltered(hrUser: User, obj: any) {
+      const max = 99999;
+
+      // znajdz wszystkich studentow, którzy maja ze mna rozmowe
+      const openInterviews = await this.getInterviews(hrUser);
+
+      if (openInterviews.length === 0) {
+         return openInterviews;
+      }
+
+      // pobierz wszystkie id to tablicy, pobierz daty rozmow do tablicy - wszystko jest sortowane wiec bedzie sie zgadzać
+      const studentsIds = openInterviews.map((student) => student.studentId);
+
+      let {
+         courseCompletion,
+         courseEngagement,
+         expectedContractType,
+         expectedTypeOfWork,
+         projectDegree,
+         teamProjectDegree,
+      } = obj;
+
+      const { canTakeApprenticeship, expectedSalary, monthsOfCommercialExp } =
+         obj;
+
+      // validation to fix values
+      if (courseCompletion.length === 0) {
+         courseCompletion = ['1', '2', '3', '4', '5'];
+      }
+
+      if (courseEngagement.length === 0) {
+         courseEngagement = ['1', '2', '3', '4', '5'];
+      }
+
+      if (expectedContractType.length === 0) {
+         expectedContractType = ['any', 'uop', 'b2b', 'uz_uod'];
+      }
+      if (expectedSalary.max === '') {
+         expectedSalary.max = max;
+      }
+      if (expectedTypeOfWork.length === 0) {
+         expectedTypeOfWork = [
+            'any',
+            'office',
+            'remote',
+            'hybrid',
+            'ready_to_move',
+         ];
+      }
+      if (projectDegree.length === 0) {
+         projectDegree = ['1', '2', '3', '4', '5'];
+      }
+
+      if (teamProjectDegree.length === 0) {
+         teamProjectDegree = ['1', '2', '3', '4', '5'];
+      }
+
+      const filter = await this.dataSource
+         .getRepository(Student)
+         .createQueryBuilder('Student')
+         .andWhere('student.studentId IN (:studentId)', {
+            studentId: [...studentsIds],
+         })
+         .andWhere('student.canTakeApprenticeship = :canTakeApprenticeship', {
+            canTakeApprenticeship,
+         })
+         .andWhere('student.expectedContractType IN (:expectedContractType)', {
+            expectedContractType: [...expectedContractType],
+         })
+         .andWhere('student.monthsOfCommercialExp = :monthsOfCommercialExp', {
+            monthsOfCommercialExp,
+         })
+         .andWhere('student.expectedTypeOfWork IN (:expectedTypeOfWork)', {
+            expectedTypeOfWork: [...expectedTypeOfWork],
+         })
+         .andWhere(
+            'student.expectedSalary >= :min AND student.expectedSalary <= :max',
+            {
+               min: expectedSalary.min,
+               max: expectedSalary.max,
+            },
+         );
+
+      filter.andWhere(
+         new Brackets((qb) => {
+            qb.where(
+               'student.courseCompletion >= :courseCompletionMin0 AND student.courseCompletion <= :courseCompletionMax0',
+               {
+                  courseCompletionMin0: Number(courseCompletion[0]),
+                  courseCompletionMax0: Number(courseCompletion[0] + '.99'),
+               },
+            );
+            for (let i = 1; i < courseCompletion.length; i++) {
+               qb.orWhere(
+                  `student.courseCompletion >= :courseCompletionMin${i} AND student.courseCompletion <= :courseCompletionMax${i}`,
+                  {
+                     [`courseCompletionMin${i}`]: Number(courseCompletion[i]),
+                     [`courseCompletionMax${i}`]: Number(
+                        courseCompletion[i] + '.99',
+                     ),
+                  },
+               );
+            }
+         }),
+      );
+
+      console.log(openInterviews.length);
+      filter.andWhere(
+         new Brackets((qb) => {
+            qb.where(
+               'student.courseEngagement >= :courseEngagementMin0 AND student.courseEngagement <= :courseEngagementMax0',
+               {
+                  courseEngagementMin0: Number(courseEngagement[0]),
+                  courseEngagementMax0: Number(courseEngagement[0] + '.99'),
+               },
+            );
+            for (let i = 1; i < courseEngagement.length; i++) {
+               qb.orWhere(
+                  `student.courseEngagement >= :courseEngagementMin${i} AND student.courseEngagement <= :courseEngagementMax${i}`,
+                  {
+                     [`courseEngagementMin${i}`]: Number(courseEngagement[i]),
+                     [`courseEngagementMax${i}`]: Number(
+                        courseEngagement[i] + '.99',
+                     ),
+                  },
+               );
+            }
+         }),
+      );
+
+      console.log(openInterviews.length);
+      filter.andWhere(
+         new Brackets((qb) => {
+            qb.where(
+               'student.projectDegree >= :projectDegreeMin0 AND student.projectDegree <= :projectDegreeMax0',
+               {
+                  projectDegreeMin0: Number(projectDegree[0]),
+                  projectDegreeMax0: Number(projectDegree[0] + '.99'),
+               },
+            );
+            for (let i = 1; i < projectDegree.length; i++) {
+               qb.orWhere(
+                  `student.projectDegree >= :projectDegreeMin${i} AND student.projectDegree <= :projectDegreeMax${i}`,
+                  {
+                     [`projectDegreeMin${i}`]: Number(projectDegree[i]),
+                     [`projectDegreeMax${i}`]: Number(projectDegree[i] + '.99'),
+                  },
+               );
+            }
+         }),
+      );
+
+      filter.andWhere(
+         new Brackets((qb) => {
+            qb.where(
+               'student.teamProjectDegree >= :teamProjectDegreeMin0 AND student.teamProjectDegree <= :teamProjectDegreeMax0',
+               {
+                  teamProjectDegreeMin0: Number(teamProjectDegree[0]),
+                  teamProjectDegreeMax0: Number(teamProjectDegree[0] + '.99'),
+               },
+            );
+            for (let i = 1; i < teamProjectDegree.length; i++) {
+               qb.orWhere(
+                  `student.teamProjectDegree >= :teamProjectDegreeMin${i} AND student.teamProjectDegree <= :teamProjectDegreeMax${i}`,
+                  {
+                     [`teamProjectDegreeMin${i}`]: Number(teamProjectDegree[i]),
+                     [`teamProjectDegreeMax${i}`]: Number(
+                        teamProjectDegree[i] + '.99',
+                     ),
+                  },
+               );
+            }
+         }),
+      );
+
+      const myInterviews = (
+         await filter.orderBy('student.studentId', 'ASC').getMany()
+      ).map((result) => result);
+
+      const data = [];
+      for (let i = 0; i < myInterviews.length; i++) {
+         data.push({
+            ...openInterviews[i],
+            student: {
+               ...myInterviews[i],
+            },
+         });
+      }
+
+      return data;
    }
 }
