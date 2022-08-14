@@ -44,7 +44,6 @@ export class AuthController {
    @ApiUnauthorizedResponse({ description: 'Unauthorized' })
    @Get('/logout')
    async logout(@UserObj() user: User, @Res() res: Response) {
-      console.log({ user });
       return this.authService.logout(user, res);
    }
 

@@ -1,4 +1,12 @@
 import {
+   ApiCookieAuth,
+   ApiCreatedResponse,
+   ApiOkResponse,
+   ApiTags,
+   ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import {
    Body,
    Controller,
    Delete,
@@ -12,15 +20,7 @@ import { HrService } from '../services/hr.service';
 import { HrCandidateAddResponse } from '../../types';
 import { UserObj } from '../../decorators/portal-users.decorator';
 import { User } from '../../user/entities/user.entity';
-import { AuthGuard } from '@nestjs/passport';
 
-import {
-   ApiCookieAuth,
-   ApiCreatedResponse,
-   ApiOkResponse,
-   ApiTags,
-   ApiUnauthorizedResponse,
-} from '@nestjs/swagger';
 import { getUserProfileResponse } from '../../types';
 import { Role } from '../../enums/role.enum';
 import { Roles } from '../../decorators/roles.decorator';

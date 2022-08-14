@@ -1,3 +1,5 @@
+import { faker } from '@faker-js/faker';
+import { v4 as uuid } from 'uuid';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { createOneUserResponse, ImportUserResponse } from '../../types/user';
 import { User } from '../../user/entities/user.entity';
@@ -7,8 +9,6 @@ import {
    UploadFileResponseInterface,
 } from '../../types/upload';
 import { MulterDiskUploadedFiles } from '../../types/files';
-import { v4 as uuid } from 'uuid';
-import { faker } from '@faker-js/faker';
 
 // utils imports
 import { storageDir } from '../../utils/storage';

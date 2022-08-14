@@ -117,7 +117,6 @@ export class AdminController {
    async uploadFile(
       @UploadedFiles() files: MulterDiskUploadedFiles,
    ): Promise<UploadFileResponseInterface | UploadFileFailedInterface> {
-      console.log('CONTROLER UPLOAD');
       return this.adminService.uploadFile(files);
    }
 
@@ -130,7 +129,6 @@ export class AdminController {
    async importStudents(
       @Body() newImportUsers: StudentDto[],
    ): Promise<ImportUserResponse> {
-      console.log('CONTROLLER IMPORT');
       return this.adminService.importStudents(newImportUsers);
    }
 
