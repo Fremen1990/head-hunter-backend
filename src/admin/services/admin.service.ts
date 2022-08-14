@@ -33,15 +33,7 @@ export class AdminService {
       @Inject(MailService) private mailService: MailService,
       @Inject(UserService) private userService: UserService,
    ) {}
-   // method set from most important(complex) to least
-   // 1. upload file
-   // 2. import students
-   // 3. import hr
-   // 4. create one student
-   // 5. create one hr
-   // 5. send email
 
-   // last tested 31.07 - @Radek - feature/db-to-test
    //----------------- Upload file to hard, parse it, return array and remove file ------------------
    async uploadFile(
       files: MulterDiskUploadedFiles,
@@ -87,9 +79,6 @@ export class AdminService {
       }
    }
 
-   // one method to join funtionality of two below - import(newImportUser, userType) ????
-
-   // last tested 31.07 - @Radek - feature/db-to-test
    async importStudents(
       newImportUsers: StudentDto[],
    ): Promise<ImportUserResponse> {
@@ -98,8 +87,6 @@ export class AdminService {
 
       for (const userItem of newImportUsers) {
          //------ create new user -------
-         // // todo USE SERVICE FOR ADD ONE TO IMPORT ALL
-         // await this.createOneStudent(userItem);
 
          const user = await User.findOneBy({ email: userItem.email });
          if (!user) {
@@ -141,7 +128,6 @@ export class AdminService {
       };
    }
 
-   // last tested 31.07 - @Radek - feature/db-to-test
    async importHr(newImportHr: HrDto[]): Promise<ImportUserResponse> {
       const createdUsersList = [];
       const duplicatedUsersList = [];
@@ -187,7 +173,6 @@ export class AdminService {
       };
    }
 
-   // last tested 31.07 - @Radek - feature/db-to-test
    async createOneStudent(
       newStudent: StudentDto,
    ): Promise<createOneUserResponse> {
@@ -230,7 +215,6 @@ export class AdminService {
       };
    }
 
-   // last tested 31.07 - @Radek - feature/db-to-test
    async createOneHr(newHr: HrDto): Promise<createOneUserResponse> {
       let user = await User.findOneBy({ email: newHr.email });
       const createdUsersList = [];
@@ -271,21 +255,17 @@ export class AdminService {
       };
    }
 
-   // last tested 31.07 - @Radek - feature/db-to-test
    //----------------- Get All students ------------------
-   // te metody do napisania w poszczegolbych modułach i tutaj tylko referencja
    async getAllStudents(): Promise<Student[]> {
       return await Student.find();
    }
 
-   // last tested 31.07 - @Radek - feature/db-to-test
    //----------------- Get All Hr ------------------
    async getAllHr(): Promise<Hr[]> {
       return await Hr.find();
    }
 
-   // last tested 31.07 - @Radek - feature/db-to-test
-   // ---Send email with registration link to all users available in DB that are not registered yest ---
+   // ---Send email with registration link to all users available in DB that are not registered yet ---
    async mailUsers(): Promise<any> {
       const users = await this.userService.getAllUsers();
       let counter = 0;
@@ -307,10 +287,6 @@ export class AdminService {
       const studentsNumberArray = Array.from({ length: 100 }, (v, i) => i);
 
       for (const userItem of studentsNumberArray) {
-         //------ create new user -------
-         // // todo USE SERVICE FOR ADD ONE TO IMPORT ALL
-         // await this.createOneStudent(userItem);
-
          const sharedId = uuid();
 
          const user = await new User();

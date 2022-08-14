@@ -42,6 +42,7 @@ export class StudentService {
       return student;
    }
 
+   // todo - Promise<Student[]>
    async getAllStudents(): Promise<any> {
       const students = await User.find({
          where: {
@@ -53,27 +54,7 @@ export class StudentService {
       return students;
    }
 
-   // JSON
-   // {
-   //    "studentStatus": "available",
-   //    "tel": "666-666-666",
-   //    "firstName": "tOMASZEK",
-   //    "lastName": "wer",
-   //    "githubUserName": "wer",
-   //    "portfolioUrls": ["raz", "dwa"],
-   //    "projectUrls": ["trzy", "cztery"],
-   //    "bio": "My bio is aweeeesomeeeeeeeeee",
-   //    "expectedTypeOfWork": "any",
-   //    "targetWorkCity": "we",
-   //    "expectedContractType": "any",
-   //    "expectedSalary": "123",
-   //    "canTakeApprenticeship": "no",
-   //    "monthsOfCommercialExp": 10,
-   //    "education": "asd",
-   //    "workExperience": "asd",
-   //    "courses": "sad"
-   // }
-
+   // todo - interface for return
    async updateStudentDetails(id: string, studentDetails: UpdateProfileDto) {
       const student = await Student.findOneBy({ studentId: id });
 
@@ -118,6 +99,7 @@ export class StudentService {
       return { DeleteStudentStatus: 'Student deleted' };
    }
 
+   // todo check if student is present in interview table, in case if student will set that is employed -> delete him/his from all interviews
    async updateStatus(user: User): Promise<UpdateStudentStatus> {
       const student = await Student.findOneByOrFail({ studentId: user.id });
       let studentStatus = '';

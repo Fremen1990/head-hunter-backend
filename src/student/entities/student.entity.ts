@@ -162,11 +162,4 @@ export class Student extends BaseEntity {
 
    @OneToOne(() => User, (user) => user.student, { onDelete: 'CASCADE' })
    user: User;
-
-   // test
-   //    @OneToMany(() => Candidates, (interview) => interview.student)
-   //    interview: Candidates;
-   // }
-
-   // test2
 }

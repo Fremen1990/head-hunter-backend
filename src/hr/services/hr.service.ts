@@ -66,6 +66,7 @@ export class HrService {
       return maxReservedStudents;
    }
 
+   // todo - Promise<Interview[]>
    async getInterviews(hrUser: User): Promise<any> {
       return await Interview.find({
          where: {
@@ -118,7 +119,7 @@ export class HrService {
 
    // get a student that can be added to interview - status available && active
    // in return object user with relations to student table, so all student data
-   // todo interface for promise when front end accepts this return
+   // todo interface for promise when front end accepts this return -> quickly Promise<User>
    async getOneCandidate(studentId): Promise<any> {
       await this.userService.getOneUser(studentId);
 
@@ -238,8 +239,7 @@ export class HrService {
 
    // show students that are being currently invterviewed by hr
    // return needed data for view 'do rozmowy'
-   //iterfejs do napisania
-   // todo interface for promise when front end accepts this return
+   // todo interface for promise
    async showMyInterviews(hrUser: User): Promise<any> {
       // znajdz wszystkich studentow, którzy maja ze mna rozmowe
       const openInterviews = await this.getInterviews(hrUser);
@@ -272,7 +272,7 @@ export class HrService {
       return data;
    }
 
-   // todo interface for promise when front end accepts this return
+   // todo interface for promise
    async remove(hrUser: User, studentId: string): Promise<any> {
       const student = await Student.findOneBy({ studentId });
 
@@ -304,7 +304,7 @@ export class HrService {
       };
    }
 
-   // todo interface for promise when front end accepts this return
+   // todo interface for promise
    async hire(hrUser: User, studentId: string): Promise<any> {
       const student = await Student.findOneBy({ studentId });
 
@@ -495,6 +495,9 @@ export class HrService {
             },
          );
 
+      // how to wrap 4 below functionalities in loop? Tried to user for it table with category named then foreach - failed,
+      // then created table of objects degreesCategories that is { category : [grades], but don't know how to implement loop on it
+      // Kuba help, because is very interestion for us
       results.andWhere(
          new Brackets((qb) => {
             qb.where(

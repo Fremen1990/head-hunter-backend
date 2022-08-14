@@ -11,6 +11,7 @@ export class UserService {
       return { id, registrationToken, active };
    }
 
+   // todo - delete in week 5th after task 'group project' ends
    filterProfile(user: User): UserProfile {
       const {
          id,
