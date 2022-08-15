@@ -6,6 +6,7 @@ import {
    Inject,
    Param,
    Patch,
+   Post,
    UseGuards,
 } from '@nestjs/common';
 import { HrService } from '../services/hr.service';
@@ -53,7 +54,7 @@ export class HrController {
    })
    @Roles(Role.ADMIN, Role.HR)
    @UseGuards(RolesGuard)
-   @Get('/candidate/list/filter')
+   @Post('/candidate/list/filter')
    candidateListFiltered(
       @UserObj() hrUser: User,
       @Body() obj: any,
@@ -105,7 +106,7 @@ export class HrController {
    })
    @Roles(Role.ADMIN, Role.HR)
    @UseGuards(RolesGuard)
-   @Get('/interviews/filter')
+   @Post('/interviews/filter')
    async showMyInterviewsFiltered(
       @UserObj() hrUser: User,
       @Body() obj: any,
