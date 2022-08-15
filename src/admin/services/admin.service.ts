@@ -33,6 +33,7 @@ export class AdminService {
       @Inject(MailService) private mailService: MailService,
       @Inject(UserService) private userService: UserService,
    ) {}
+
    // method set from most important(complex) to least
    // 1. upload file
    // 2. import students
@@ -340,7 +341,7 @@ export class AdminService {
          ];
          student.bio = faker.name.jobDescriptor();
          student.targetWorkCity = faker.address.cityName();
-         student.expectedSalary = faker.finance.amount(1000, 100000);
+         student.expectedSalary = Number(faker.finance.amount(1000, 100000));
          student.monthsOfCommercialExp = getRandomArbitrary(0, 24);
          student.education = faker.animal.cat();
          student.workExperience = faker.vehicle.vehicle();

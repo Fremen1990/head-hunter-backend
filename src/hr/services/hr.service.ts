@@ -372,6 +372,8 @@ export class HrService {
       const degreesCategories = [];
       const studentsIds = await this.excludeIds(hrUser); // get excluded ids
 
+      console.log('FE OBJ', obj);
+
       let {
          courseCompletion,
          courseEngagement,
@@ -379,10 +381,10 @@ export class HrService {
          expectedTypeOfWork,
          projectDegree,
          teamProjectDegree,
-      } = obj;
+      } = obj.newObj;
 
       const { canTakeApprenticeship, expectedSalary, monthsOfCommercialExp } =
-         obj;
+         obj.newObj;
 
       // injected
       console.log('canTakeApprenticeship - Injected', canTakeApprenticeship);
@@ -417,8 +419,12 @@ export class HrService {
       if (expectedContractType.length === 0) {
          expectedContractType = ['any', 'uop', 'b2b', 'uz_uod'];
       }
-      if (expectedSalary.max === '') {
+      if (expectedSalary.max === null) {
          expectedSalary.max = max;
+      }
+
+      if (expectedSalary.min === null) {
+         expectedSalary.min = 0;
       }
       if (expectedTypeOfWork.length === 0) {
          expectedTypeOfWork = [
@@ -480,22 +486,22 @@ export class HrService {
          })
          .andWhere('student.expectedContractType IN (:expectedContractType)', {
             expectedContractType: [...expectedContractType],
-         })
-         .andWhere('student.monthsOfCommercialExp = :monthsOfCommercialExp', {
+         });
+      results
+         .andWhere('student.monthsOfCommercialExp >= :monthsOfCommercialExp', {
             monthsOfCommercialExp,
          })
          .andWhere('student.expectedTypeOfWork IN (:expectedTypeOfWork)', {
             expectedTypeOfWork: [...expectedTypeOfWork],
          })
-         .andWhere(
-            'student.expectedSalary >= :min AND student.expectedSalary <= :max',
-            {
-               min: expectedSalary.min,
-               max: expectedSalary.max,
-            },
-         );
+         .andWhere('student.expectedSalary >= :min', {
+            min: expectedSalary.min,
+         })
+         .andWhere('student.expectedSalary <= :max', {
+            max: expectedSalary.max,
+         });
 
-      results.andWhere(
+      await results.andWhere(
          new Brackets((qb) => {
             qb.where(
                'student.courseCompletion >= :courseCompletionMin0 AND student.courseCompletion <= :courseCompletionMax0',
@@ -518,7 +524,7 @@ export class HrService {
          }),
       );
 
-      results.andWhere(
+      await results.andWhere(
          new Brackets((qb) => {
             qb.where(
                'student.courseEngagement >= :courseEngagementMin0 AND student.courseEngagement <= :courseEngagementMax0',
@@ -541,7 +547,7 @@ export class HrService {
          }),
       );
 
-      results.andWhere(
+      await results.andWhere(
          new Brackets((qb) => {
             qb.where(
                'student.projectDegree >= :projectDegreeMin0 AND student.projectDegree <= :projectDegreeMax0',
@@ -562,7 +568,7 @@ export class HrService {
          }),
       );
 
-      results.andWhere(
+      await results.andWhere(
          new Brackets((qb) => {
             qb.where(
                'student.teamProjectDegree >= :teamProjectDegreeMin0 AND student.teamProjectDegree <= :teamProjectDegreeMax0',
@@ -584,7 +590,7 @@ export class HrService {
             }
          }),
       );
-
+      console.log('results', await results.getMany());
       return results.getMany();
    }
 
@@ -609,10 +615,10 @@ export class HrService {
          expectedTypeOfWork,
          projectDegree,
          teamProjectDegree,
-      } = obj;
+      } = obj.newObj;
 
       const { canTakeApprenticeship, expectedSalary, monthsOfCommercialExp } =
-         obj;
+         obj.newObj;
 
       // validation to fix values
       if (courseCompletion.length === 0) {
@@ -626,8 +632,11 @@ export class HrService {
       if (expectedContractType.length === 0) {
          expectedContractType = ['any', 'uop', 'b2b', 'uz_uod'];
       }
-      if (expectedSalary.max === '') {
+      if (expectedSalary.max === null) {
          expectedSalary.max = max;
+      }
+      if (expectedSalary.min === null) {
+         expectedSalary.min = 0;
       }
       if (expectedTypeOfWork.length === 0) {
          expectedTypeOfWork = [
@@ -658,7 +667,7 @@ export class HrService {
          .andWhere('student.expectedContractType IN (:expectedContractType)', {
             expectedContractType: [...expectedContractType],
          })
-         .andWhere('student.monthsOfCommercialExp = :monthsOfCommercialExp', {
+         .andWhere('student.monthsOfCommercialExp >= :monthsOfCommercialExp', {
             monthsOfCommercialExp,
          })
          .andWhere('student.expectedTypeOfWork IN (:expectedTypeOfWork)', {
@@ -768,6 +777,8 @@ export class HrService {
          await filter.orderBy('student.studentId', 'ASC').getMany()
       ).map((result) => result);
 
+      console.log('myInterviews', myInterviews);
+
       const data = [];
       for (let i = 0; i < myInterviews.length; i++) {
          data.push({
@@ -777,7 +788,7 @@ export class HrService {
             },
          });
       }
-
+      console.log('data', data);
       return data;
    }
 }
