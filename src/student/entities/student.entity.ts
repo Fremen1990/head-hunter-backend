@@ -121,8 +121,8 @@ export class Student extends BaseEntity {
    })
    expectedContractType: string;
 
-   @Column({ length: 5 })
-   expectedSalary: string;
+   @Column()
+   expectedSalary: number;
 
    // enum do zgody na staż przed zatrudnieniem, domyslnie no
    @Column({
