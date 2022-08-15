@@ -89,7 +89,7 @@ export class StudentService {
          student.expectedTypeOfWork = studentDetails.expectedTypeOfWork;
          student.targetWorkCity = studentDetails.targetWorkCity;
          student.expectedContractType = studentDetails.expectedContractType;
-         student.expectedSalary = studentDetails.expectedSalary;
+         student.expectedSalary = Number(studentDetails.expectedSalary);
          student.canTakeApprenticeship = studentDetails.canTakeApprenticeship;
          student.monthsOfCommercialExp = Number(
             studentDetails.monthsOfCommercialExp,
