@@ -20,6 +20,7 @@ import { UserService } from '../../user/services/user.service';
 import { User } from '../../user/entities/user.entity';
 import { Role } from '../../enums/role.enum';
 import { StudentStatus } from '../../enums/student-status.enum';
+import { Interview } from '../../hr/entities/interview.entity';
 
 // do napisania interfejsy do zwrotu
 @Injectable()
@@ -52,27 +53,6 @@ export class StudentService {
 
       return students;
    }
-
-   // JSON
-   // {
-   //    "studentStatus": "available",
-   //    "tel": "666-666-666",
-   //    "firstName": "tOMASZEK",
-   //    "lastName": "wer",
-   //    "githubUserName": "wer",
-   //    "portfolioUrls": ["raz", "dwa"],
-   //    "projectUrls": ["trzy", "cztery"],
-   //    "bio": "My bio is aweeeesomeeeeeeeeee",
-   //    "expectedTypeOfWork": "any",
-   //    "targetWorkCity": "we",
-   //    "expectedContractType": "any",
-   //    "expectedSalary": "123",
-   //    "canTakeApprenticeship": "no",
-   //    "monthsOfCommercialExp": 10,
-   //    "education": "asd",
-   //    "workExperience": "asd",
-   //    "courses": "sad"
-   // }
 
    async updateStudentDetails(id: string, studentDetails: UpdateProfileDto) {
       const student = await Student.findOneBy({ studentId: id });
@@ -120,17 +100,30 @@ export class StudentService {
 
    async updateStatus(user: User): Promise<UpdateStudentStatus> {
       const student = await Student.findOneByOrFail({ studentId: user.id });
+      const openInterviews = await Interview.find({
+         where: {
+            studentId: student.studentId,
+         },
+      });
       let studentStatus = '';
-      if (student.studentStatus === StudentStatus.AVAILABLE) {
-         student.studentStatus = await StudentStatus.EMPLOYED;
+
+      if (
+         student.studentStatus === StudentStatus.AVAILABLE ||
+         student.studentStatus === StudentStatus.INTERVIEW
+      ) {
+         if (openInterviews) {
+            for (const interview of openInterviews) {
+               await interview.remove();
+            }
+         }
+         student.studentStatus = StudentStatus.EMPLOYED;
          studentStatus = StudentStatus.EMPLOYED;
          await student.save();
-      } else if (student.studentStatus === StudentStatus.EMPLOYED) {
-         student.studentStatus = await StudentStatus.AVAILABLE;
+      } else {
+         student.studentStatus = StudentStatus.AVAILABLE;
          studentStatus = StudentStatus.AVAILABLE;
          await student.save();
       }
-
       return { studentStatus };
    }
 }
