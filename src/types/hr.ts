@@ -1,6 +1,12 @@
 // do modyfikacji co jest potrzebne dla Hr-owca
 import { Hr } from 'src/hr/entities/hr.entity';
 import { User } from '../user/entities/user.entity';
+import { Student } from '../student/entities/student.entity';
+import { Interview } from '../hr/entities/interview.entity';
+
+export interface HrSimpleResponse {
+   message: string;
+}
 
 export interface HrCandidateListResponse {
    id: string;
@@ -47,4 +53,31 @@ export interface HrCandidateRemoveResponse {
    lastName: string;
 }
 
+export interface GetOneHrProfileResponse {
+   hr: {
+      id: string;
+      email: string;
+      encryptedPwd;
+      role: string;
+      currentSessionToken: string | null;
+      registrationToken: string;
+      resetPasswordToken: string;
+      active: boolean;
+      created_at: Date;
+      updated_at: Date;
+
+      hr?: Hr;
+   };
+   openInterviews: Interview[] | string;
+}
+
+export interface GetOneHrInterviewsResponse {
+   interviewId: string;
+   interviewTitle: string;
+   date: Date;
+   studentId: string;
+   hrId: string;
+
+   student: Student;
+}
 export type HrType = typeof Hr;
