@@ -1,7 +1,12 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import { Student } from '../../student/entities/student.entity';
-import { HrCandidateAddResponse } from '../../types';
+import {
+   GetOneHrInterviewsResponse,
+   GetOneHrProfileResponse,
+   HrCandidateAddResponse,
+   HrSimpleResponse,
+} from '../../types';
 import { User } from '../../user/entities/user.entity';
 import { Hr } from '../entities/hr.entity';
 import { Brackets, DataSource, Not } from 'typeorm';
@@ -15,6 +20,7 @@ import { getUserProfileResponse } from '../../types';
 import { UserService } from '../../user/services/user.service';
 import { StudentService } from '../../student/services/student.service';
 import { Role } from 'src/enums/role.enum';
+import { HrFilterResultsDto } from '../dto/hr-filter.dto';
 
 @Injectable()
 export class HrService {
@@ -66,7 +72,8 @@ export class HrService {
       return maxReservedStudents;
    }
 
-   async getInterviews(hrUser: User): Promise<any> {
+   // IMPORTANT 16/08 -  changed from Promise<any> to Promise<Interview[]>
+   async getInterviews(hrUser: User): Promise<Interview[]> {
       return await Interview.find({
          where: {
             hrId: hrUser.id,
@@ -118,8 +125,9 @@ export class HrService {
 
    // get a student that can be added to interview - status available && active
    // in return object user with relations to student table, so all student data
-   // todo interface for promise when front end accepts this return
-   async getOneCandidate(studentId): Promise<any> {
+
+   // IMPORTANT 16/08 -  changed from Promise<any> to Promise<Interview[]>
+   async getOneCandidate(studentId): Promise<getUserProfileResponse> {
       await this.userService.getOneUser(studentId);
 
       const newCandidate = await this.dataSource
@@ -148,8 +156,8 @@ export class HrService {
    // get one HR user data
    // in return object user with relations to hr table, so all hr data including open interviews
    // use only to getData on frontend
-   // todo interface for promise when front end accepts this return
-   async getOneHr(hrId): Promise<any> {
+   // IMPORTANT 16/08 -  changed from Promise<any> to Promise<GetOneHrProfileResponse>
+   async getOneHr(hrId): Promise<GetOneHrProfileResponse> {
       await this.userService.getOneUser(hrId);
 
       const hr = await this.dataSource
@@ -238,9 +246,10 @@ export class HrService {
 
    // show students that are being currently invterviewed by hr
    // return needed data for view 'do rozmowy'
-   //iterfejs do napisania
-   // todo interface for promise when front end accepts this return
-   async showMyInterviews(hrUser: User): Promise<any> {
+   // IMPORTANT 16/08 -  changed from Promise<any> to Promise<GetOneHrInterviewsResponse[] | Interview[]>
+   async showMyInterviews(
+      hrUser: User,
+   ): Promise<GetOneHrInterviewsResponse[] | Interview[]> {
       // znajdz wszystkich studentow, którzy maja ze mna rozmowe
       const openInterviews = await this.getInterviews(hrUser);
 
@@ -272,8 +281,8 @@ export class HrService {
       return data;
    }
 
-   // todo interface for promise when front end accepts this return
-   async remove(hrUser: User, studentId: string): Promise<any> {
+   // IMPORTANT 16/08 -  changed from Promise<any> to Promise<HrSimpleResponse>
+   async remove(hrUser: User, studentId: string): Promise<HrSimpleResponse> {
       const student = await Student.findOneBy({ studentId });
 
       if (!student) {
@@ -304,8 +313,8 @@ export class HrService {
       };
    }
 
-   // todo interface for promise when front end accepts this return
-   async hire(hrUser: User, studentId: string): Promise<any> {
+   // IMPORTANT 16/08 -  changed from Promise<any> to Promise<HrSimpleResponse>
+   async hire(hrUser: User, studentId: string): Promise<HrSimpleResponse> {
       const student = await Student.findOneBy({ studentId });
 
       if (!student) {
@@ -366,8 +375,13 @@ export class HrService {
       };
    }
 
-   // define DTO and interface;
-   async getCandidatesListFiltered(hrUser: User, obj: any): Promise<any> {
+   // IMPORTANT 16/08 :
+   // DTO -> obj : any changed to  obj: HrFilterResultsDto,
+   // Promise changed from Promise<any> to Promise<getUserProfileResponse[]>
+   async getCandidatesListFiltered(
+      hrUser: User,
+      obj: HrFilterResultsDto,
+   ): Promise<getUserProfileResponse[]> {
       const max = 99999;
       const degreesCategories = [];
       const studentsIds = await this.excludeIds(hrUser); // get excluded ids
@@ -495,10 +509,10 @@ export class HrService {
             expectedTypeOfWork: [...expectedTypeOfWork],
          })
          .andWhere('student.expectedSalary >= :min', {
-            min: expectedSalary.min,
+            min: Number(expectedSalary.min),
          })
          .andWhere('student.expectedSalary <= :max', {
-            max: expectedSalary.max,
+            max: Number(expectedSalary.max),
          });
 
       await results.andWhere(
@@ -594,8 +608,13 @@ export class HrService {
       return results.getMany();
    }
 
-   // define DTO and interface;
-   async showMyInterviewsFiltered(hrUser: User, obj: any) {
+   // IMPORTANT 16/08 :
+   // DTO -> obj : any changed to  obj: HrFilterResultsDto,
+   // Promise changed from Promise<any> to Promise<GetOneHrInterviewsResponse[] | Interview[]>
+   async showMyInterviewsFiltered(
+      hrUser: User,
+      obj: HrFilterResultsDto,
+   ): Promise<GetOneHrInterviewsResponse[] | Interview[]> {
       const max = 99999;
 
       // znajdz wszystkich studentow, którzy maja ze mna rozmowe
